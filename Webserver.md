@@ -5,11 +5,11 @@
 
 ---
 
-- GET  `/boards`  
+- GET  `/`  
     _List all boards_  
     Returns: list of [id: string, name: string, description: string]
 
-- POST `/boards/new`  
+- POST `/`  
     _Create new board_   
     Params: title, description   
     Returns: 200

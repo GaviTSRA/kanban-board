@@ -16,8 +16,8 @@
 <style scoped>
     .deleteMenu {
         position: absolute;
-        width: 20vw;
-        left: 40vw;
+        width: 80vw;
+        left: 10vw;
         height: 20vh;
         top: 40vh;
         filter: drop-shadow(0 0 5rem black);
@@ -52,5 +52,12 @@
     }
     .btnCancel:hover {
         background-color: var(--color-btn-danger-hover);
+    }
+
+    @media (min-width: 1025px) {
+        .deleteMenu {
+            left: 40vw;
+            width: 20vw;
+        }
     }
 </style>

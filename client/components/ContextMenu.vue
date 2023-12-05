@@ -31,7 +31,7 @@
         color: rgb(255, 74, 74);
         border-color: var(--vt-c-black-mute);
         border-width: 2px;
-        width:10vw;
+        width:40vw;
         height: 4vh;
         border-radius: 10px;
     }
@@ -39,5 +39,11 @@
         background-color: var(--color-btn-danger);
         border-color: red;
         color: black;
+    }
+
+    @media (min-width: 1025px) {
+        .rcMenu button {
+            width:10vw;
+        }
     }
 </style>

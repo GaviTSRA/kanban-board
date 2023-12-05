@@ -31,11 +31,10 @@
     let deleteButton = ref(null)
 
     async function openMenu(event: Event) {
-        menuVisible.value = true
-
         top.value = event.y
         left.value = event.x
-
+        
+        menuVisible.value = true
         await nextTick()
         menu.value?.focus()
         
@@ -74,10 +73,20 @@
     let actions = [
         ["Delete Board", "deleteBoard"]
     ]
+
+    let touchTimer
+    function touchStart(e) {
+        touchTimer = setTimeout(() => openMenu(e), 500); 
+    }
+
+    function touchEnd() {
+        if (touchTimer)
+            clearTimeout(touchTimer)
+    }
 </script>
 
 <template>
-    <NuxtLink :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)">
+    <NuxtLink :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
         <div class="container">
             <h2>{{ title }}</h2>
             <p>{{ description }}</p>
@@ -93,10 +102,10 @@
         flex-direction: row;
         border-radius: 10px;
         background-color: rgb(42, 42, 42);
-        width: 50vw;
+        width: 90vw;
         height: 10vh;
         max-height: 10vh;
-        padding: 2.5rem 2rem;
+        padding: 2.5rem 1rem;
         margin-bottom: 20px;
         align-items: center;
         justify-content: left;
@@ -110,13 +119,27 @@
 
     h2 {
         color: aqua;
-        width: 50%;
-        font-size: 1.5vw;
+        width: 30%;
+        font-size: 0.75rem;
     }
     p {
         color: gray;
         margin-left: 1rem;
-        width: 50%;
-        font-size: 1vw;
+        width: 70%;
+        font-size: .75rem;
+    }
+
+    @media (min-width: 1025px) { 
+        .container {
+            width: 50vw;
+            padding: 3.5rem 2rem;
+        }
+        h2 {
+            font-size: 2rem;
+        }
+        p {
+            width: 50%;
+            font-size: 1rem;
+        }
     }
 </style>

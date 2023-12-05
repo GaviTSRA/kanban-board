@@ -19,7 +19,6 @@
                 description: description.value
             })
         })).data
-        console.log(res.value)
         await navigateTo("/board/" + res.value?.id)
     }
 </script>
@@ -48,25 +47,27 @@
         flex-direction: column;
         background-color: var(--color-background-light);
         position: absolute;
-        width: 30vw;
+        width: 80vw;
+        left: 10vw;
         height: 75vh;
         top: 12.5vh;
-        left: 35vw;
         border-radius: 20px;
-        filter: drop-shadow(0 0 300px black)
+        filter: drop-shadow(0 0 300px black);
     }
     .create h1 {
         align-self: center;
-        font-size: 3rem;
+        font-size: 1.5rem;
     }
     .create label {
         width: 25vw;
         align-self: center;
         margin-top: 20px;
+        font-size: 1rem;
+        text-align: center;
     }
     .create input, .create textarea {
-        width: 25vw;
-        height: 2vw;
+        width: 50vw;
+        height: 5vh;
         align-self: center;
         background-color: var(--color-background);
         border-color: var(--color-background-soft);
@@ -75,12 +76,12 @@
         resize: none;
     }
     #description {
-        height: 7vw;
+        height: 40vw;
     }
     .create .confirm {
         margin-top: auto;
         margin-bottom: 30px;
-        width: 10vw;
+        width: 10rem;
         align-self: center;
         height: 5vh;
         font-size: 2rem;
@@ -97,11 +98,11 @@
         border-style: none;
         font-size: 2rem;
     }
-
+    
     .create .confirm:hover {
         background-color: var(--color-btn-create-hover);
     }
-
+    
     .newBoardBtn {
         position: absolute;
         top: 10px;
@@ -110,7 +111,7 @@
         border-style: none;
         padding: 1rem 2rem;
         border-radius: 10px;
-        font-size: 2rem;
+        font-size: 1rem;
     }
     .newBoardBtn:hover {
         background-color: var(--color-btn-create-hover);
@@ -123,4 +124,27 @@
         justify-self: center;
         flex-direction: column;
     }
-</style>
+
+    @media (min-width: 1025px) {
+        .create {
+            width: 30vw;
+            left: 35vw;
+        }
+        .create h1 {
+            font-size: 3rem;
+        }
+        .create label {
+            text-align: left;
+        }
+        .create input, .create textarea {
+            height: 2vw;
+            width: 25vw;
+        }
+        #description {
+            height: 7vw;
+        }
+        .newBoardBtn {
+            font-size: 2rem;
+        }
+    }
+    </style>

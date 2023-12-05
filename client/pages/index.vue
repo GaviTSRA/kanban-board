@@ -1,7 +1,7 @@
 <script setup lang="ts">
     const route = useRoute()
     const { data } = await useFetch('http://localhost:3001')
-    const boards = JSON.parse(data.value) 
+    const boards = JSON.parse(data.value as string) 
 
     let creatingNewBoard = ref(false)
     let title = ref("")
@@ -12,6 +12,7 @@
     }
 
     async function createBoard() {
+        // TODO error handling
         let res = (await useFetch<createResponse>("http://localhost:3001", {
             method: "POST",
             body: JSON.stringify({

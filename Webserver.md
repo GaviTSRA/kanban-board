@@ -29,11 +29,11 @@
             - `title?: string`
             - `description?: string`
         - `updateList`
-            - `id: string`
+            - `id?: string`
             - `title?: string`
             - `position?: number`
         - `updateCard`
-            - `id: string`
+            - `id?: string`
             - `title?: string`
             - `description?: string`
             - `position?: number`

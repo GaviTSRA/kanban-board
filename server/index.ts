@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize } from 'sequelize';
+import { DataTypes, ModelDefined, Optional, Sequelize } from 'sequelize';
 import express from "express"
 import expressWs from "express-ws"
 import cors from "cors"
@@ -15,7 +15,13 @@ try {
     console.error('Unable to connect to the database:', error);
 }
 
-const Board = sequelize.define("Board", {
+interface BoardAttributes {
+    id: string,
+    title: string,
+    description: string
+}
+type BoardCreationAttributes = Optional<BoardAttributes, "id" |"description">
+const Board: ModelDefined<BoardAttributes, BoardCreationAttributes> = sequelize.define("Board", {
     id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -104,6 +110,46 @@ app.delete("/", async (req, res) => {
     board.destroy()
     res.sendStatus(200)
 })
+
+ app.ws("/board/:boardId", async (ws, req) => {
+    let board = await Board.findByPk(req.params.boardId)
+    if (board == null) {
+        ws.close()
+        return
+    }
+
+    ws.send(JSON.stringify({   // TODO
+        "type": "board",       // @ts-ignore
+        "title": board?.title, // @ts-ignore
+        "description": board?.description
+    }))
+
+    ws.on("message", msg => {
+        const data = JSON.parse(msg.toString())
+
+        switch (data.action) {
+            case "updateBoard":
+                if (req.body.id != req.params.boardId) return
+                if (req.body.title) {
+                    board?.set({
+                        title: req.body.title
+                    })
+                }
+                if (req.body.description) {
+                    board?.set({
+                        description: req.body.description
+                    })
+                }
+                break
+            case "updateList":
+
+                break
+            case "updateCard":
+
+                break
+        }
+    })
+ })
 
 app.listen(port, () => {
     console.log(`Running on port ${port}`)

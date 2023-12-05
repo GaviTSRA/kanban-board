@@ -3,5 +3,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: [
     "@/assets/main.css"
-  ]
+  ],
+  routeRules: {
+    "/board/**": {ssr: false}
+  }
 })

@@ -6,8 +6,7 @@
     font-weight: normal;
 }
   
-a,
-.green {
+a {
     text-decoration: none;
     color: hsla(160, 100%, 37%, 1);
     transition: 0.4s;
@@ -24,27 +23,20 @@ body {
     place-items: center;
 }
 
-#app {
+#__nuxt {
     display: grid;
-    padding: 0 2rem;
+    width: 100vw;
+    height: 100vh;
 }
 
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
-    --vt-c-white: #ffffff;
-    --vt-c-white-soft: #f8f8f8;
-    --vt-c-white-mute: #f2f2f2;
-  
     --vt-c-black: #181818;
     --vt-c-black-soft: #222222;
     --vt-c-black-mute: #282828;
-  
+    --vt-c-black-light: #323232;
+
     --vt-c-indigo: #2c3e50;
-  
-    --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-    --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-    --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-    --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
   
     --vt-c-text-light-1: var(--vt-c-indigo);
     --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
@@ -57,6 +49,7 @@ body {
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
+    --color-background-light: var(--vt-c-black-light);
 
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
@@ -65,6 +58,11 @@ body {
     --color-text: var(--vt-c-text-dark-2);
   
     --section-gap: 160px;
+
+    --color-btn-create: green;
+    --color-btn-create-hover: rgb(0, 187, 0);
+    --color-btn-danger: rgb(237, 32, 32);
+    --color-btn-danger-hover: rgb(245, 52, 52);
 }
   
 *,
@@ -75,7 +73,7 @@ body {
     font-weight: normal;
 }
   
-  body {
+body {
     min-height: 100vh;
     color: var(--color-text);
     background: var(--color-background);

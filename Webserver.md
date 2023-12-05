@@ -14,6 +14,11 @@
     Params: title, description   
     Returns: 200
 
+- DELETE `/`    
+    _Delete a board_
+    Params: id
+    Returns: 400, 404, 200
+
 - WS `/board/[board-id]`  
     _Open a websocket to get data of the board and update it_   
     - After connection: WS sends board data as json   

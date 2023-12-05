@@ -79,16 +79,30 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
     if (!req.body.title) {
-        res.send(400)
+        res.sendStatus(400)
         return
     }
 
     const title = req.body.title
-    console.log(title)
     const description = req.body.description ? req.body.description : ""
 
     const board = await Board.create({title, description})
-    res.send(board.get("id"))
+    res.send({id:board.get("id")})
+})
+
+app.delete("/", async (req, res) => {
+    if (!req.body.id) {
+        res.sendStatus(400)
+        return
+    }
+
+    let board = await Board.findByPk(req.body.id)
+    if (!board) {
+        res.sendStatus(404)
+        return
+    }
+    board.destroy()
+    res.sendStatus(200)
 })
 
 app.listen(port, () => {

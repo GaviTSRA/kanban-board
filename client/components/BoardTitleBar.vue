@@ -28,7 +28,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
     .back {
         margin: auto 10px;
         margin-right: 2rem;
@@ -53,6 +53,10 @@
         height: 1.5rem;
     }
 
+    :deep(input) {
+        padding: .5rem 1rem;
+    }
+    
     .description {
         margin: auto 0;
         margin-left: 1rem;

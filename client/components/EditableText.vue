@@ -34,13 +34,9 @@
 <template>
     <div>
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
-        <input class="input" v-model="text" v-if="editing" v-click-away="done"/>
+        <input v-model="text" v-if="editing" v-click-away="done"/>
     </div>
 </template>
 
 <style scoped>
-    .input {
-        padding: .5rem 1rem;
-        font-size: 1rem;
-    }
 </style>

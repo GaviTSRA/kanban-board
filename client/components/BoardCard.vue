@@ -92,6 +92,7 @@
             <p>{{ description }}</p>
         </div>
     </NuxtLink>
+    <!-- TODO doesn't go away when right clicking something else -->
     <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="hideMenu"/>
     <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteBoard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete board?" optionCancel="Cancel"/>
 </template> 

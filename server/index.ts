@@ -118,7 +118,7 @@ app.delete("/", async (req, res) => {
         return
     }
 
-    ws.send(JSON.stringify({   // TODO
+    ws.send(JSON.stringify({   // TODO fix ts
         "type": "board",       // @ts-ignore
         "title": board?.title, // @ts-ignore
         "description": board?.description

@@ -11,6 +11,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     let lists: Ref<{
         id: string,
         title: string,
+        position: number,
         boardId: string
     }[]> = ref([])
 
@@ -39,12 +40,15 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         break
                     }
                 }
-                if (found) break
-                lists.value.push({
-                    id: data.id,
-                    title: data.title,
-                    boardId: data.boardId
-                })
+                if (!found) {
+                    lists.value.push({
+                        id: data.id,
+                        title: data.title,
+                        position: data.position,
+                        boardId: data.boardId
+                    })
+                }
+                lists.value.sort((a, b) => a.position < b.position ? -1 : 1)
                 break
             
             case "card":
@@ -59,6 +63,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         ws.send(JSON.stringify({
             "action": "updateList",
             "new": true,
+            "position": lists.value.length,
             "boardId": board.value.id,
             "title": newListName.value
         }))
@@ -69,12 +74,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
 <template>
     <div>
-        <BoardTitleBar :board="board"/>
+        <BoardTitleBar :board="board" :ws="ws"/>
         <div class="lists">
             <div v-for="list in lists">
-                <div class="list">
-                    <p>{{ list.title }}</p>
-                </div>
+                <List :list="list" />
             </div>
             <div class="newList">
                 <input type="text" v-model="newListName"/>
@@ -85,16 +88,6 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 </template>
 
 <style scoped>
-    .list {
-        margin-left: 1rem;
-        margin-top: 10px;
-        background-color: var(--color-background-mute);
-        width: 10vw;
-        max-width: 10vw;
-        text-align: center;
-        font-size: 1.5rem;
-        border-radius: 10px;
-    }
     .lists {
         overflow: auto;
         display: flex;
@@ -104,9 +97,32 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     }
 
     .newList {
+        background-color: var(--color-background-mute);
+        width: 10vw;
+        height: fit-content;
         display: flex;
         flex-direction: column;
         margin-top: 10px;
         margin-left: 1rem;
+        align-items: center;
+        border-radius: 10px;
+    }
+
+    .newList input {
+        width: 75%;
+        margin-top: 10px;
+        height: 2rem;
+    }
+
+    .newList button {
+        margin: 10px 0;
+        background-color: var(--color-btn-create);
+        border-style: none;
+        border-radius: 10px;
+        padding: .5rem 1rem;
+    }
+
+    .newList button:hover {
+        background-color: var(--color-btn-create-hover);
     }
 </style>

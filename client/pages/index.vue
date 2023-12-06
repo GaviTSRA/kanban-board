@@ -70,10 +70,6 @@
         width: 50vw;
         height: 5vh;
         align-self: center;
-        background-color: var(--color-background);
-        border-color: var(--color-background-soft);
-        border-radius: 10px;
-        color: white;
         resize: none;
     }
     #description {

@@ -14,7 +14,8 @@ PostgreSQL
         CREATE TABLE lists (
             id string NOT NULL UNIQUE,
             board string NOT NULL,
-            title text NOT NULL
+            title text NOT NULL,
+            position number NOT NULL
         )
         ```
     - `cards`
@@ -24,7 +25,8 @@ PostgreSQL
             list string NOT NULL,
             board string NOT NULL,
             title text NOT NULL,
-            description text
+            description text,
+            position number NOT NULL
         )
         ```
         

@@ -99,6 +99,7 @@
 
 <style scoped>
     .container {
+        margin-top: 1rem;
         display: flex;
         flex-direction: row;
         border-radius: 10px;

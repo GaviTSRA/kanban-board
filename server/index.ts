@@ -40,6 +40,7 @@ const Board: ModelDefined<BoardAttributes, BoardOptionalAttributes> = sequelize.
 interface ListAttributes {
     id: string,
     title: string,
+    position: number,
     BoardId: string
 }
 type ListOptionalAttributes = Optional<ListAttributes, "id">
@@ -53,6 +54,10 @@ const List: ModelDefined<ListAttributes, ListOptionalAttributes> = sequelize.def
     },
     title: {
         type: DataTypes.STRING,
+        allowNull: false
+    },
+    position: {
+        type: DataTypes.INTEGER,
         allowNull: false
     }
 })
@@ -70,6 +75,10 @@ const Card = sequelize.define("Card", {
     },
     description: {
         type: DataTypes.STRING
+    },
+    position: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 })
 Board.hasMany(List)
@@ -114,6 +123,9 @@ app.delete("/", async (req, res) => {
         return
     }
     board.destroy()
+    let lists = await List.findAll({ where: { BoardId: req.body.id } })
+    for (let list of lists) list.destroy()
+    // TODO delete cards
     res.sendStatus(200)
 })
 
@@ -124,11 +136,7 @@ app.delete("/", async (req, res) => {
         return
     }
 
-    ws.send(JSON.stringify({   // TODO fix ts
-        "type": "board",       // @ts-ignore
-        "title": board?.title, // @ts-ignore
-        "description": board?.description
-    }))
+    await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
     await sendLists(ws, req.params.boardId)
 
     ws.on("message", async msg => {
@@ -139,34 +147,44 @@ app.delete("/", async (req, res) => {
 
         switch (data.action) {
             case "updateBoard":
-                if (req.body.title) {
+                if (data.title) {
                     board?.set({
                         title: data.title
                     })
                 }
-                if (req.body.description) {
+                if (data.description != undefined) {
                     board?.set({
                         description: data.description
                     })
                 }
+                await board?.save()
+                await sendBoard(ws, board as unknown as BoardAttributes) // TODO fix ts
                 break
 
             case "updateList":
-                if (data.new && data.title) {
-                    let list = await List.create({
+                let list
+                console.log(data)
+                if (data.new && data.title && data.position != undefined) {
+                    list = await List.create({
                         title: data.title,
+                        position: data.position,
                         BoardId: data.boardId
                     })
-                    await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
                 } else {
-                    let list = await List.findByPk(data.id)
-                    if (data.title) {
+                    list = await List.findByPk(data.id)
+                    if (data.title != undefined) {
                         list?.set({
                             title: data.title
                         })
                     }
-                    await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+                    if (data.position != undefined) {
+                        list?.set({
+                            position: data.position
+                        })
+                    }
+                    await list?.save()
                 }
+                await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
                 break
 
             case "updateCard":
@@ -174,7 +192,15 @@ app.delete("/", async (req, res) => {
                 break
         }
     })
- })
+})
+
+async function sendBoard(ws: WebSocket, board: BoardAttributes) {
+    ws.send(JSON.stringify({   // TODO fix ts
+        "type": "board",       // @ts-ignore
+        "title": board?.title, // @ts-ignore
+        "description": board?.description
+    }))
+}
 
 async function sendLists(ws: WebSocket, boardId: string) {
     let lists = await List.findAll({
@@ -192,6 +218,7 @@ async function sendList(ws: WebSocket, list: ListAttributes) {
         "type": "list",
         "id": list.id,
         "title": list.title,
+        "position": list.position,
         "boardId": list.BoardId
     }))
 }

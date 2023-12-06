@@ -32,11 +32,15 @@
 </script>
 
 <template>
-    <div>
+    <div class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
         <input v-model="text" v-if="editing" v-click-away="done"/>
     </div>
 </template>
 
 <style scoped>
+    p {
+        min-width: 1rem;
+        min-height: 1rem;
+    }
 </style>

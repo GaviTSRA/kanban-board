@@ -20,8 +20,8 @@ interface BoardAttributes {
     title: string,
     description: string
 }
-type BoardCreationAttributes = Optional<BoardAttributes, "id" |"description">
-const Board: ModelDefined<BoardAttributes, BoardCreationAttributes> = sequelize.define("Board", {
+type BoardOptionalAttributes = Optional<BoardAttributes, "id" |"description">
+const Board: ModelDefined<BoardAttributes, BoardOptionalAttributes> = sequelize.define("Board", {
     id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -37,7 +37,13 @@ const Board: ModelDefined<BoardAttributes, BoardCreationAttributes> = sequelize.
         type: DataTypes.STRING
     }
 })
-const List = sequelize.define("List", {
+interface ListAttributes {
+    id: string,
+    title: string,
+    BoardId: string
+}
+type ListOptionalAttributes = Optional<ListAttributes, "id">
+const List: ModelDefined<ListAttributes, ListOptionalAttributes> = sequelize.define("List", {
     id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -123,33 +129,72 @@ app.delete("/", async (req, res) => {
         "title": board?.title, // @ts-ignore
         "description": board?.description
     }))
+    await sendLists(ws, req.params.boardId)
 
-    ws.on("message", msg => {
+    ws.on("message", async msg => {
         const data = JSON.parse(msg.toString())
+        if (data.boardId != req.params.boardId) return
+
+        console.log(data.action)
 
         switch (data.action) {
             case "updateBoard":
-                if (req.body.id != req.params.boardId) return
                 if (req.body.title) {
                     board?.set({
-                        title: req.body.title
+                        title: data.title
                     })
                 }
                 if (req.body.description) {
                     board?.set({
-                        description: req.body.description
+                        description: data.description
                     })
                 }
                 break
-            case "updateList":
 
+            case "updateList":
+                if (data.new && data.title) {
+                    let list = await List.create({
+                        title: data.title,
+                        BoardId: data.boardId
+                    })
+                    await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+                } else {
+                    let list = await List.findByPk(data.id)
+                    if (data.title) {
+                        list?.set({
+                            title: data.title
+                        })
+                    }
+                    await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+                }
                 break
+
             case "updateCard":
 
                 break
         }
     })
  })
+
+async function sendLists(ws: WebSocket, boardId: string) {
+    let lists = await List.findAll({
+        where: {
+            BoardId: boardId
+        }
+    })
+    for (let list of lists) {
+        sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+    }
+}
+
+async function sendList(ws: WebSocket, list: ListAttributes) {
+    ws.send(JSON.stringify({
+        "type": "list",
+        "id": list.id,
+        "title": list.title,
+        "boardId": list.BoardId
+    }))
+}
 
 app.listen(port, () => {
     console.log(`Running on port ${port}`)

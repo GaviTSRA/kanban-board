@@ -22,12 +22,12 @@
     .header {
         display: flex;
         flex-direction: row;
-        position: absolute;
         top: 0;
-        margin: 0 auto;
+        left: 0;
         width: 100vw;
         height: 7vh;
         background-color: var(--color-background-mute);
+        overflow: hidden;
     }
 
     .title {

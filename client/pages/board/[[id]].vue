@@ -34,6 +34,11 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 break
 
             case "list":
+                if (data.delete) {
+                    lists.value = lists.value.filter(list => list.id != data.id)
+                    break
+                }
+
                 let found = false
                 for (let list of lists.value) {
                     if (list.id == data.id) {
@@ -117,6 +122,35 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     function dragEnd() {
         dragging.value = false
     }
+
+    let deleteMenuVisible = ref(false)
+    let listToDelete: List | undefined = undefined
+    function listCtxAction(action: string, list: List) {
+        if (action == "moveLeft") {
+            if (list.position == 0) return
+            startDrag(list)
+            drop(list.position-1)
+        }
+        if (action == "moveRight") {
+            if (list.position == lists.value.length - 1) return
+            startDrag(list)
+            drop(list.position+2)
+        }
+        if (action == "delete") {
+            listToDelete = list
+            deleteMenuVisible.value = true
+        }
+    }
+
+    function deleteList() {
+        deleteMenuVisible.value = false
+        ws.send(JSON.stringify({
+            "action": "updateList",
+            "boardId": board.value.id,
+            "id": listToDelete.id,
+            "delete": true
+        }))
+    }
 </script>
 
 <template>
@@ -126,7 +160,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
                     <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
-                    <List :list="list" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws" :boardId="board.id"/>
+                    <List @ctxMenuAction="action=>listCtxAction(action, list)" :list="list" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws" :boardId="board.id"/>
                 </div>
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
@@ -135,6 +169,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 <button @click="createNewList">Create new list</button>
             </div>
         </div>
+        <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
     </div>
 </template>
 

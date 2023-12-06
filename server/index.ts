@@ -162,22 +162,27 @@ app.delete("/", async (req, res) => {
                 break
 
             case "updateList":
-                let list
-                console.log(data)
                 if (data.new && data.title && data.position != undefined) {
-                    list = await List.create({
+                    await List.create({
                         title: data.title,
                         position: data.position,
                         BoardId: data.boardId
                     })
                 } else {
-                    list = await List.findByPk(data.id)
-                    if (data.title != undefined) {
+                    let list = await List.findByPk(data.id)
+                    if (data.delete) {
+                        list?.destroy()
+                        ws.send(JSON.stringify({
+                            "type": "list",
+                            "id": data.id,
+                            "delete": true
+                        }))
+                    } else if (data.title != undefined) {
                         list?.set({
                             title: data.title
                         })
                     }
-                    if (data.position != undefined) {
+                    else if (data.position != undefined) {
                         list?.set({
                             position: data.position
                         })

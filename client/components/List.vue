@@ -18,5 +18,6 @@
         text-align: center;
         font-size: 1.5rem;
         border-radius: 10px;
+        height: fit-content;
     }
 </style>

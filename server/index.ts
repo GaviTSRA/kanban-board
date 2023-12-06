@@ -184,7 +184,7 @@ app.delete("/", async (req, res) => {
                     }
                     await list?.save()
                 }
-                await sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+                await sendLists(ws, req.params.boardId)
                 break
 
             case "updateCard":

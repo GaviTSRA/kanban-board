@@ -94,7 +94,7 @@
 
 <style scoped>
     .container {
-        margin-top: 1rem;
+        margin-top: .25rem;
         display: flex;
         flex-direction: row;
         border-radius: 10px;
@@ -130,6 +130,7 @@
         .container {
             width: 50vw;
             padding: 3.5rem 2rem;
+            margin-top: 1rem;
         }
         h2 {
             font-size: 2rem;

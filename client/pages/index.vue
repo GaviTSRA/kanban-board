@@ -101,8 +101,8 @@
     }
     
     .newBoardBtn {
-        position: absolute;
-        top: 10px;
+        position: fixed;
+        bottom: 10px;
         right: 10px;
         background-color: var(--color-btn-create);
         border-style: none;
@@ -142,6 +142,9 @@
         }
         .newBoardBtn {
             font-size: 2rem;
+            top: 10px;
+            right: 10px;
+            bottom: auto;
         }
     }
     </style>

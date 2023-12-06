@@ -10,6 +10,14 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         position: number,
         boardId: string
     }
+    interface Card {
+        id: string,
+        title: string,
+        description: string,
+        position: number,
+        listId: string,
+        boardId: string
+    }
 
     let board = ref({
         id: route.params.id as string,
@@ -17,6 +25,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         description: ""
     })
     let lists: Ref<List[]> = ref([])
+    let cards: Ref<{[listId: string]: Card[]}> = ref({})
 
     let ws = new WebSocket("ws://localhost:3001/board/"+route.params.id)
 
@@ -27,6 +36,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     ws.onmessage = msg => {
         const data = JSON.parse(msg.data)
 
+        let found
         switch(data.type) {
             case "board":
                 board.value.title = data.title
@@ -39,7 +49,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     break
                 }
 
-                let found = false
+                found = false
                 for (let list of lists.value) {
                     if (list.id == data.id) {
                         list.title = data.title
@@ -50,6 +60,9 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     }
                 }
                 if (!found) {
+                    if (!cards.value[data.id]) {
+                        cards.value[data.id] = []
+                    }
                     lists.value.push({
                         id: data.id,
                         title: data.title,
@@ -61,6 +74,39 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 break
             
             case "card":
+                // if (data.delete) {
+                //     lists.value = lists.value.filter(list => list.id != data.id)
+                //     break
+                // }
+
+                found = false
+                for (const [listId, listCards] of Object.entries(cards.value)) {
+                    console.log(listCards)
+                    for (let card of listCards) {
+                        if (card.id == data.id) {
+                            card.title = data.title
+                            card.boardId = data.boardId
+                            card.position = data.position
+                            card.description = data.description
+                            card.listId = data.listId
+                            found = true
+                            break
+                        }
+                    }
+                }
+                if (!found) {
+                    cards.value[data.listId as string].push({
+                        id: data.id,
+                        title: data.title,
+                        description: data.description,
+                        position: data.position,
+                        boardId: data.boardId,
+                        listId: data.listId
+                    })
+                }
+                for (const [listId, listCards] of Object.entries(cards)) {
+                    cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)   
+                }
                 break
         }
     }
@@ -160,7 +206,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
                     <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
-                    <List @ctxMenuAction="action=>listCtxAction(action, list)" :list="list" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws" :boardId="board.id"/>
+                    <List @ctxMenuAction="action=>listCtxAction(action, list)" :list="list" :cards="cards[list.id]" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws"/>
                 </div>
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>

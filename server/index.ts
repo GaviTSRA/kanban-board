@@ -138,6 +138,7 @@ app.delete("/", async (req, res) => {
 
     await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
     await sendLists(ws, req.params.boardId)
+    await sendCards(ws, req.params.boardId)
 
     ws.on("message", async msg => {
         const data = JSON.parse(msg.toString())
@@ -181,8 +182,7 @@ app.delete("/", async (req, res) => {
                         list?.set({
                             title: data.title
                         })
-                    }
-                    else if (data.position != undefined) {
+                    } else if (data.position != undefined) {
                         list?.set({
                             position: data.position
                         })
@@ -193,7 +193,42 @@ app.delete("/", async (req, res) => {
                 break
 
             case "updateCard":
-
+                if (data.new && data.title && data.position != undefined && data.listId) {
+                    await Card.create({
+                        title: data.title,
+                        position: data.position,
+                        BoardId: data.boardId,
+                        ListId: data.listId
+                    })
+                } else {
+                    let card = await Card.findByPk(data.id)
+                    if (data.delete) {
+                        card?.destroy()
+                        ws.send(JSON.stringify({
+                            "type": "card",
+                            "id": data.id,
+                            "delete": true
+                        }))
+                    } else if (data.title != undefined) {
+                        card?.set({
+                            title: data.title
+                        })
+                    } else if (data.position != undefined) {
+                        card?.set({
+                            position: data.position
+                        })
+                    } else if (data.description != undefined) {
+                        card?.set({
+                            description: data.description
+                        })
+                    } else if (data.listId != undefined) {
+                        card?.set({
+                            ListId: data.listId
+                        })
+                    }
+                    await card?.save()
+                }
+                await sendCards(ws, req.params.boardId)
                 break
         }
     })
@@ -214,18 +249,40 @@ async function sendLists(ws: WebSocket, boardId: string) {
         }
     })
     for (let list of lists) {
-        sendList(ws, list as unknown as ListAttributes) // TODO fix ts
+        ws.send(JSON.stringify({
+            "type": "list", // @ts-ignore
+            "id": list.id, // @ts-ignore
+            "title": list.title, // @ts-ignore
+            "position": list.position, // @ts-ignore
+            "boardId": list.BoardId
+        }))
     }
 }
 
-async function sendList(ws: WebSocket, list: ListAttributes) {
-    ws.send(JSON.stringify({
-        "type": "list",
-        "id": list.id,
-        "title": list.title,
-        "position": list.position,
-        "boardId": list.BoardId
-    }))
+async function sendCards(ws: WebSocket, boardId: string) {
+    let lists = await List.findAll({
+        where: {
+            BoardId: boardId
+        }
+    })
+    for (let list of lists) {
+        let cards = await Card.findAll({
+            where: { // @ts-ignore
+                ListId: list.id
+            }
+        })
+        for (let card of cards) {
+            ws.send(JSON.stringify({
+                "type": "card", // @ts-ignore
+                "id": card.id,  // @ts-ignore
+                "boardId": card.BoardId,  // @ts-ignore
+                "listId": card.ListId,  // @ts-ignore
+                "title": card.title,  // @ts-ignore
+                "description": card.description,  // @ts-ignore
+                "position": card.position
+            }))
+        }
+    }
 }
 
 app.listen(port, () => {

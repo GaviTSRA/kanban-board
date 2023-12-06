@@ -203,12 +203,14 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
     .newList {
         background-color: var(--color-background-mute);
-        width: 10vw;
+        width: 15rem;
+        min-width: 15rem;
         height: fit-content;
         display: flex;
         flex-direction: column;
         margin-top: 10px;
         margin-left: 1rem;
+        margin-right: 1rem;
         align-items: center;
         border-radius: 10px;
     }

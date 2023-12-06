@@ -51,8 +51,7 @@
         margin-left: 1rem;
         margin-top: 10px;
         background-color: var(--color-background-mute);
-        width: 10vw;
-        max-width: 10vw;
+        width: 15rem;
         text-align: center;
         font-size: 1.5rem;
         border-radius: 10px;

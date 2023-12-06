@@ -126,7 +126,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
                     <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
-                    <List :list="list" @dragstart="()=>startDrag(list)" draggable="true"/>
+                    <List :list="list" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws" :boardId="board.id"/>
                 </div>
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>

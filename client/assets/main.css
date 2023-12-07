@@ -74,6 +74,8 @@ body {
     --color-btn-create-hover: rgb(0, 187, 0);
     --color-btn-danger: rgb(237, 32, 32);
     --color-btn-danger-hover: rgb(245, 52, 52);
+
+    --color-card-primary: rgb(66, 152, 66);
 }
   
 *,

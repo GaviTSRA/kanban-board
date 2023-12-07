@@ -5,7 +5,7 @@
 </script>
 
 <template>
-    <div>
+    <div  @contextmenu.stop="">
         <div class="container" @click="() => cardMenuVisible = true">
             <p class="title">{{ props.card.title }}</p>
         </div>

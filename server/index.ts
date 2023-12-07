@@ -178,11 +178,13 @@ app.delete("/", async (req, res) => {
                             "id": data.id,
                             "delete": true
                         }))
-                    } else if (data.title != undefined) {
+                    }
+                    if (data.title != undefined) {
                         list?.set({
                             title: data.title
                         })
-                    } else if (data.position != undefined) {
+                    }
+                    if (data.position != undefined) {
                         list?.set({
                             position: data.position
                         })
@@ -209,19 +211,23 @@ app.delete("/", async (req, res) => {
                             "id": data.id,
                             "delete": true
                         }))
-                    } else if (data.title != undefined) {
+                    }
+                    if (data.title != undefined) {
                         card?.set({
                             title: data.title
                         })
-                    } else if (data.position != undefined) {
+                    }
+                    if (data.position != undefined) {
                         card?.set({
                             position: data.position
                         })
-                    } else if (data.description != undefined) {
+                    }
+                    if (data.description != undefined) {
                         card?.set({
                             description: data.description
                         })
-                    } else if (data.listId != undefined) {
+                    } 
+                    if (data.listId != undefined) {
                         card?.set({
                             ListId: data.listId
                         })

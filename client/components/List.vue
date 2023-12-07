@@ -121,6 +121,7 @@
         max-height: 80vh;
         overflow: scroll;
         scrollbar-width: thin;
-        scrollbar-color: var(--color-border) var(--color-background-mute)
+        scrollbar-color: var(--color-border) var(--color-background-mute);
+        overflow-x: hidden;
     }
 </style>

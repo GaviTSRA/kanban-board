@@ -101,7 +101,7 @@
     }
 
     :deep(input) {
-        width: 9vw;
+        width: 50dvw;
         height: 3vh;
         color: gray;
     }
@@ -123,5 +123,11 @@
         scrollbar-width: thin;
         scrollbar-color: var(--color-border) var(--color-background-mute);
         overflow-x: hidden;
+    }
+
+    @media (min-width: 1025px) {
+        :deep(input) {
+            width: 9vw;
+        }
     }
 </style>

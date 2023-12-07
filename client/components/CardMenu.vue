@@ -66,9 +66,10 @@
     }
     .label {
         border-radius: 10px;
-        padding: .5rem 1rem;
+        padding: .25rem .5rem;
         margin-left: 10px;
         margin-top: 10px;
+        font-size: 1rem;
     }
     .labels {
         display: flex;
@@ -93,10 +94,10 @@
     }
     .cardMenu {
         position: absolute;
-        width: 40vw;
+        width: 80vw;
         height: 80vh;
         top: 10vh;
-        left: 30vw;
+        left: 10vw;
         background-color: var(--color-background-light);
         border-color: var(--color-background-soft);
         border-style: solid;
@@ -120,7 +121,6 @@
         height: 20%;
         border-radius: 10px;
         text-align: left;
-        font-size: 1rem;
     }
 
     .description :deep(textarea), .description :deep(p) {
@@ -131,5 +131,19 @@
     }
     .description :deep(p) {
         padding: 10px;
+        font-size: .75rem;
+    }
+
+    @media (min-width: 1025px) {
+        .cardMenu {
+            width: 40vw;
+            left: 30vw;
+        }
+        .description :deep(p) {
+            font-size: 1rem;
+        }
+        .label {
+            padding: .5rem 1rem;    
+        }
     }
 </style>

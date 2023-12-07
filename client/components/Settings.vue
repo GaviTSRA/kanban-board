@@ -91,10 +91,25 @@
         margin-left: 10px;   
     }
     .settings {
+        z-index: 7;
         position: fixed;
         right: 0;
-        width: 20vw;
-        height: 100vw;
+        width: 80vw;
+        height: 100vh;
         background-color: var(--color-background-soft);
+    }
+
+    :deep(input) {
+        width: 20vw;
+    }
+
+    @media (min-width: 1025px) {
+        .settings {
+            width: 20vw;
+        }
+
+        :deep(input) {
+            width: 5vw;
+        }
     }
 </style>

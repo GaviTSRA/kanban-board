@@ -1,4 +1,5 @@
 <script setup>
+    let emit = defineEmits(["settings"])
     let props = defineProps(["board", "ws"])
     let board = props.board
 
@@ -24,12 +25,20 @@
         <!-- TODO icon? -->
         <NuxtLink to="/" class="back">Back</NuxtLink>
         <EditableText :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
-        <!-- TODO text area -->
         <EditableText :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <!-- TODO icon -->
+        <button @click="$emit('settings')" class="settings">Settings</button>
     </div>
 </template>
 
 <style scoped>
+    .settings {
+        margin: auto 10px auto auto;
+        height: 2rem;
+        background-color: var(--color-btn-create);
+        border-style: none;
+        border-radius: 10px;
+    }
     .back {
         margin: auto 10px;
         margin-right: 2rem;

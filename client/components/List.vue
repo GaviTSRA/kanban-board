@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard"])
+    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels"])
     let emit = defineEmits(["ctxMenuAction", "dragStart", "drop"])
 
     function editName(txt) {
@@ -47,14 +47,16 @@
 </script>
 
 <template>
-    <div class="list" @contextmenu.prevent.self="openMenu">
+    <div class="list" @contextmenu.prevent.stop="openMenu">
         <EditableText :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <div class="cards">
             <div v-for="(card, index) in props.cards">
                 <Card 
                     :ws="props.ws" 
-                    :card="card" 
+                    :card="card"
+                    :labels="props.labels"
+                    :assigned-labels="props.assignedLabels"
                     :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
                     @drag-start="card=>$emit('dragStart', card)"
                     @drop="$emit('drop', index)"

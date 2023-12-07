@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["card", "ws", "showDropSpot"])
+    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels"])
     let emit = defineEmits(["dragStart", "drop"])
 
     function getDescription() {
@@ -51,10 +51,17 @@
         }))
         deleteMenuVisible.value = false
     }
+
+    function isEnabled(label) {
+        let filtered = props.assignedLabels.filter(el => {
+            return el.labelId == label.id && el.cardId == props.card.id
+        })
+        return filtered.length > 0
+    }
 </script>
 
 <template>
-    <div  @contextmenu="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)">
+    <div @contextmenu.prevent.stop="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)">
         <div 
             @dragenter.prevent="dropSpotVisible = true"
             @dragover.prevent="dropSpotVisible = true" 
@@ -65,14 +72,34 @@
         <div class="container" @click="() => cardMenuVisible = true">
             <p class="title">{{ props.card.title }}</p>
             <p v-if="props.card.description != undefined" class="description">{{ getDescription() }}</p>
+            <div class="labels">
+                <div v-for="label in labels" >
+                    <p v-if="isEnabled(label)" class="label" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
+                </div>
+            </div>
         </div>
-        <CardMenu :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
+        <CardMenu :labels="props.labels" :assigned-labels="props.assignedLabels" :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteCard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete card?" optionCancel="Cancel"/>
     </div>
 </template>
 
 <style scoped>
+    .label {
+        font-size: 1rem;
+        width:fit-content;
+        padding: 0 .5rem;
+        border-radius: 10px;
+        margin: 3px;
+        height: fit-content;
+    }
+
+    .labels {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
     .cardDropSpotSmall {
         width: 100%;
         height: 15px;

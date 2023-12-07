@@ -3,7 +3,7 @@ import expressWs from "express-ws"
 import cors from "cors"
 import WebSocket from "ws"
 import bodyParser from 'body-parser';
-import { Board, List, Card, BoardAttributes } from "./db.js";
+import { Board, List, Card, BoardAttributes, Label, ListAttributes, AssignedLabel } from "./db.js";
 
 const app = expressWs(express()).app
 const port = 3001
@@ -63,6 +63,7 @@ app.delete("/", async (req, res) => {
     await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
     await sendLists(ws, req.params.boardId)
     await sendCards(ws, req.params.boardId)
+    await sendLabels(ws, req.params.boardId)
 
     ws.on("message", async msg => {
         const data = JSON.parse(msg.toString())
@@ -160,6 +161,62 @@ app.delete("/", async (req, res) => {
                 }
                 await sendCards(ws, req.params.boardId)
                 break
+        
+            case "updateLabel":
+                if (data.new) {
+                    await Label.create({
+                        BoardId: data.boardId
+                    })
+                } else {
+                    let label = await Label.findByPk(data.id)
+                    if (data.delete) {
+                        label?.destroy()
+                        ws.send(JSON.stringify({
+                            "type": "label",
+                            "id": data.id,
+                            "delete": true
+                        }))
+                    }
+                    if (data.title != undefined) {
+                        label?.set({
+                            title: data.title
+                        })
+                    }
+                    if (data.color != undefined) {
+                        label?.set({
+                            color: data.color
+                        })
+                    }
+                    if (data.textColor != undefined) {
+                        label?.set({
+                            textColor: data.textColor
+                        })
+                    }
+                    await label?.save()
+                }
+                await sendLabels(ws, req.params.boardId)
+                break
+
+            case "toggleLabel":
+                if (data.labelId && data.cardId) {
+                    let assignment = await AssignedLabel.findOne({
+                        where: {
+                            LabelId: data.labelId,
+                            CardId: data.cardId
+                        }
+                    })
+                    if (assignment == null) {
+                        AssignedLabel.create({
+                            LabelId: data.labelId,
+                            BoardId: data.boardId,
+                            CardId: data.cardId
+                        })
+                    } else {
+                        assignment.destroy()
+                    }
+                    await sendLabels(ws, req.params.boardId)
+                }
+                break
         }
     })
 })
@@ -210,6 +267,40 @@ async function sendCards(ws: WebSocket, boardId: string) {
                 "title": card.title,  // @ts-ignore
                 "description": card.description,  // @ts-ignore
                 "position": card.position
+            }))
+        }
+    }
+}
+
+async function sendLabels(ws: WebSocket, boardId: string) {
+    let labels = await Label.findAll({
+        where: {
+            BoardId: boardId
+        },
+        include: Card
+    })
+    ws.send(JSON.stringify({"type": "clearAssignedLabels"}))
+    for (let label of labels) {
+        ws.send(JSON.stringify({
+            "type": "label", // @ts-ignore
+            "id": label.id, // @ts-ignore
+            "boardId": label.boardId, // @ts-ignore
+            "title": label.title, // @ts-ignore
+            "color": label.color, // @ts-ignore
+            "textColor": label.textColor
+        })) //@ts-ignore
+        let assignments = await AssignedLabel.findAll({
+            where: {
+                BoardId: boardId, //@ts-ignore
+                LabelId: label.id
+            }
+        })
+        for (let assignment of assignments) {
+            ws.send(JSON.stringify({
+                "type": "assignedLabel", // @ts-ignore
+                "labelId": assignment.LabelId, // @ts-ignore
+                "boardId": assignment.BoardId, // @ts-ignore
+                "cardId": assignment.CardId
             }))
         }
     }

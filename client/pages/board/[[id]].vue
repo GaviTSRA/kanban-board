@@ -18,6 +18,13 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         listId: string,
         boardId: string
     }
+    interface Label {
+        id: string,
+        boardId: string,
+        title: string,
+        color: string,
+        textColor: string
+    }
 
     let board = ref({
         id: route.params.id as string,
@@ -26,6 +33,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     })
     let lists: Ref<List[]> = ref([])
     let cards: Ref<{[listId: string]: Card[]}> = ref({})
+    let labels: Ref<Label[]> = ref([])
+    let assignedLabels: Ref<{[labelId:string]: string}[]> = ref([])
 
     let ws = new WebSocket("ws://localhost:3001/board/"+route.params.id)
 
@@ -106,6 +115,45 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)   
                 }
                 break
+        
+            case "label":
+                if (data.delete) {
+                    labels.value = labels.value.filter(label => label.id != data.id)
+                    break
+                }
+
+                found = false
+                for (let label of labels.value) {
+                    if (label.id == data.id) {
+                        label.title = data.title
+                        label.boardId = data.boardId
+                        label.color = data.color
+                        label.textColor = data.textColor
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    labels.value.push({
+                        id: data.id,
+                        title: data.title,
+                        color: data.color,
+                        boardId: data.boardId,
+                        textColor: data.textColor
+                    })
+                }
+                break
+
+            case "assignedLabel":
+                found = false
+                assignedLabels.value.push({
+                    cardId: data.cardId,
+                    labelId: data.labelId
+                })
+                break
+            
+            case "clearAssignedLabels":
+                assignedLabels.value = []
         }
     }
 
@@ -254,11 +302,14 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             "delete": true
         }))
     }
+
+    let settingsOpened = ref(false)
 </script>
 
 <template>
     <div @dragend="dragEnd">
-        <BoardTitleBar :board="board" :ws="ws"/>
+        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="ws"/>
+        <Settings v-if="settingsOpened" :ws="ws" :labels="labels" :boardId="board.id"/>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
@@ -273,6 +324,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         :ws="ws"
                         :is-dragging-card="isDraggingCard"
                         :draggingCard="draggingCard"
+                        :labels="labels"
+                        :assigned-labels="assignedLabels"
                         draggable="true" 
                     />
                 </div>

@@ -75,11 +75,44 @@ const Card = sequelize.define("Card", {
         allowNull: false
     }
 })
+const Label = sequelize.define("Label", {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "New Label"
+    },
+    color: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "#000000"
+    },
+    textColor: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "#FFFFFF"
+    }
+})
+const AssignedLabel = sequelize.define("AssignedLabel", {
+
+})
 Board.hasMany(List)
+Board.hasMany(Label)
 List.belongsTo(Board)
 List.hasMany(Card)
 Card.belongsTo(Board)
 Card.belongsTo(List)
+Card.hasMany(Label)
+Label.belongsTo(Board)
+AssignedLabel.belongsTo(Board)
+Card.belongsToMany(Label, { through: AssignedLabel})
+Label.belongsToMany(Card, {through: AssignedLabel})
 await sequelize.sync({ alter: true })
 
 export {
@@ -88,5 +121,7 @@ export {
     List,
     Card,
     BoardAttributes,
-    ListAttributes
+    ListAttributes,
+    Label,
+    AssignedLabel
 }

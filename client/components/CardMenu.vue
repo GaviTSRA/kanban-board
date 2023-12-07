@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["card", "ws"])
+    let props = defineProps(["card", "ws", "labels", "assignedLabels"])
     let emit = defineEmits(["close", "rename"])
 
     let canClose = false
@@ -27,19 +27,53 @@
             "description": txt
         }))
     }
+
+    function toggle(label) {
+        props.ws.send(JSON.stringify({
+            "action": "toggleLabel",
+            "boardId": props.card.boardId,
+            "cardId": props.card.id,
+            "labelId": label.id
+        }))
+    }
+
+    function isEnabled(label) {
+        let filtered = props.assignedLabels.filter(el => {
+            return el.labelId == label.id && el.cardId == props.card.id
+        })
+        return filtered.length > 0
+    }
 </script>
 
 <template>
-    <div>
+    <div @contextmenu.stop="">
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
             <EditableText :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
             <EditableText :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
+            <div class="labels">
+                <div @click="() => toggle(label)" v-for="label in props.labels">
+                    <p :class="{label: true, disabled: !isEnabled(label)}" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .disabled {
+        opacity: 30%;
+    }
+    .label {
+        border-radius: 10px;
+        padding: .5rem 1rem;
+        margin-left: 10px;
+    }
+    .labels {
+        display: flex;
+        flex-direction: row;
+    }
+
     :deep(.editable) {
         padding: .5rem 1rem;
         color: white

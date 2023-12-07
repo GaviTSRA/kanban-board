@@ -74,11 +74,6 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 break
             
             case "card":
-                // if (data.delete) {
-                //     lists.value = lists.value.filter(list => list.id != data.id)
-                //     break
-                // }
-
                 found = false
                 for (const [listId, listCards] of Object.entries(cards.value)) {
                     for (let card of listCards) {

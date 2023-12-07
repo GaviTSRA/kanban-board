@@ -17,12 +17,44 @@
     }
 
     let cardMenuVisible = ref(false)
-
     let dropSpotVisible = ref(false)
+    let deleteMenuVisible = ref(false)
+
+    let actions = [
+        ["Delete card", "delete", true]
+    ]
+    let top = ref(0)
+    let left = ref(0)
+    let menuVisible = ref(false)
+    async function openMenu(event) {
+        top.value = event.y
+        left.value = event.x
+        
+        menuVisible.value = true
+        event.stopPropagation
+    }
+
+    function ctxMenuClicked(action) {
+        menuVisible.value = false
+        
+        if(action == "delete")  {
+            deleteMenuVisible.value = true
+        }
+    }
+
+    function deleteCard() {
+        props.ws.send(JSON.stringify({
+            "action": "updateCard",
+            "boardId": props.card.boardId,
+            "id": props.card.id,
+            "delete": true
+        }))
+        deleteMenuVisible.value = false
+    }
 </script>
 
 <template>
-    <div  @contextmenu.stop="" draggable="true" @dragstart.stop="$emit('dragStart', props.card)">
+    <div  @contextmenu="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)">
         <div 
             @dragenter.prevent="dropSpotVisible = true"
             @dragover.prevent="dropSpotVisible = true" 
@@ -35,6 +67,8 @@
             <p v-if="props.card.description != undefined" class="description">{{ getDescription() }}</p>
         </div>
         <CardMenu :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
+        <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
+        <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteCard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete card?" optionCancel="Cancel"/>
     </div>
 </template>
 

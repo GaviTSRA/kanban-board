@@ -47,7 +47,7 @@
 </script>
 
 <template>
-    <div class="list" @contextmenu.prevent="openMenu">
+    <div class="list" @contextmenu.prevent.self="openMenu">
         <EditableText :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <div class="cards">
@@ -68,10 +68,10 @@
             </div>
             <!-- v-if="props.isDraggingCard && (props.draggingCard.listId != props.list.id || Math.abs(props.cards.length - 1 - draggingCard?.position) > 0)"  -->
         </div>
-        <div class="newCard">
+        <form @submit.prevent="createCard" class="newCard">
             <input type="text" v-model="newCardName"/>
             <button @click="createCard">Add card</button>
-        </div>
+        </form>
     </div>
 </template>
 

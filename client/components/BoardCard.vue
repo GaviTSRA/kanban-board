@@ -54,7 +54,6 @@
                 id: props.board["id"]
             })
         })
-        // TODO refresh without reloading page
         window.location.reload()
     }
 

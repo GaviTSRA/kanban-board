@@ -112,6 +112,7 @@
         border-radius: 10px;
         margin: 0 10px;
         text-align: left;
+        filter: drop-shadow(-2px 2px 1px black)
     }
     .title {
         margin-left: 10px;

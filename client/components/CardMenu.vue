@@ -21,14 +21,21 @@
 </script>
 
 <template>
-    <div class="darken"></div>
-    <div v-click-away="close" class="cardMenu">
-        <EditableText :text="props.card.title" @edit="txt=>rename(txt)"/>
-        <p>{{ props.card.description }}</p>
+    <div>
+        <div @click="close" class="darken"></div>
+        <div class="cardMenu">
+            <EditableText :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
+            <p>{{ props.card.description }}</p>
+        </div>
     </div>
 </template>
 
 <style scoped>
+    :deep(.editable) {
+        padding: .5rem 1rem;
+        color: white
+    }
+
     .darken {
         position: fixed;
         height: 100vh;
@@ -52,5 +59,9 @@
         opacity: 100%;
         z-index: 6;
         border-radius: 10px;
+    }
+
+    .title {
+        color: white;
     }
 </style>

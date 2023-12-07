@@ -81,7 +81,6 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
                 found = false
                 for (const [listId, listCards] of Object.entries(cards.value)) {
-                    console.log(listCards)
                     for (let card of listCards) {
                         if (card.id == data.id) {
                             card.title = data.title

@@ -52,7 +52,7 @@
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <div class="cards">
             <div v-for="card in cards">
-                <Card .ws="props.ws" :card="card"/>
+                <Card :ws="props.ws" :card="card"/>
             </div>
         </div>
         <div class="newCard">

@@ -104,6 +104,7 @@
         opacity: 100%;
         z-index: 6;
         border-radius: 10px;
+        filter: drop-shadow(-5px 5px 5px black)
     }
 
     .title {

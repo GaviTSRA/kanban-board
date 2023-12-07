@@ -83,6 +83,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 for (const [listId, listCards] of Object.entries(cards.value)) {
                     for (let card of listCards) {
                         if (card.id == data.id) {
+                            if (card.listId != data.listId) {
+                                cards.value[listId] = listCards.filter(c => c.id != card.id)
+                                break
+                            }
                             card.title = data.title
                             card.boardId = data.boardId
                             card.position = data.position
@@ -103,7 +107,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         listId: data.listId
                     })
                 }
-                for (const [listId, listCards] of Object.entries(cards)) {
+                for (const [listId, listCards] of Object.entries(cards.value)) {
                     cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)   
                 }
                 break
@@ -133,6 +137,14 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         dragging.value = true
     }
     
+    let isDraggingCard = ref(false)
+    let draggingCard: Card | undefined = undefined
+    function startDragCard(card: Card) {
+        isDraggingCard.value = false
+        isDraggingCard.value = true
+        draggingCard = card
+    }
+
     function drop(index: number) {
         if (draggingList?.position < index) index -= 1
         if (index < 0) index = 0
@@ -164,8 +176,59 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             }
         }
     }
+
+    function dropCard(list: List, index: number) {
+        if (draggingCard?.position < index && draggingCard?.listId == list.id) index -= 1
+        if (index < 0) index = 0
+        isDraggingCard.value = false
+        ws.send(JSON.stringify({
+            "action": "updateCard",
+            "id": draggingCard?.id,
+            "listId": list.id,
+            "boardId": board.value.id,
+            "position": index
+        }))
+
+        if (draggingCard?.listId != list.id) {
+            for (let card of cards.value[draggingCard?.listId]) {
+                if (card.id == draggingCard?.id) continue
+                if (card.position > draggingCard?.position) {
+                    ws.send(JSON.stringify({
+                        "action": "updateCard",
+                        "boardId": board.value.id,
+                        "id": card.id,
+                        "position": card.position -= 1
+                    }))
+                }
+            }
+        }
+        for (let card of cards.value[list.id]) {
+            if (card.id == draggingCard?.id) continue
+            if (
+                (card.listId == draggingCard?.listId && card.position < draggingCard?.position && card.position >= index) ||
+                (list.id != draggingCard?.listId && card.position >= index) 
+                ) {
+                ws.send(JSON.stringify({
+                    "action": "updateCard",
+                    "boardId": board.value.id,
+                    "id": card.id,
+                    "position": card.position += 1
+                }))
+            }
+            if ((list.id == draggingCard?.listId && card.position > draggingCard?.position && card.position <= index)) {
+                ws.send(JSON.stringify({
+                    "action": "updateCard",
+                    "boardId": board.value.id,
+                    "id": card.id,
+                    "position": card.position -= 1
+                }))
+            }
+        }
+    }
+
     function dragEnd() {
         dragging.value = false
+        isDraggingCard.value = false
     }
 
     let deleteMenuVisible = ref(false)
@@ -205,7 +268,18 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
                     <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
-                    <List @ctxMenuAction="action=>listCtxAction(action, list)" :list="list" :cards="cards[list.id]" @dragstart="()=>startDrag(list)" draggable="true" :ws="ws"/>
+                    <List 
+                        @ctxMenuAction="action=>listCtxAction(action, list)" 
+                        @dragstart="()=>startDrag(list)" 
+                        @drag-start="card=>startDragCard(card)"
+                        @drop="index=>dropCard(list, index)"
+                        :list="list" 
+                        :cards="cards[list.id]" 
+                        :ws="ws"
+                        :is-dragging-card="isDraggingCard"
+                        :draggingCard="draggingCard"
+                        draggable="true" 
+                    />
                 </div>
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>

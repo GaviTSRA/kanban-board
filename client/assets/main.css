@@ -14,7 +14,9 @@ input, textarea{
     background-color: var(--color-background);
     border-color: var(--color-background-soft);
     border-radius: 10px;
+    resize: none;
     color: white;
+    user-select: text;
 }
 
 a {
@@ -75,7 +77,9 @@ body {
     --color-btn-danger: rgb(237, 32, 32);
     --color-btn-danger-hover: rgb(245, 52, 52);
 
-    --color-card-primary: rgb(66, 152, 66);
+    --color-card-primary: rgb(82, 82, 82);
+    --color-card-title: rgb(214, 214, 214);
+    --color-card-description: rgb(159, 158, 158);
 }
   
 *,

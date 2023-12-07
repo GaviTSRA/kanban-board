@@ -1,6 +1,6 @@
 <script setup>
-    let props = defineProps(["list", "ws", "cards"])
-    let emit = defineEmits(["ctxMenuAction"])
+    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard"])
+    let emit = defineEmits(["ctxMenuAction", "dragStart", "drop"])
 
     function editName(txt) {
         if (txt == "") return
@@ -51,9 +51,22 @@
         <EditableText :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <div class="cards">
-            <div v-for="card in cards">
-                <Card :ws="props.ws" :card="card"/>
+            <div v-for="(card, index) in props.cards">
+                <Card 
+                    :ws="props.ws" 
+                    :card="card" 
+                    :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
+                    @drag-start="card=>$emit('dragStart', card)"
+                    @drop="$emit('drop', index)"
+                />
             </div>
+            <div 
+                @dragenter.prevent=""  
+                @dragover.prevent="" 
+                @drop="$emit('drop', props.cards.length)" 
+                class="cardDropSpot">
+            </div>
+            <!-- v-if="props.isDraggingCard && (props.draggingCard.listId != props.list.id || Math.abs(props.cards.length - 1 - draggingCard?.position) > 0)"  -->
         </div>
         <div class="newCard">
             <input type="text" v-model="newCardName"/>
@@ -63,6 +76,10 @@
 </template>
 
 <style scoped>
+    .cardDropSpot {
+        height: 2rem;
+        width: 100%;
+    }
     .newCard input {
         width: 65%;
         margin-right: 10px;

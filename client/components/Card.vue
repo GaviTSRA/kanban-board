@@ -15,12 +15,13 @@
 
 <style scoped>
     .container {
-        background-color: var(--color-background-light);
+        background-color: var(--color-card-primary);
         border-radius: 10px;
         margin: 10px;
         text-align: left;
     }
     .title {
         margin-left: 10px;
+        color: black;
     }
 </style>

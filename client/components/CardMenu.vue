@@ -62,6 +62,8 @@
     }
 
     .title {
-        color: white;
+        background-color: var(--color-card-primary);
+        border-radius: 10px;
+        color: black;
     }
 </style>

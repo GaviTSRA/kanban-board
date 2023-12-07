@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["text"])
+    let props = defineProps(["text", "textarea"])
     let emit = defineEmits(["edit"])
 
     let text = ref("")
@@ -34,7 +34,8 @@
 <template>
     <div class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
-        <input class="editable" v-model="text" v-if="editing" v-click-away="done"/>
+        <input class="editable" v-model="text" v-if="editing && !props.textarea" v-click-away="done"/>
+        <textarea class="editable" v-model="text" v-if="editing && props.textarea" v-click-away="done"/>
     </div>
 </template>
 

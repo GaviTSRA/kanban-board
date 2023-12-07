@@ -24,7 +24,8 @@
         <!-- TODO icon? -->
         <NuxtLink to="/" class="back">Back</NuxtLink>
         <EditableText :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
-        <EditableText :text="board.description" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <!-- TODO text area -->
+        <EditableText :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
     </div>
 </template>
 
@@ -64,7 +65,11 @@
         min-height: 1rem;
     }
 
-    .descriptionInput {
-        padding: 1rem;
+    .description :deep(textarea) {
+        width: 25vw;
+        height: 100%;
+        resize: none;
+        color: var(--color-text);
+        font-size: 1rem;
     }
 </style>

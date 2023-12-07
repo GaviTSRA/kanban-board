@@ -34,7 +34,7 @@
 <template>
     <div class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
-        <input v-model="text" v-if="editing" v-click-away="done"/>
+        <input class="editable" v-model="text" v-if="editing" v-click-away="done"/>
     </div>
 </template>
 

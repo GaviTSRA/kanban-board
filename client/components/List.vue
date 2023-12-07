@@ -114,6 +114,13 @@
         text-align: center;
         font-size: 1.5rem;
         border-radius: 10px;
+    }
+
+    .cards {
         height: fit-content;
+        max-height: 80vh;
+        overflow: scroll;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-border) var(--color-background-mute)
     }
 </style>

@@ -60,7 +60,7 @@
             @dragover.prevent="dropSpotVisible = true" 
             @dragleave="dropSpotVisible = false"
             @drop="e=>{$emit('drop', index); dropSpotVisible = false}" 
-            :class="{cardDropSpot: dropSpotVisible, cardDropSpotSmall: true}">
+            :class="{cardDropSpot: dropSpotVisible && props.showDropSpot, cardDropSpotSmall: true}">
         </div>
         <div class="container" @click="() => cardMenuVisible = true">
             <p class="title">{{ props.card.title }}</p>

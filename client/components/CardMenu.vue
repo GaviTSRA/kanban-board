@@ -18,6 +18,15 @@
             "title": txt
         }))
     }
+
+    function editDesc(txt) {
+        props.ws.send(JSON.stringify({
+            "action": "updateCard",
+            "id": props.card.id,
+            "boardId": props.card.boardId,
+            "description": txt
+        }))
+    }
 </script>
 
 <template>
@@ -25,7 +34,7 @@
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
             <EditableText :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
-            <p>{{ props.card.description }}</p>
+            <EditableText :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
         </div>
     </div>
 </template>
@@ -64,6 +73,26 @@
     .title {
         background-color: var(--color-card-primary);
         border-radius: 10px;
-        color: black;
+        color: var(--color-card-title);
+    }
+
+    .description {
+        width: 90%;
+        background-color: var(--color-background);
+        margin: 10px 5%;
+        height: 20%;
+        border-radius: 10px;
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    .description :deep(textarea), .description :deep(p) {
+        height: 100%;
+        width: 100%;
+        color: var(--color-text);
+        font-size: 1rem;
+    }
+    .description :deep(p) {
+        padding: 10px;
     }
 </style>

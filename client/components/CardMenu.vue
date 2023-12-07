@@ -68,10 +68,12 @@
         border-radius: 10px;
         padding: .5rem 1rem;
         margin-left: 10px;
+        margin-top: 10px;
     }
     .labels {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
 
     :deep(.editable) {

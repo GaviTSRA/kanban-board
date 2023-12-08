@@ -41,6 +41,7 @@
     .checkbox {
         width: fit-content;
         min-width: 3rem;
+        transform: scale(.85);
     }
     .item {
         background-color: var(--color-card-primary);
@@ -51,5 +52,6 @@
         justify-content: left;
         align-items: center;
         border-radius: 10px;
+        font-size: 1rem;
     }
 </style>

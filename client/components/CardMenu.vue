@@ -97,8 +97,8 @@
         background-color: var(--color-btn-create-hover);
     }
     .checklists {
-        width: 70%;
-        margin: 10px 15%;
+        width: 90%;
+        margin: 10px 5%;
     }
     .disabled {
         opacity: 30%;
@@ -199,6 +199,10 @@
         }
         .label {
             padding: .5rem 1rem;    
+        }
+        .checklists {
+            width: 70%;
+            margin: 10px 15%;
         }
     }
 </style>

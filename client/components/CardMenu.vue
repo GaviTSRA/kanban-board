@@ -5,8 +5,6 @@
     let canClose = false
     setTimeout(() => canClose = true, 100)
 
-    console.log(props.card.checklists)
-
     function close() {
         if (!canClose) return
         emit('close')
@@ -76,7 +74,7 @@
                 <div v-for="checklist in props.card.checklists" class="checklists">
                     <Checklist @send="send" :checklist="checklist" />
                 </div>
-                <button class="newChecklistBtn" @click="newChecklist">New Checklist</button>
+                <button class="newChecklistBtn" @click="newChecklist"></button>
             </div>
         </div>
     </div>
@@ -84,21 +82,27 @@
 
 <style scoped>
     .checklistSection {
-        margin-top: 1rem;
+        margin-top: 2rem;
     }
     .newChecklistBtn {
         background-color: var(--color-btn-create);
         border-style: none;
-        padding: .5rem 1rem;
+        transform: scale(3);
         border-radius: 10px;
+        padding: 1rem;
+        margin-left: 1.5rem;
         font-size: 1rem;
+        margin-right: 100%;
+        mask: url(/plus-square.svg) no-repeat center;
     }
     .newChecklistBtn:hover {
         background-color: var(--color-btn-create-hover);
     }
     .checklists {
         width: 90%;
-        margin: 10px 5%;
+        margin: 10px 10px;
+        display:flex;
+        align-items: left;
     }
     .disabled {
         opacity: 30%;
@@ -202,7 +206,7 @@
         }
         .checklists {
             width: 70%;
-            margin: 10px 15%;
+            margin: 10px 10px;
         }
     }
 </style>

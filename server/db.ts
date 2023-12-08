@@ -126,7 +126,7 @@ const ChecklistItem = sequelize.define("ChecklistItem", {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "New checklist item"
+        defaultValue: ""
     },
     checked: {
         type: DataTypes.BOOLEAN,

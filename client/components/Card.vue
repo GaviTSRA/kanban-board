@@ -81,7 +81,7 @@
             <div v-if="props.card.checklists.length != 0" class="checklists">
                 <div v-for="checklist in props.card.checklists" class="checklist">
                     <span 
-                        :class="{progress: true, complete: checklist.ChecklistItems.filter(item=>item.checked).length == checklist.ChecklistItems.length}"
+                        :class="{progress: true, complete: checklist.ChecklistItems != undefined && checklist.ChecklistItems.filter(item=>item.checked).length == checklist.ChecklistItems.length}"
                     >{{ checklist.ChecklistItems.filter(item=>item.checked).length }}/{{ checklist.ChecklistItems.length }}</span> {{ checklist.title }}
                 </div>
             </div>

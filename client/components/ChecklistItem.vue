@@ -20,23 +20,24 @@
 <template>
     <div class="item">
         <input @change="check" :value="props.item.checked" v-model="props.item.checked" class="checkbox" type="checkbox"/>
-        <EditableText :class="{checked: props.item.checked}" :text="props.item.title" @edit="txt=>rename(txt)"/>
-        <!-- TODO icon -->
-        <button class="deleteBtn" @click="deleteItem">Delete</button>
+        <EditableText :focus="props.item.title==''" :class="{checked: props.item.checked}" :text="props.item.title" @edit="txt=>rename(txt)"/>
+        <button class="deleteBtn" @click="deleteItem"><img src="/trash-2.svg"/></button>
     </div>
 </template>
 
-<style scoped>  
+<style scoped>
     .deleteBtn {
-        margin-left: auto;
+        margin-left: 1rem;
         margin-right: 10px;
-        background-color: var(--color-btn-danger);
+        background-color: rgba(0,0,0,0);
         border-radius: 10px;
         border-style: none;
-        padding: .25rem .5rem;
+        margin-left: auto;
     }
     .checked {
         text-decoration: line-through;
+        text-decoration-color: black;
+        text-decoration-thickness: 3px;
     }
     .checkbox {
         width: fit-content;
@@ -44,9 +45,8 @@
         transform: scale(.85);
     }
     .item {
-        background-color: var(--color-card-primary);
-        width: 95%;
-        margin: 5px auto;
+        width: 70%;
+        margin: 0;
         display: flex;
         flex-direction: row;
         justify-content: left;

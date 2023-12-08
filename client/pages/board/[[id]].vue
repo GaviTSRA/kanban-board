@@ -99,7 +99,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 if (data.checklists) {
                     checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
                     for (let checklist of checklists) {
-                        checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1)
+                        checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
                     }
                 } else {
                     checklists = []

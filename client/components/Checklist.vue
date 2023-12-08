@@ -22,37 +22,58 @@
 
 <template>
     <div class="checklist">
-        <EditableText :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
+        <div class="titleContainer">
+            <button class="delete" @click="deleteList"></button>
+            <EditableText class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
+        </div>
         <div v-for="item in props.checklist.ChecklistItems">
             <ChecklistItem @send="$emit('send')" :item="item" />
         </div>
-        <button class="newItemBtn" @click="newItem">Add item</button>
-        <button class="delete" @click="deleteList">Delete</button>
+        <button class="newItemBtn" @click="newItem"></button>
     </div>
 </template>
 
 <style scoped>
+    .titleContainer {
+        display: flex;
+        flex-direction: row;
+    }
+    .title {
+        text-align: left;
+        margin-left: 10px;
+        color: aqua;
+    }
     .delete {
-        background-color: var(--color-btn-danger);
+        background-color: black;
         border-style: none;
         padding: .5rem 1rem;
         border-radius: 10px;
         font-size: 1rem;
-        margin-left: 5rem;
+        margin-left: .5rem;
+        mask: url(/trash-2.svg) no-repeat center;
+    }
+    .delete:hover {
+        background-color: var(--color-btn-danger);
     }
     .newItemBtn {
-        background-color: var(--color-btn-create);
+        transform: scale(1.25);
+        align-self: center;
+        margin-right: 95%;
+        margin-left: 10px;
+        background-color: black;
         border-style: none;
-        padding: .5rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 10px;
         font-size: 1rem;
+        mask: url(/plus-square.svg) no-repeat center;
     }
     .newItemBtn:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-btn-create);
     }
     .checklist {
-        background-color: var(--color-background-mute);
         padding: 0 0 1rem 0;
         border-radius: 10px;
+        margin-top: 1.5rem;
+        width: 100%;
     }
 </style>

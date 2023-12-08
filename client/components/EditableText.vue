@@ -1,9 +1,12 @@
 <script setup>
-    let props = defineProps(["text", "textarea"])
+    let props = defineProps(["text", "textarea", "focus"])
     let emit = defineEmits(["edit"])
 
     let text = ref("")
     let editing = ref(false)
+
+    let input = ref(null)
+    let textarea = ref(null)
 
     let timer
     let x
@@ -29,13 +32,32 @@
         editing.value = false
         emit("edit", text.value)
     }
+
+    onBeforeUpdate(async () => {
+        await focus()
+    })
+
+    async function focus() {
+        if (props.focus && !editing.value) {
+            text.value = props.text
+            editing.value = true
+            
+            await nextTick()
+            
+            if (input.value) {
+                input.value.focus()
+            }
+            if (textarea.value)
+                textarea.value.focus()
+        } 
+    }
 </script>
 
 <template>
     <form @submit.prevent="done" class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
-        <input class="editable" v-model="text" v-if="editing && !props.textarea" v-click-away="done"/>
-        <textarea class="editable" v-model="text" v-if="editing && props.textarea" v-click-away="done"/>
+        <input ref="input" class="editable" v-model="text" v-show="editing && !props.textarea" v-click-away="done"/>
+        <textarea ref="textarea" class="editable" v-model="text" v-show="editing && props.textarea" v-click-away="done"/>
     </form>
 </template>
 

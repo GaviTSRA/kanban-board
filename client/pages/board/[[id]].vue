@@ -16,7 +16,18 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         description: string,
         position: number,
         listId: string,
-        boardId: string
+        boardId: string,
+        checklists: {
+            title: string,
+            id: string,
+            CardId: string,
+            ChecklistItems: {
+                title: string,
+                id: string,
+                checked: boolean,
+                ChecklistId: string
+            }[]
+        }[]
     }
     interface Label {
         id: string,
@@ -84,6 +95,15 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             
             case "card":
                 found = false
+                let checklists = data.checklists
+                if (data.checklists) {
+                    checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
+                    for (let checklist of checklists) {
+                        checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? 1 : -1)
+                    }
+                } else {
+                    checklists = []
+                }
                 for (const [listId, listCards] of Object.entries(cards.value)) {
                     for (let card of listCards) {
                         if (card.id == data.id) {
@@ -96,6 +116,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                             card.position = data.position
                             card.description = data.description
                             card.listId = data.listId
+                            card.checklists = checklists
                             found = true
                             break
                         }
@@ -108,7 +129,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         description: data.description,
                         position: data.position,
                         boardId: data.boardId,
-                        listId: data.listId
+                        listId: data.listId,
+                        checklists: checklists
                     })
                 }
                 for (const [listId, listCards] of Object.entries(cards.value)) {
@@ -304,6 +326,19 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     }
 
     let settingsOpened = ref(false)
+
+    function deleteCard(index: number, id: string) {
+        for (let card of cards.value[id]) {
+            if ((card.position > index)) {
+                ws.send(JSON.stringify({
+                    "action": "updateCard",
+                    "boardId": board.value.id,
+                    "id": card.id,
+                    "position": card.position -= 1
+                }))
+            }
+        }
+    }
 </script>
 
 <template>
@@ -319,6 +354,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         @dragstart="()=>startDrag(list)" 
                         @drag-start="card=>startDragCard(card)"
                         @drop="index=>dropCard(list, index)"
+                        @delete-card="(i, id)=>deleteCard(i, id)"
                         :list="list" 
                         :cards="cards[list.id]" 
                         :ws="ws"

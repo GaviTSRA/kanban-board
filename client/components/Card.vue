@@ -1,6 +1,6 @@
 <script setup>
     let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels"])
-    let emit = defineEmits(["dragStart", "drop"])
+    let emit = defineEmits(["dragStart", "drop", "delete"])
 
     function getDescription() {
         let description = props.card.description
@@ -50,6 +50,7 @@
             "delete": true
         }))
         deleteMenuVisible.value = false
+        emit("delete")
     }
 
     function isEnabled(label) {
@@ -77,6 +78,13 @@
                     <p v-if="isEnabled(label)" class="label" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
                 </div>
             </div>
+            <div v-if="props.card.checklists.length != 0" class="checklists">
+                <div v-for="checklist in props.card.checklists" class="checklist">
+                    <span 
+                        :class="{progress: true, complete: checklist.ChecklistItems.filter(item=>item.checked).length == checklist.ChecklistItems.length}"
+                    >{{ checklist.ChecklistItems.filter(item=>item.checked).length }}/{{ checklist.ChecklistItems.length }}</span> {{ checklist.title }}
+                </div>
+            </div>
         </div>
         <CardMenu :labels="props.labels" :assigned-labels="props.assignedLabels" :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
@@ -85,6 +93,25 @@
 </template>
 
 <style scoped>
+    .progress {
+        display: inline-block;
+        padding: 0 .25rem;
+        margin-top: 5px;
+        text-align: center;
+        width: 3rem;
+        background-color: var(--color-background-soft);
+        border-radius: 10px;
+    }
+    .complete {
+        background-color: green;
+    }
+    .checklist {
+        font-size: 1rem;
+    }
+    .checklists {
+        height: fit-content;
+        padding: 10px;
+    }
     .label {
         font-size: 1rem;
         width:fit-content;

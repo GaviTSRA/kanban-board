@@ -3,7 +3,7 @@ import expressWs, { WebsocketMethod } from "express-ws"
 import cors from "cors"
 import WebSocket from "ws"
 import bodyParser from 'body-parser';
-import { Board, List, Card, BoardAttributes, Label, ListAttributes, AssignedLabel } from "./db.js";
+import { Board, List, Card, BoardAttributes, Label, ListAttributes, AssignedLabel, ChecklistItem, Checklist } from "./db.js";
 
 const app = expressWs(express()).app
 const port = 3001
@@ -124,7 +124,8 @@ app.delete("/", async (req, res) => {
                     }
                     await list?.save()
                 }
-                await sendList(ws, list)
+                if (!data.delete)
+                    await sendList(ws, list)
                 break
 
             case "updateCard":
@@ -138,7 +139,12 @@ app.delete("/", async (req, res) => {
                         ListId: data.listId
                     })
                 } else {
-                    card = await Card.findByPk(data.id)
+                    card = await Card.findByPk(data.id, {
+                        include: [{
+                            model: Checklist,
+                            include: [ ChecklistItem ]
+                        }]
+                    })
                     if (data.delete) {
                         card?.destroy()
                         ws.send(JSON.stringify({
@@ -168,9 +174,56 @@ app.delete("/", async (req, res) => {
                             ListId: data.listId
                         })
                     }
+                    if (data.checklists != undefined) {
+                        for (let checklist of data.checklists) {
+                            if (checklist.new) {
+                                Checklist.create({
+                                    "CardId": data.id
+                                })
+                            } else {
+                                let dbChecklist = await Checklist.findByPk(checklist.id)
+                                if (checklist.delete) {
+                                    dbChecklist?.destroy()
+                                } else {
+                                    dbChecklist?.set({
+                                        title: checklist.title,
+                                        CardId: checklist.cardId
+                                    })
+                                    await dbChecklist?.save()
+                                }
+                                for (let item of checklist.ChecklistItems) {
+                                    if (item.new) {
+                                        await ChecklistItem.create({
+                                            "ChecklistId": checklist.id
+                                        })
+                                    } else {
+                                        let dbItem = await ChecklistItem.findByPk(item.id)
+                                        if (item.delete || checklist.delete) {
+                                            dbItem?.destroy()
+                                        } else {
+                                            dbItem?.set({
+                                                title: item.title,
+                                                ChecklistId: checklist.cardId,
+                                                checked: item.checked
+                                            })
+                                            dbItem?.save()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     await card?.save()
+                    card = await Card.findByPk(data.id, {
+                        include: [{
+                            model: Checklist,
+                            include: [ ChecklistItem ]
+                        }]
+                    })
                 }
-                await sendCard(ws, card)
+                console.log(data)
+                if (!data.delete)
+                    await sendCard(ws, card)
                 break
         
             case "updateLabel":
@@ -271,7 +324,11 @@ async function sendCards(ws: WebSocket, boardId: string) {
         let cards = await Card.findAll({
             where: { // @ts-ignore
                 ListId: list.id
-            }
+            },
+            include: [{
+                model: Checklist,
+                include: [ ChecklistItem ]
+            }]
         })
         for (let card of cards) {
             sendCard(ws, card)
@@ -287,7 +344,8 @@ async function sendCard(ws: WebSocket, card: any) {
         "listId": card.ListId,
         "title": card.title,
         "description": card.description,
-        "position": card.position
+        "position": card.position,
+        "checklists": card.Checklists
     }))
 }
 

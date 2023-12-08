@@ -61,6 +61,7 @@
                     :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
                     @drag-start="card=>$emit('dragStart', card)"
                     @drop="$emit('drop', index)"
+                    @delete="$emit('deleteCard', index, list.id)"
                 />
             </div>
             <div 

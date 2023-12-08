@@ -3,7 +3,9 @@
     let emit = defineEmits(["close", "rename"])
 
     let canClose = false
-    setTimeout(() => canClose = true, 500)
+    setTimeout(() => canClose = true, 100)
+
+    console.log(props.card.checklists)
 
     function close() {
         if (!canClose) return
@@ -43,10 +45,24 @@
         })
         return filtered.length > 0
     }
+
+    function newChecklist() {
+        props.card.checklists.push({"new": true})
+        send()
+    }
+
+    function send() {
+        props.ws.send(JSON.stringify({
+            "action": "updateCard",
+            "id": props.card.id,
+            "boardId": props.card.boardId,
+            "checklists": props.card.checklists
+        }))
+    }
 </script>
 
 <template>
-    <div @contextmenu.stop="">
+    <div @contextmenu.stop="" @dragstart.prevent.stop="" draggable="true">
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
             <EditableText :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
@@ -56,11 +72,34 @@
                     <p :class="{label: true, disabled: !isEnabled(label)}" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
                 </div>
             </div>
+            <div class="checklistSection">
+                <div v-for="checklist in props.card.checklists" class="checklists">
+                    <Checklist @send="send" :checklist="checklist" />
+                </div>
+                <button class="newChecklistBtn" @click="newChecklist">New Checklist</button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .checklistSection {
+        margin-top: 1rem;
+    }
+    .newChecklistBtn {
+        background-color: var(--color-btn-create);
+        border-style: none;
+        padding: .5rem 1rem;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+    .newChecklistBtn:hover {
+        background-color: var(--color-btn-create-hover);
+    }
+    .checklists {
+        width: 70%;
+        margin: 10px 15%;
+    }
     .disabled {
         opacity: 30%;
     }
@@ -75,6 +114,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        margin-bottom: 1rem;
     }
 
     :deep(.editable) {
@@ -91,12 +131,14 @@
         background-color: black;
         z-index: 2;
         opacity: 50%;
-    }
+    }  
     .cardMenu {
+        overflow-y: scroll;
+        overflow-x: hidden;
         position: absolute;
         width: 80vw;
-        height: 80vh;
-        top: 10vh;
+        height: 90vh;
+        top: 5vh;
         left: 10vw;
         background-color: var(--color-background-light);
         border-color: var(--color-background-soft);
@@ -105,7 +147,20 @@
         opacity: 100%;
         z-index: 6;
         border-radius: 10px;
-        filter: drop-shadow(-5px 5px 5px black)
+        filter: drop-shadow(-5px 5px 5px black);
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-background-mute) var(--color-background-light);
+    }
+
+    ::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+        background: var(--color-background-light);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-background-mute);
+        -webkit-border-radius: 10px;
     }
 
     .title {

@@ -99,20 +99,64 @@ const Label = sequelize.define("Label", {
         defaultValue: "#FFFFFF"
     }
 })
-const AssignedLabel = sequelize.define("AssignedLabel", {
+const AssignedLabel = sequelize.define("AssignedLabel", {})
 
+const Checklist = sequelize.define("Checklist", {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true
+    }, 
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "New checklist"
+    }
 })
+const ChecklistItem = sequelize.define("ChecklistItem", {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true
+    }, 
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "New checklist item"
+    },
+    checked: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    }
+})
+
 Board.hasMany(List)
 Board.hasMany(Label)
+
 List.belongsTo(Board)
 List.hasMany(Card)
+
 Card.belongsTo(Board)
 Card.belongsTo(List)
 Card.hasMany(Label)
-Label.belongsTo(Board)
-AssignedLabel.belongsTo(Board)
+Card.hasMany(Checklist)
 Card.belongsToMany(Label, { through: AssignedLabel})
+
+Label.belongsTo(Board)
 Label.belongsToMany(Card, {through: AssignedLabel})
+
+AssignedLabel.belongsTo(Board)
+
+Checklist.belongsTo(Card)
+Checklist.hasMany(ChecklistItem)
+
+ChecklistItem.belongsTo(Checklist)
+
 await sequelize.sync({ alter: true })
 
 export {
@@ -123,5 +167,7 @@ export {
     BoardAttributes,
     ListAttributes,
     Label,
-    AssignedLabel
+    AssignedLabel,
+    Checklist,
+    ChecklistItem
 }

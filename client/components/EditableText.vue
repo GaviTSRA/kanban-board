@@ -32,11 +32,11 @@
 </script>
 
 <template>
-    <div class="container">
+    <form @submit.prevent="done" class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
         <input class="editable" v-model="text" v-if="editing && !props.textarea" v-click-away="done"/>
         <textarea class="editable" v-model="text" v-if="editing && props.textarea" v-click-away="done"/>
-    </div>
+    </form>
 </template>
 
 <style scoped>

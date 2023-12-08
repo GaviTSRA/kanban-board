@@ -17,7 +17,7 @@
   
 <style scoped>
     .rcMenu {
-        position: absolute;
+        position: fixed;
         display: flex;
         flex-direction: column;
         background-color: var(--color-background-mute);
@@ -26,8 +26,9 @@
         filter:drop-shadow(-4px 4px 5px black);
         z-index: 9999;
     }
-
+    
     .rcMenu button {
+        z-index: 9999;
         text-align: left;
         padding-left: 20px;
         background-color: var(--color-background-mute);

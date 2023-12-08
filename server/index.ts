@@ -1,5 +1,5 @@
 import express from "express"
-import expressWs from "express-ws"
+import expressWs, { WebsocketMethod } from "express-ws"
 import cors from "cors"
 import WebSocket from "ws"
 import bodyParser from 'body-parser';
@@ -88,14 +88,15 @@ app.delete("/", async (req, res) => {
                 break
 
             case "updateList":
+                let list
                 if (data.new && data.title && data.position != undefined) {
-                    await List.create({
+                    list = await List.create({
                         title: data.title,
                         position: data.position,
                         BoardId: data.boardId
                     })
                 } else {
-                    let list = await List.findByPk(data.id)
+                    list = await List.findByPk(data.id)
                     if (data.delete) {
                         list?.destroy()
                         ws.send(JSON.stringify({
@@ -103,6 +104,7 @@ app.delete("/", async (req, res) => {
                             "id": data.id,
                             "delete": true
                         }))
+                        return
                     }
                     if (data.title != undefined) {
                         list?.set({
@@ -116,19 +118,21 @@ app.delete("/", async (req, res) => {
                     }
                     await list?.save()
                 }
-                await sendLists(ws, req.params.boardId)
+                await sendList(ws, list)
                 break
 
             case "updateCard":
-                if (data.new && data.title && data.position != undefined && data.listId) {
-                    await Card.create({
+                let card
+                if (data.new) {
+                    if (!data.title || data.position == undefined || !data.listId) return
+                    card = await Card.create({
                         title: data.title,
                         position: data.position,
                         BoardId: data.boardId,
                         ListId: data.listId
                     })
                 } else {
-                    let card = await Card.findByPk(data.id)
+                    card = await Card.findByPk(data.id)
                     if (data.delete) {
                         card?.destroy()
                         ws.send(JSON.stringify({
@@ -136,6 +140,7 @@ app.delete("/", async (req, res) => {
                             "id": data.id,
                             "delete": true
                         }))
+                        return
                     }
                     if (data.title != undefined) {
                         card?.set({
@@ -159,7 +164,7 @@ app.delete("/", async (req, res) => {
                     }
                     await card?.save()
                 }
-                await sendCards(ws, req.params.boardId)
+                await sendCard(ws, card)
                 break
         
             case "updateLabel":
@@ -236,14 +241,18 @@ async function sendLists(ws: WebSocket, boardId: string) {
         }
     })
     for (let list of lists) {
-        ws.send(JSON.stringify({
-            "type": "list", // @ts-ignore
-            "id": list.id, // @ts-ignore
-            "title": list.title, // @ts-ignore
-            "position": list.position, // @ts-ignore
-            "boardId": list.BoardId
-        }))
+        sendList(ws, list)
     }
+}
+
+async function sendList(ws: WebSocket, list: any) {
+    ws.send(JSON.stringify({
+        "type": "list",
+        "id": list.id,
+        "title": list.title,
+        "position": list.position,
+        "boardId": list.BoardId
+    }))
 }
 
 async function sendCards(ws: WebSocket, boardId: string) {
@@ -259,17 +268,21 @@ async function sendCards(ws: WebSocket, boardId: string) {
             }
         })
         for (let card of cards) {
-            ws.send(JSON.stringify({
-                "type": "card", // @ts-ignore
-                "id": card.id,  // @ts-ignore
-                "boardId": card.BoardId,  // @ts-ignore
-                "listId": card.ListId,  // @ts-ignore
-                "title": card.title,  // @ts-ignore
-                "description": card.description,  // @ts-ignore
-                "position": card.position
-            }))
+            sendCard(ws, card)
         }
     }
+}
+
+async function sendCard(ws: WebSocket, card: any) {
+    ws.send(JSON.stringify({
+        "type": "card",
+        "id": card.id,
+        "boardId": card.BoardId,
+        "listId": card.ListId,
+        "title": card.title,
+        "description": card.description,
+        "position": card.position
+    }))
 }
 
 async function sendLabels(ws: WebSocket, boardId: string) {

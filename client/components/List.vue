@@ -34,6 +34,7 @@
 
     let newCardName = ref("")
     function createCard() {
+        if (newCardName.value == "") return
         props.ws.send(JSON.stringify({
             "action": "updateCard",
             "new": true,

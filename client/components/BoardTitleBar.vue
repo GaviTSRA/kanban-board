@@ -58,9 +58,9 @@
 
     .title {
         font-size: 1.5rem;
-        margin: 10px;
+        margin: auto 10px;
         color: aqua;
-        height: 1.5rem;
+        height: fit-content;
     }
 
     :deep(input) {
@@ -70,8 +70,9 @@
     .description {
         margin: auto 0;
         margin-left: 1rem;
-        width: 30vw;
+        width: 0;
         min-height: 1rem;
+        visibility: hidden;
     }
 
     .description :deep(textarea) {
@@ -80,5 +81,12 @@
         resize: none;
         color: var(--color-text);
         font-size: 1rem;
+    }
+
+    @media (min-width: 600px) {
+        .description {
+            visibility: visible;
+            width: 30vw;
+        }
     }
 </style>

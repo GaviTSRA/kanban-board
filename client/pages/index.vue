@@ -11,6 +11,18 @@
         id: string
     }
 
+    let canCloseNewBoardMenu = false
+    function openNewBoardMenu() {
+        canCloseNewBoardMenu = false
+        creatingNewBoard.value = true
+        setTimeout(() => {
+            canCloseNewBoardMenu = true
+        }, 200)
+    }
+    function closeNewBoardMenu() {
+        if (canCloseNewBoardMenu) creatingNewBoard.value = false
+    }
+
     async function createBoard() {
         // TODO error handling
         let res = (await useFetch<createResponse>("http://localhost:3001", {
@@ -29,16 +41,15 @@
         <div v-for="board in boards">
             <BoardCard :board="board"/>
         </div>
-        <button class="newBoardBtn" @click="creatingNewBoard = true">New Board</button>
+        <button class="newBoardBtn" @click="openNewBoardMenu">New Board</button>
     </div>
-    <div class="create" v-if="creatingNewBoard">
+    <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
         <h1>Create new board</h1>
         <label for="title">Title</label>
         <input v-model="title" type="text" id="title"/>
         <label for="description">Description</label>
         <textarea v-model="description" id="description"/>
         <button class="confirm" @click="createBoard">Create</button>
-        <button class="cancel" @click="creatingNewBoard = false">X</button>
     </div>
 </template>
 
@@ -80,20 +91,12 @@
         margin-bottom: 30px;
         width: 10rem;
         align-self: center;
-        height: 5vh;
         font-size: 2rem;
         background-color: var(--color-btn-create);
         border-style: solid;
         border-color: var(--color-btn-create-hover);
         border-radius: 10px;
-    }
-    .create .cancel {
-        position: absolute;
-        right: 10px;
-        top: 5px;
-        background-color: var(--color-background-light);
-        border-style: none;
-        font-size: 2rem;
+        height: fit-content;
     }
     
     .create .confirm:hover {
@@ -124,18 +127,19 @@
 
     @media (min-width: 1025px) {
         .create {
-            width: 30vw;
-            left: 35vw;
+            width: 40vw;
+            left: 30vw;
         }
+
         .create h1 {
             font-size: 3rem;
         }
         .create label {
-            text-align: left;
+            text-align: center;
         }
         .create input, .create textarea {
-            height: 2vw;
-            width: 25vw;
+            height: 3vw;
+            width: 25rem;
         }
         #description {
             height: 7vw;
@@ -145,6 +149,18 @@
             top: 10px;
             right: 10px;
             bottom: auto;
+        }
+    }
+
+    @media (min-width: 1600px) {
+        .create {
+            width: 30vw;
+            left: 35vw;
+        }
+
+        .create input, .create textarea {
+            height: 2vw;
+            width: 25rem;
         }
     }
     </style>

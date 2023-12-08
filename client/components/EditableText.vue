@@ -32,6 +32,7 @@
     let isFocused = ref(false)
     function done(isTextArea) {
         if (isTextArea && !props.textarea) return
+        if (!isTextArea && props.textarea) return
         if (!isFocused.value) return
         editing.value = false
         emit("edit", text.value)
@@ -44,7 +45,7 @@
     function looseFocus() {
         setTimeout(() => {
             isFocused.value = false
-        }, 200)
+        }, 100)
     }
 
     async function focus() {
@@ -67,7 +68,7 @@
     <form @submit.prevent="()=>done(0)" class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
         <input @focus="isFocused = true" @blur="looseFocus" ref="input" class="editable" v-model="text" v-show="editing && !props.textarea" v-click-away="()=>done(false)"/>
-        <textarea ref="textarea" class="editable" v-model="text" v-show="editing && props.textarea" v-click-away="()=>done(1)"/>
+        <textarea ref="textarea" @focus="isFocused = true" @blur="looseFocus" class="editable" v-model="text" v-show="editing && props.textarea" v-click-away="()=>done(true)"/>
     </form>
 </template>
 

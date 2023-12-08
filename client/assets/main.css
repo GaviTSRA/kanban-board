@@ -17,6 +17,7 @@ input, textarea{
     resize: none;
     color: white;
     user-select: text;
+    border-style: none;
 }
 
 a {

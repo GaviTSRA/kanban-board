@@ -122,8 +122,19 @@
         max-height: 80vh;
         overflow: scroll;
         scrollbar-width: thin;
-        scrollbar-color: var(--color-border) var(--color-background-mute);
+        scrollbar-color: var(--color-background-light) var(--color-background-mute);
         overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+        background: var(--color-background-mute);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-background-light);
+        -webkit-border-radius: 10px;
     }
 
     @media (min-width: 1025px) {

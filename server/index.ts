@@ -98,6 +98,12 @@ app.delete("/", async (req, res) => {
                 } else {
                     list = await List.findByPk(data.id)
                     if (data.delete) {
+                        let cards = await Card.findAll({
+                            where: { // @ts-ignore
+                                ListId: list.id
+                            }
+                        })
+                        for (let card of cards) card.destroy()
                         list?.destroy()
                         ws.send(JSON.stringify({
                             "type": "list",

@@ -38,7 +38,7 @@
     })
 
     async function focus() {
-        if (props.focus && !editing.value) {
+        if (props.focus && !editing.value && props.text == "") {
             text.value = props.text
             editing.value = true
             
@@ -56,8 +56,8 @@
 <template>
     <form @submit.prevent="done" class="container">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
-        <input ref="input" class="editable" v-model="text" v-show="editing && !props.textarea" v-click-away="done"/>
-        <textarea ref="textarea" class="editable" v-model="text" v-show="editing && props.textarea" v-click-away="done"/>
+        <input ref="input" class="editable" v-model="text" v-show="editing && !props.textarea"/>
+        <textarea ref="textarea" class="editable" v-model="text" v-show="editing && props.textarea"/>
     </form>
 </template>
 

@@ -50,7 +50,7 @@
     .title {
         text-align: left;
         margin-left: 10px;
-        color: aqua;
+        color: var(--color-cardmenu-checklist-title);
     }
     .delete {
         background-color: black;

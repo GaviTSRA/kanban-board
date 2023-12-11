@@ -444,7 +444,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     }
 
     .newList {
-        background-color: var(--color-background-mute);
+        background-color: var(--color-list-background);
         width: 15rem;
         min-width: 15rem;
         height: fit-content;
@@ -465,18 +465,22 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
     .newList button {
         margin: 10px 0;
-        background-color: var(--color-btn-create);
+        background-color: var(--color-card-new-btn);
         border-style: none;
         border-radius: 10px;
         padding: .5rem 1rem;
     }
 
     .newList button:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-card-new-btn-hover);
+    }
+
+    .newList button:active {
+        background-color: var(--color-card-new-btn-active)
     }
 
     .stopAssigning {
-        background-color: var(--color-btn-danger);
+        background-color: var(--color-board-stop-assign);
         border-style: none;
         position: absolute;
         right: 1rem;
@@ -485,5 +489,13 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         padding: 1rem 2rem;
         color: white;
         border-radius: 10px;
+    }
+
+    .stopAssigning:hover {
+        background-color: var(--color-board-stop-assign-hover);
+    }
+
+    .stopAssigning:active {
+        background-color: var(--color-board-stop-assign-active);
     }
 </style>

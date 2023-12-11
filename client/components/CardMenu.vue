@@ -103,7 +103,7 @@
         margin-top: 2rem;
     }
     .newChecklistBtn {
-        background-color: var(--color-btn-create);
+        background-color: var(--color-cardmenu-checklist-new);
         border-style: none;
         transform: scale(3);
         border-radius: 10px;
@@ -114,7 +114,7 @@
         mask: url(/plus-square.svg) no-repeat center;
     }
     .newChecklistBtn:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-cardmenu-checklist-new-hover);
     }
     .checklists {
         width: 90%;
@@ -141,7 +141,6 @@
 
     :deep(.editable) {
         padding: .5rem 1rem;
-        color: white
     }
 
     .darken {
@@ -162,8 +161,8 @@
         height: 90vh;
         top: 5vh;
         left: 10vw;
-        background-color: var(--color-background-light);
-        border-color: var(--color-background-soft);
+        background-color: var(--color-cardmenu-background);
+        border-color: var(--color-cardmenu-border);
         border-style: solid;
         border-width: 7px;
         opacity: 100%;
@@ -171,29 +170,29 @@
         border-radius: 10px;
         filter: drop-shadow(-5px 5px 5px black);
         scrollbar-width: thin;
-        scrollbar-color: var(--color-background-mute) var(--color-background-light);
+        scrollbar-color: var(--color-cardmenu-scrollbar) var(--color-cardmenu-background);
     }
 
     ::-webkit-scrollbar {
         height: 12px;
         width: 12px;
-        background: var(--color-background-light);
+        background: var(--color-cardmenu-background);
     }
 
     ::-webkit-scrollbar-thumb {
-        background: var(--color-background-mute);
+        background: var(--color-cardmenu-scrollbar);
         -webkit-border-radius: 10px;
     }
 
     .title {
-        background-color: var(--color-card-primary);
+        background-color: var(--color-cardmenu-title-background);
         border-radius: 10px;
-        color: var(--color-card-title);
+        color: var(--color-cardmenu-title);
     }
 
     .description {
         width: 90%;
-        background-color: var(--color-background);
+        background-color: var(--color-cardmenu-desc-background);
         margin: 10px 5%;
         height: 20%;
         border-radius: 10px;
@@ -203,7 +202,7 @@
     .description :deep(textarea), .description :deep(p) {
         height: 100%;
         width: 100%;
-        color: var(--color-text);
+        color: var(--color-cardmenu-desc);
         font-size: 1rem;
     }
     .description :deep(p) {

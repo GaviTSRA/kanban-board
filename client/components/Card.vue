@@ -177,11 +177,11 @@
         margin-top: 5px;
         text-align: center;
         width: 3rem;
-        background-color: var(--color-background-soft);
+        background-color: var(--color-card-small-checklist-background);
         border-radius: 10px;
     }
     .complete {
-        background-color: green;
+        background-color: var(--color-card-small-checklist-complete);
     }
     .checklist {
         font-size: 1rem;

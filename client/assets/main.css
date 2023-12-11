@@ -96,6 +96,7 @@ body {
     --color-btn-create-active: aqua;
     --color-btn-danger: rgb(237, 32, 32);
     --color-btn-danger-hover: rgb(245, 52, 52);
+    --color-btn-danger-active: rgb(128, 5, 5);
 
     /* Other */
     --color-background: var(--color-black-1);
@@ -122,11 +123,19 @@ body {
     --color-boardmenu-combinedview-btn-active: var(--color-btn-create-active);
     --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-2);
 
+    /* Board */
+    --color-board-stop-assign: var(--color-btn-danger);
+    --color-board-stop-assign-hover: var(--color-btn-danger-hover);
+    --color-board-stop-assign-active: var(--color-btn-danger-active);
+    
     /* Board header */
     --color-header-background: var(--color-black-3);
     --color-header-title: var(--color-header);
     --color-header-desc: var(--color-text-dark-2);
     --color-header-settings-btn: var(--color-btn-create);
+    
+    /* Settings */
+    /* TODO */
 
     /* Lists */
     --color-list-background: var(--color-black-3);
@@ -142,10 +151,27 @@ body {
     --color-card-title: var(--color-header);
     --color-card-description: var(--color-text-dark-2);
 
+    --color-card-small-checklist-background: var(--color-black-2);
+    --color-card-small-checklist-complete: green;
+
     --color-card-is-subcard: gray;
     --color-card-assinging-to: rgb(54, 54, 54);
 
     /* Card menu */
+    --color-cardmenu-background: var(--color-black-4);
+    --color-cardmenu-title: var(--color-card-title);
+    --color-cardmenu-title-background: var(--color-card-primary);
+    --color-cardmenu-border: var(--color-black-3);
+    --color-cardmenu-scrollbar: var(--color-black-3);
+
+    --color-cardmenu-desc: var(--color-text-dark-2);
+    --color-cardmenu-desc-background: var(--color-background);
+
+    --color-cardmenu-checklist-new: var(--color-btn-create);
+    --color-cardmenu-checklist-new-hover: var(--color-btn-create-hover);
+
+    --color-cardmenu-checklist-title: var(--color-header);
+    /* TODO */
 }
   
 *,

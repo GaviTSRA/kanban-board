@@ -62,8 +62,8 @@ app.delete("/", async (req, res) => {
 
     await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
     await sendLists(ws, req.params.boardId)
-    await sendCards(ws, req.params.boardId)
     await sendLabels(ws, req.params.boardId)
+    await sendCards(ws, req.params.boardId)
 
     ws.on("message", async msg => {
         const data = JSON.parse(msg.toString())

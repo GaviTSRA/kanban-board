@@ -20,9 +20,42 @@
     let dropSpotVisible = ref(false)
     let deleteMenuVisible = ref(false)
 
+    let labelMenu = []
+
+    onBeforeUpdate(() => {
+        labelMenu = []
+        for (let label of props.labels) {
+            labelMenu.push({
+                name: (isEnabled(label) ? "Remove '" : "Add '") + label.title + "'",
+                danger: isEnabled(label),
+                action: "changeLabel:" + label.id   
+            })
+        }
+        actions = [
+            {
+                name: "Labels",
+                submenu: labelMenu
+            },
+            {
+                name: "Delete card",
+                action: "delete",
+                danger: true
+            }
+        ]
+    })
+
     let actions = [
-        ["Delete card", "delete", true]
+        {
+            name: "Labels",
+            submenu: labelMenu
+        },
+        {
+            name: "Delete card",
+            action: "delete",
+            danger: true
+        }
     ]
+
     let top = ref(0)
     let left = ref(0)
     let menuVisible = ref(false)
@@ -34,9 +67,25 @@
         event.stopPropagation
     }
 
+    function isEnabled(label) {
+        let filtered = props.assignedLabels.filter(el => {
+            return el.labelId == label.id && el.cardId == props.card.id
+        })
+        return filtered.length > 0
+    }
+
     function ctxMenuClicked(action) {
         menuVisible.value = false
-        
+        if (action.startsWith('changeLabel')) {
+            let label = action.split(":")[1]
+            props.ws.send(JSON.stringify({
+                "action": "toggleLabel",
+                "boardId": props.card.boardId,
+                "cardId": props.card.id,
+                "labelId": label
+            }))
+        }
+
         if(action == "delete")  {
             deleteMenuVisible.value = true
         }
@@ -51,13 +100,6 @@
         }))
         deleteMenuVisible.value = false
         emit("delete")
-    }
-
-    function isEnabled(label) {
-        let filtered = props.assignedLabels.filter(el => {
-            return el.labelId == label.id && el.cardId == props.card.id
-        })
-        return filtered.length > 0
     }
 </script>
 

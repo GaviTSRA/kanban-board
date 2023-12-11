@@ -65,7 +65,11 @@
     }
 
     let actions = [
-        ["Delete Board", "deleteBoard", true]
+        {
+            name: "Delete Board",
+            action: "deleteBoard",
+            danger: true
+        }
     ]
 
     let touchTimer

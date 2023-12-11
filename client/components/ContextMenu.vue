@@ -1,23 +1,78 @@
-<script setup>
-    const { actions, x, y } = defineProps(['actions', 'x', 'y'])
+<script setup lang="ts">
+    interface Action {
+        name: string,
+        action?: string,
+        danger?: boolean,
+        submenu?: Action[]
+    }
+
+    let { actions, x, y }: {
+        actions?: Action[],
+        x?: number, 
+        y?: number
+    } = defineProps(['actions', 'x', 'y'])
     const emit = defineEmits(['action-clicked'])
-    
-    const emitAction = (action) => {
+
+    if (x == undefined) x = 0
+    if (y == undefined) y = 0
+
+    let showSubmenu: Ref<{[name: string]: [enabled: boolean]}> = ref({})
+    let hoversOverSubmenu: Ref<{[name: string]: [enabled: boolean]}> = ref({})
+
+    for (let action of actions) {
+        showSubmenu.value[action.name] = false
+        hoversOverSubmenu.value[action.name] = false
+    }
+
+    const emitAction = (action: string) => {
         emit('action-clicked', action);
+    }
+
+    function vw(percent) {
+        var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        return (percent * w) / 100;
+    }
+
+    let submenuLeft = vw(40)
+    if (document.documentElement.clientWidth > 1025) {
+        submenuLeft = vw(10)
+    }
+
+    function hideSubmenu(action) {
+        setTimeout(() => {
+            if (hoversOverSubmenu.value[action]) return
+            showSubmenu.value[action] = false
+        }, 100)
+    }
+
+    function hideMenuFromSub(action) {
+        showSubmenu.value[action] = false
+        hoversOverSubmenu.value[action] = false
     }
 </script>
 
 <template>
-    <div @contextmenu.prevent.stop="" class="rcMenu" :style="{ top: y + 'px', left: x + 'px' }">
-        <button v-for="action in actions" :class="{danger: action[2], nodanger: !action[2]}" :key="action[1]" @click="emitAction(action[1])">
-            {{ action[0] }}
-        </button>
+    <div @contextmenu.prevent.stop="" class="rcMenu" :style="{ top: y + 'px', left: x + 'px', '--itemCount': actions?.length }">
+        <div v-for="action in actions">
+            <button v-if="!action.submenu && action.action" :class="{item: true, danger: action.danger, nodanger: !action || !action.danger}" @click="emitAction(action?.action)">
+                {{ action.name }}
+            </button>
+            <div  v-if="action.submenu" :class="{item: true, subCard: true, danger: action.danger, nodanger: !action || !action.danger}">
+                <p @mouseover="showSubmenu[action.name] = true" @mouseleave="()=>hideSubmenu(action.name)">{{ action.name }}</p>
+                <ContextMenu class="subMenu" @mouseover="hoversOverSubmenu[action.name] = true" @mouseleave="()=>hideMenuFromSub(action.name)" v-if="showSubmenu[action.name]" :actions="action.submenu" :x="submenuLeft" :y="0" @action-clicked="action=>$emit('action-clicked', action)"/>
+            </div>
+        </div>
     </div>
 </template>
   
 <style scoped>
+    .subMenu {
+        position:relative;
+    }
     .rcMenu {
         position: fixed;
+        width: 40vw;
+        height: calc(var(--itemCount) * 4vh);
         display: flex;
         flex-direction: column;
         background-color: var(--color-background-mute);
@@ -27,7 +82,8 @@
         z-index: 9999;
     }
     
-    .rcMenu button {
+    .rcMenu .item {
+        font-size: 1rem;
         z-index: 9999;
         text-align: left;
         padding-left: 20px;
@@ -41,6 +97,10 @@
     .rcMenu .nodanger:hover {
         background-color: var(--color-background-light);
         border-color: var(--color-background-mute);
+    }
+
+    .rcMenu p {
+        font-size: 1.25rem;
     }
     
     .nodanger {
@@ -58,7 +118,11 @@
     }
 
     @media (min-width: 1025px) {
-        .rcMenu button {
+        .rcMenu {
+            width: 10vw;
+        }
+
+        .rcMenu .item {
             width:10vw;
         }
     }

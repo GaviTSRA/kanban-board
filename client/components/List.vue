@@ -13,9 +13,19 @@
     }
 
     let actions = [
-        ["Move left", "moveLeft", false],
-        ["Move right", "moveRight", false],
-        ["Delete list", "delete", true]
+        {
+            name: "Move left",
+            action: "moveLeft"
+        },
+        {
+            name: "Move right",
+            action: "moveRight"            
+        },
+        {
+            name: "Delete list",
+            action: "delete",
+            danger: true
+        }
     ]
     let top = ref(0)
     let left = ref(0)

@@ -107,7 +107,7 @@
 
     .newCard button {
         width: 20%;
-        background-color: var(--color-btn-create);
+        background-color: var(--color-card-new-btn);
         border-style: none;
         padding: .5rem .25rem;
         border-radius: 10px;
@@ -115,25 +115,30 @@
     }
 
     .newCard button:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-card-new-btn-hover);
     }
+
+    .newCard button:active {
+        background-color: var(--color-card-new-btn-active);
+    }
+
 
     :deep(.editable) {
         width: 50dvw;
         height: 3vh;
-        color: gray;
+        color: var(--color-list-title);;
     }
 
     input {
         width: 50dvw;
         height: 3vh;
-        color: gray;
+        color: var(--color-list-title);
     }
 
     .list {
         margin-left: 1rem;
         margin-top: 10px;
-        background-color: var(--color-background-mute);
+        background-color: var(--color-list-background);
         width: 20rem;
         text-align: center;
         font-size: 1.5rem;
@@ -145,18 +150,18 @@
         max-height: 80vh;
         overflow: scroll;
         scrollbar-width: thin;
-        scrollbar-color: var(--color-background-light) var(--color-background-mute);
+        scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
         overflow-x: hidden;
     }
 
     ::-webkit-scrollbar {
         height: 12px;
         width: 12px;
-        background: var(--color-background-mute);
+        background: var(--color-list-background);
     }
 
     ::-webkit-scrollbar-thumb {
-        background: var(--color-background-light);
+        background: var(--color-list-scrollbar);
         -webkit-border-radius: 10px;
     }
 

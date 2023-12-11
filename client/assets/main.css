@@ -72,10 +72,6 @@ body {
   
     --section-gap: 160px;
 
-    --color-card-primary: rgb(82, 82, 82);
-    --color-card-title: rgb(214, 214, 214);
-    --color-card-description: rgb(159, 158, 158);
-
 
     /* Colors */
     --color-white-1: #ffffff;
@@ -129,12 +125,23 @@ body {
     /* Board header */
     --color-header-background: var(--color-black-3);
     --color-header-title: var(--color-header);
-    --color-header-desc: var(--color-text);
+    --color-header-desc: var(--color-text-dark-2);
     --color-header-settings-btn: var(--color-btn-create);
 
     /* Lists */
-    
+    --color-list-background: var(--color-black-3);
+    --color-list-scrollbar: var(--color-black-4);
+    --color-list-title: var(--color-text-dark-2);
+
+    --color-card-new-btn: var(--color-btn-create);
+    --color-card-new-btn-hover: var(--color-btn-create-hover);
+    --color-card-new-btn-active: var(--color-btn-create-active);
+
     /* Cards */
+    --color-card-primary: rgb(82, 82, 82);
+    --color-card-title: var(--color-header);
+    --color-card-description: var(--color-text-dark-2);
+
     --color-card-is-subcard: gray;
     --color-card-assinging-to: rgb(54, 54, 54);
 

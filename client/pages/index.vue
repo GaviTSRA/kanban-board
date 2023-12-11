@@ -57,7 +57,7 @@
     .create {
         display: flex;
         flex-direction: column;
-        background-color: var(--color-background-light);
+        background-color: var(--color-boardcreate-background);
         position: absolute;
         width: 80vw;
         left: 10vw;
@@ -92,32 +92,34 @@
         width: 10rem;
         align-self: center;
         font-size: 2rem;
-        background-color: var(--color-btn-create);
-        border-style: solid;
-        border-color: var(--color-btn-create-hover);
+        background-color: var(--color-boardcreate-createbtn);
         border-radius: 10px;
         height: fit-content;
+        border-style: none;
     }
     
     .create .confirm:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-boardcreate-createbtn-hover);
+    }
+    .create .confirm:active {
+        background-color: var(--color-boardcreate-createbtn-active);
     }
     
     .newBoardBtn {
         position: fixed;
         bottom: 10px;
         right: 10px;
-        background-color: var(--color-btn-create);
+        background-color: var(--color-boardcreate-openmenu-btn);
         border-style: none;
         padding: 1rem 2rem;
         border-radius: 10px;
         font-size: 1rem;
     }
     .newBoardBtn:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-boardcreate-openmenu-btn-hover);
     }
     .newBoardBtn:active {
-        background-color: aqua;
+        background-color: var(--color-boardcreate-openmenu-btn-active);
     }
     .container {
         display: flex;

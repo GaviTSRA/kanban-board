@@ -60,7 +60,6 @@ body {
   
   /* semantic color variables for this project */
 :root {
-    --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
     --color-background-light: var(--vt-c-black-light);
@@ -73,19 +72,64 @@ body {
   
     --section-gap: 160px;
 
-    --color-btn-create: green;
-    --color-btn-create-hover: rgb(0, 187, 0);
-    --color-btn-danger: rgb(237, 32, 32);
-    --color-btn-danger-hover: rgb(245, 52, 52);
-
     --color-card-primary: rgb(82, 82, 82);
     --color-card-title: rgb(214, 214, 214);
     --color-card-description: rgb(159, 158, 158);
 
-    /* ---------- Start Theme ---------- */
+
+    /* Colors */
+    --color-white-1: #ffffff;
+    --color-white-2: #f8f8f8;
+    --color-white-3: #f2f2f2;
+
+    --color-black-1: #181818;
+    --color-black-2: #222222;
+    --color-black-3: #282828;
+    --color-black-4: #323232;
+
+    --color-accent: #2c3e50;
+
+    --color-header: aqua;
+    --color-text-light-1: var(--color-accent);
+    --color-text-light-2: rgba(60, 60, 60, 0.66);
+    --color-text-dark-1: var(--color-white-1);
+    --color-text-dark-2: rgba(235, 235, 235, 0.64);
+
+    --color-btn-create: green;
+    --color-btn-create-hover: rgb(0, 187, 0);
+    --color-btn-create-active: aqua;
+    --color-btn-danger: rgb(237, 32, 32);
+    --color-btn-danger-hover: rgb(245, 52, 52);
+
+    /* Other */
+    --color-background: var(--color-black-1);
+    
+    /* Board select menu */
+    --color-boardcard-background: var(--color-black-3);
+    --color-boardcard-hover: var(--color-accent);
+    --color-boardcard-dropshadow: var(--color-black-2);
+    --color-boardcard-header: var(--color-header);
+    --color-boardcard-text: var(--color-text-dark-2);
+
+    --color-boardcreate-background: var(--color-black-4);
+
+    --color-boardcreate-createbtn: var(--color-btn-create);
+    --color-boardcreate-createbtn-hover: var(--color-btn-create-hover);
+    --color-boardcreate-createbtn-active: var(--color-btn-create-active);
+
+    --color-boardcreate-openmenu-btn: var(--color-btn-create);
+    --color-boardcreate-openmenu-btn-hover: var(--color-btn-create-hover);
+    --color-boardcreate-openmenu-btn-active: var(--color-btn-create-active);
+
+    /* Board header */
+
+    /* Lists */
+    
     /* Cards */
     --color-card-is-subcard: gray;
     --color-card-assinging-to: rgb(54, 54, 54);
+
+    /* Card menu */
 }
   
 *,

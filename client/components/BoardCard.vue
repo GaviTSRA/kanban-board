@@ -101,7 +101,7 @@
         display: flex;
         flex-direction: row;
         border-radius: 10px;
-        background-color: rgb(42, 42, 42);
+        background-color: var(--color-boardcard-background);
         width: 90vw;
         height: 10vh;
         max-height: 10vh;
@@ -112,18 +112,18 @@
         text-align: left;
     }
     .container:hover {
-        background-color: var(--vt-c-indigo);
+        background-color: var(--color-boardcard-hover);
         transform: translate(10px, -5px);
-        filter: drop-shadow(-10px 5px 10px var(--vt-c-black-mute));
+        filter: drop-shadow(-10px 5px 10px var(--color-boardcard-dropshadow));
     }
 
     h2 {
-        color: aqua;
+        color: var(--color-boardcard-header);
         width: 30%;
         font-size: 0.75rem;
     }
     p {
-        color: gray;
+        color: var(--color-boardcard-text);
         margin-left: 1rem;
         width: 70%;
         font-size: .75rem;

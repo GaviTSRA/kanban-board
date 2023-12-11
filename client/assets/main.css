@@ -117,9 +117,14 @@ body {
     --color-boardcreate-createbtn-hover: var(--color-btn-create-hover);
     --color-boardcreate-createbtn-active: var(--color-btn-create-active);
 
-    --color-boardcreate-openmenu-btn: var(--color-btn-create);
-    --color-boardcreate-openmenu-btn-hover: var(--color-btn-create-hover);
-    --color-boardcreate-openmenu-btn-active: var(--color-btn-create-active);
+    --color-boardmenu-open-btn: var(--color-btn-create);
+    --color-boardmenu-open-btn-hover: var(--color-btn-create-hover);
+    --color-boardmenu-open-btn-active: var(--color-btn-create-active);
+
+    --color-boardmenu-combinedview-btn: var(--color-btn-create);
+    --color-boardmenu-combinedview-btn-hover: var(--color-btn-create-hover);
+    --color-boardmenu-combinedview-btn-active: var(--color-btn-create-active);
+    --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-2);
 
     /* Board header */
 

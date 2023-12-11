@@ -34,14 +34,31 @@
         })).data
         await navigateTo("/board/" + res.value?.id)
     }
+
+    let selectingForCombinedView = ref(false)
+    let selected: Ref<string[]> = ref([])
+
+    function saveSelected() {
+        let storage = useLocalStorage("combinedViewBoards", "")
+        storage.value = JSON.stringify(selected.value)
+    }
+    function change(boardId: string) {
+        if (selected.value.includes(boardId)) selected.value = selected.value.filter(e=>e != boardId)
+        else selected.value.push(boardId)
+    }
 </script>
 
 <template>
     <div class="container">
         <div v-for="board in boards">
-            <BoardCard :board="board"/>
+            <div class="cardContainer">
+                <input @change="()=>change(board.id)" class="combinedViewCheckbox" type="checkbox" v-if="selectingForCombinedView"/>
+                <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
+            </div>
         </div>
         <button class="newBoardBtn" @click="openNewBoardMenu">New Board</button>
+        <button class="combinedViewBtn" v-if="!selectingForCombinedView" @click="selectingForCombinedView = true">Select for combined view</button>
+        <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" event="" @click.native="saveSelected" :class="{'combinedViewBtn': true, disabled: selected.length < 2}" v-if="selectingForCombinedView">Open combined view</NuxtLink>
     </div>
     <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
         <h1>Create new board</h1>
@@ -54,6 +71,37 @@
 </template>
 
 <style scoped>
+    .combinedViewCheckbox {
+        transform: scale(2);
+        margin: auto 1rem;
+        height: fit-content;
+    }
+    .cardContainer {
+        display: flex;
+    }
+    .combinedViewBtn {
+        position: absolute;
+        color: black;
+        left: 10px;
+        top: 10px;
+        padding: 1rem 2rem;
+        font-size: 1rem;
+        background-color: var(--color-boardmenu-combinedview-btn);
+        border-style: none;
+        border-radius: 10px;
+    }
+    .combinedViewBtn:hover {
+        background-color: var(--color-boardmenu-combinedview-btn-hover);
+    }
+    .combinedViewBtn:active {
+        background-color: var(--color-boardmenu-combinedview-btn-active);
+    }
+    .disabled {
+        background-color: var(--color-boardmenu-combinedview-btn-disabled);
+    }
+    .disabled:hover {
+        background-color: var(--color-boardmenu-combinedview-btn-disabled);   
+    }
     .create {
         display: flex;
         flex-direction: column;
@@ -87,6 +135,7 @@
         height: 40vw;
     }
     .create .confirm {
+        transition: 0.3s;
         margin-top: auto;
         margin-bottom: 30px;
         width: 10rem;
@@ -106,20 +155,21 @@
     }
     
     .newBoardBtn {
+        transition: 0.3s;
         position: fixed;
         bottom: 10px;
         right: 10px;
-        background-color: var(--color-boardcreate-openmenu-btn);
+        background-color: var(--color-boardmenu-open-btn);
         border-style: none;
         padding: 1rem 2rem;
         border-radius: 10px;
         font-size: 1rem;
     }
     .newBoardBtn:hover {
-        background-color: var(--color-boardcreate-openmenu-btn-hover);
+        background-color: var(--color-boardmenu-open-btn-hover);
     }
     .newBoardBtn:active {
-        background-color: var(--color-boardcreate-openmenu-btn-active);
+        background-color: var(--color-boardmenu-open-btn-active);
     }
     .container {
         display: flex;

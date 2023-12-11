@@ -1,6 +1,6 @@
 <script setup lang="ts">
-    const route = useRoute();
     let props = defineProps(["board"])
+    
     let title: string = props.board["title"]
     if (title.length > 30) {
         let newTitle: string = ""
@@ -36,14 +36,6 @@
         menuVisible.value = true
         await nextTick()
         menu.value?.focus()
-        
-        /*
-        let largestHeight = window.innerHeight - menu.value?.offsetHeight - 25
-        let largestWidth = window.innerWidth - menu.value?.offsetWidth - 25
-
-        if (top.value > largestHeight) top.value = largestHeight
-        if (left.value > largestWidth) left.value = largestWidth
-        */
     }
 
     async function deleteBoard(boardID: string) {
@@ -84,36 +76,39 @@
 </script>
 
 <template>
-    <NuxtLink :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
+    <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
         <div class="container">
             <h2>{{ title }}</h2>
             <p>{{ description }}</p>
         </div>
     </NuxtLink>
-    <!-- TODO doesn't go away when right clicking something else -->
     <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
     <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteBoard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete board?" optionCancel="Cancel"/>
 </template> 
 
 <style scoped>
+    .link {
+        margin-top: 1rem;
+        border-radius: 10px;
+    }
+    .link:hover {
+        transform: translate(10px, -5px);
+    }
     .container {
-        margin-top: .25rem;
         display: flex;
         flex-direction: row;
         border-radius: 10px;
         background-color: var(--color-boardcard-background);
         width: 90vw;
-        height: 10vh;
+        height: 100%;
         max-height: 10vh;
         padding: 2.5rem 1rem;
-        margin-bottom: 20px;
         align-items: center;
         justify-content: left;
         text-align: left;
     }
     .container:hover {
         background-color: var(--color-boardcard-hover);
-        transform: translate(10px, -5px);
         filter: drop-shadow(-10px 5px 10px var(--color-boardcard-dropshadow));
     }
 
@@ -133,7 +128,6 @@
         .container {
             width: 50vw;
             padding: 3.5rem 2rem;
-            margin-top: 1rem;
         }
         h2 {
             font-size: 2rem;

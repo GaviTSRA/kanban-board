@@ -8,7 +8,7 @@
 </script>
 
 <template>
-    <div class="rcMenu" :style="{ top: y + 'px', left: x + 'px' }">
+    <div @contextmenu.prevent.stop="" class="rcMenu" :style="{ top: y + 'px', left: x + 'px' }">
         <button v-for="action in actions" :class="{danger: action[2], nodanger: !action[2]}" :key="action[1]" @click="emitAction(action[1])">
             {{ action[0] }}
         </button>

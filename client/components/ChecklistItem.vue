@@ -1,8 +1,17 @@
 <script setup>
     let props = defineProps(["item"])
-    let emit = defineEmits(["send"])
+    let emit = defineEmits(["send", "newItem"])
 
     function rename(txt) {
+        if (txt == "") {
+            deleteItem()
+            return
+        }
+        if (props.item.title == "") {
+            setTimeout(() => {
+                emit("newItem")
+            }, 100)
+        }
         props.item.title = txt
         emit("send")
     }

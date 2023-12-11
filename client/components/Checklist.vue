@@ -3,6 +3,15 @@
     let emit = defineEmits(["send"])
 
     function updateTitle(txt) {
+        if (txt == "") {
+            deleteList()
+            return
+        }
+        if (props.checklist.title == "") {
+            setTimeout(() => {
+                newItem()
+            }, 100)
+        }
         props.checklist.title = txt
         emit("send")
     }
@@ -24,10 +33,10 @@
     <div class="checklist">
         <div class="titleContainer">
             <button class="delete" @click="deleteList"></button>
-            <EditableText class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
+            <EditableText :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
         </div>
         <div v-for="item in props.checklist.ChecklistItems">
-            <ChecklistItem @send="$emit('send')" :item="item" />
+            <ChecklistItem @newItem="newItem" @send="$emit('send')" :item="item" />
         </div>
         <button class="newItemBtn" @click="newItem"></button>
     </div>

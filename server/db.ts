@@ -112,7 +112,7 @@ const Checklist = sequelize.define("Checklist", {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "New checklist"
+        defaultValue: ""
     }
 })
 const ChecklistItem = sequelize.define("ChecklistItem", {

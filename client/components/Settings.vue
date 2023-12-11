@@ -29,7 +29,7 @@
         border-radius: 10px;
         padding: .5rem 1rem;;
         height: fit-content;
-        margin: 10px auto;
+        margin: 30px auto;
     }
     .newLabel:hover {
         background-color: var(--color-btn-create-hover);
@@ -49,6 +49,7 @@
         width: 80vw;
         height: 100vh;
         background-color: var(--color-background-soft);
+        filter: drop-shadow(-10px 15px 15px black)
     }
 
     :deep(input) {
@@ -57,7 +58,7 @@
 
     @media (min-width: 1025px) {
         .settings {
-            width: 20vw;
+            width: 25vw;
         }
 
         :deep(input) {

@@ -1,28 +1,24 @@
 <script setup>
+    import "@melloware/coloris/dist/coloris.css";
+    import Coloris from "@melloware/coloris";
+    Coloris.init();
+    Coloris({
+        el: "#coloris",
+        themeMode: "dark",
+        alpha: false
+    });
+
     let props = defineProps(["label", "ws", "boardId"])
 
-    function saveName(name) {
+    let name = ref(props.label.title)
+    function save() {
         props.ws.send(JSON.stringify({
             "action": "updateLabel",
             "boardId": props.boardId,
             "id": props.label.id,
-            "title": name
-        }))
-    }
-    function saveColor(color) {
-        props.ws.send(JSON.stringify({
-            "action": "updateLabel",
-            "boardId": props.boardId,
-            "id": props.label.id,
-            "color": color
-        }))
-    }
-    function saveTextColor(color) {
-        props.ws.send(JSON.stringify({
-            "action": "updateLabel",
-            "boardId": props.boardId,
-            "id": props.label.id,
-            "textColor": color
+            "color": props.label.color,
+            "textColor": props.label.textColor,
+            "title": name.value
         }))
     }
 
@@ -55,16 +51,15 @@
 <template>
     <div class="label" @contextmenu.prevent="openMenu">
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
-        <EditableText :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>saveName(txt)"/>
-        <EditableText :text="props.label.color" class="labelColor" @edit="txt=>saveColor(txt)"/>
-        <EditableText :text="props.label.textColor" class="labelTextColor" @edit="txt=>saveTextColor(txt)"/>
+        <form @change="save" class="label">
+            <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
+            <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>
+            <EditableText :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
+        </form>
     </div>
 </template>
 
 <style scoped>
-    .labelTextColor {
-        margin: 10px;
-    }
     .labelName {
         padding: 0 .5rem;
         text-align: center;
@@ -74,7 +69,7 @@
         border-radius: 10px;
     }
     .labelColor {
-        height: 2rem;
+        height: fit-content;
         margin: 10px;
     }
     .label {

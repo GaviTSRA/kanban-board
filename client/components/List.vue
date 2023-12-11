@@ -7,7 +7,7 @@
         props.ws.send(JSON.stringify({
             "action": "updateList",
             "id": props.list.id,
-            "boardId": list.boardId,
+            "boardId": props.list.boardId,
             "title": txt
         }))
     }

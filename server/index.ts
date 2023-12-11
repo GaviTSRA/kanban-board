@@ -53,6 +53,15 @@ app.delete("/", async (req, res) => {
     res.sendStatus(200)
 })
 
+let clients: {[boardId: string]: WebSocket[]} = {}
+function send(boardId: string, data: any) {
+    let json = JSON.stringify(data)
+
+    for (let client of clients[boardId]) {
+        client.send(json)
+    }
+}
+
  app.ws("/board/:boardId", async (ws, req) => {
     let board = await Board.findByPk(req.params.boardId)
     if (board == null) {
@@ -60,10 +69,19 @@ app.delete("/", async (req, res) => {
         return
     }
 
+    if (clients[req.params.boardId] == undefined) {
+        clients[req.params.boardId] = []
+    }
+    clients[req.params.boardId].push(ws)
+
     await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
     await sendLists(ws, req.params.boardId)
     await sendLabels(ws, req.params.boardId)
     await sendCards(ws, req.params.boardId)
+
+    ws.on("close", () => {
+        clients[req.params.boardId].splice(clients[req.params.boardId].indexOf(ws), 1)
+    })
 
     ws.on("message", async msg => {
         const data = JSON.parse(msg.toString())
@@ -105,11 +123,11 @@ app.delete("/", async (req, res) => {
                         })
                         for (let card of cards) card.destroy()
                         list?.destroy()
-                        ws.send(JSON.stringify({
+                        send(req.params.boardId, {
                             "type": "list",
                             "id": data.id,
                             "delete": true
-                        }))
+                        })
                         return
                     }
                     if (data.title != undefined) {
@@ -147,11 +165,11 @@ app.delete("/", async (req, res) => {
                     })
                     if (data.delete) {
                         card?.destroy()
-                        ws.send(JSON.stringify({
+                        send(req.params.boardId, {
                             "type": "card",
                             "id": data.id,
                             "delete": true
-                        }))
+                        })
                         return
                     }
                     if (data.title != undefined) {
@@ -234,11 +252,11 @@ app.delete("/", async (req, res) => {
                     let label = await Label.findByPk(data.id)
                     if (data.delete) {
                         label?.destroy()
-                        ws.send(JSON.stringify({
+                        send(req.params.boardId, {
                             "type": "label",
                             "id": data.id,
                             "delete": true
-                        }))
+                        })
                     }
                     if (data.title != undefined) {
                         label?.set({
@@ -285,11 +303,11 @@ app.delete("/", async (req, res) => {
 })
 
 async function sendBoard(ws: WebSocket, board: BoardAttributes) {
-    ws.send(JSON.stringify({   // TODO fix ts
+    send(board.id, {  // TODO fix ts
         "type": "board",       // @ts-ignore
         "title": board?.title, // @ts-ignore
         "description": board?.description
-    }))
+    })
 }
 
 async function sendLists(ws: WebSocket, boardId: string) {
@@ -304,13 +322,13 @@ async function sendLists(ws: WebSocket, boardId: string) {
 }
 
 async function sendList(ws: WebSocket, list: any) {
-    ws.send(JSON.stringify({
+    send(list.BoardId, {
         "type": "list",
         "id": list.id,
         "title": list.title,
         "position": list.position,
         "boardId": list.BoardId
-    }))
+    })
 }
 
 async function sendCards(ws: WebSocket, boardId: string) {
@@ -336,7 +354,7 @@ async function sendCards(ws: WebSocket, boardId: string) {
 }
 
 async function sendCard(ws: WebSocket, card: any) {
-    ws.send(JSON.stringify({
+    send(card.BoardId, {
         "type": "card",
         "id": card.id,
         "boardId": card.BoardId,
@@ -345,7 +363,7 @@ async function sendCard(ws: WebSocket, card: any) {
         "description": card.description,
         "position": card.position,
         "checklists": card.Checklists
-    }))
+    })
 }
 
 async function sendLabels(ws: WebSocket, boardId: string) {
@@ -355,16 +373,16 @@ async function sendLabels(ws: WebSocket, boardId: string) {
         },
         include: Card
     })
-    ws.send(JSON.stringify({"type": "clearAssignedLabels"}))
+    send(boardId, {"type": "clearAssignedLabels"})
     for (let label of labels) {
-        ws.send(JSON.stringify({
+        send(boardId, {
             "type": "label", // @ts-ignore
             "id": label.id, // @ts-ignore
             "boardId": label.boardId, // @ts-ignore
             "title": label.title, // @ts-ignore
             "color": label.color, // @ts-ignore
             "textColor": label.textColor
-        })) //@ts-ignore
+        }) //@ts-ignore
         let assignments = await AssignedLabel.findAll({
             where: {
                 BoardId: boardId, //@ts-ignore
@@ -372,12 +390,12 @@ async function sendLabels(ws: WebSocket, boardId: string) {
             }
         })
         for (let assignment of assignments) {
-            ws.send(JSON.stringify({
+            send(boardId, {
                 "type": "assignedLabel", // @ts-ignore
                 "labelId": assignment.LabelId, // @ts-ignore
                 "boardId": assignment.BoardId, // @ts-ignore
                 "cardId": assignment.CardId
-            }))
+            })
         }
     }
 }

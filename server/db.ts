@@ -143,6 +143,7 @@ List.hasMany(Card)
 
 Card.belongsTo(Board)
 Card.belongsTo(List)
+Card.belongsTo(Card) //sub cards
 Card.hasMany(Label)
 Card.hasMany(Checklist)
 Card.belongsToMany(Label, { through: AssignedLabel})

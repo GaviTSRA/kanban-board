@@ -6,5 +6,8 @@ export default defineNuxtConfig({
   ],
   routeRules: {
     "/board/**": {ssr: false}
-  }
+  },
+  modules: [
+    '@vueuse/nuxt',
+  ],
 })

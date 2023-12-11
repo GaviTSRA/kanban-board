@@ -172,6 +172,13 @@ function send(boardId: string, data: any) {
                         })
                         return
                     }
+                    if (data.cardId != undefined) {
+                        let cardId = data.cardId
+                        if (data.cardId == "remove") cardId = null
+                        card?.set({
+                            CardId: cardId
+                        })
+                    }
                     if (data.title != undefined) {
                         card?.set({
                             title: data.title
@@ -354,7 +361,9 @@ async function sendCards(ws: WebSocket, boardId: string) {
 }
 
 async function sendCard(ws: WebSocket, card: any) {
-    send(card.BoardId, {
+    let boardId = card.BoardId
+    if (!boardId) boardId = card.boardId
+    send(boardId, {
         "type": "card",
         "id": card.id,
         "boardId": card.BoardId,
@@ -362,7 +371,8 @@ async function sendCard(ws: WebSocket, card: any) {
         "title": card.title,
         "description": card.description,
         "position": card.position,
-        "checklists": card.Checklists
+        "checklists": card.Checklists,
+        "cardId": card.CardId
     })
 }
 

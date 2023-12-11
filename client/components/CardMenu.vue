@@ -57,6 +57,8 @@
             "checklists": props.card.checklists
         }))
     }
+
+    let showSubCards = useLocalStorage("showSubCards-"+props.card.id, true)
 </script>
 
 <template>
@@ -70,6 +72,10 @@
                     <p :class="{label: true, disabled: !isEnabled(label)}" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
                 </div>
             </div>
+            <div class="showSubCardsOption">
+                <input id="showSubCardsCheckbox" type="checkbox" v-model="showSubCards"/>
+                <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
+            </div>
             <div class="checklistSection">
                 <div v-for="checklist in props.card.checklists" class="checklists">
                     <Checklist @send="send" :checklist="checklist" />
@@ -81,6 +87,18 @@
 </template>
 
 <style scoped>
+    .showSubCardsText {
+        margin-left: 10px;
+    }
+    #showSubCardsCheckbox {
+        transform: scale(2);
+        margin-left: 20px;
+    }
+    .showSubCardsOption {
+        display:flex;
+        flex-direction: row;
+        text-align: left;
+    }
     .checklistSection {
         margin-top: 2rem;
     }

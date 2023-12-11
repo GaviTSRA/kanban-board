@@ -1,6 +1,6 @@
 <script setup>
-    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels"])
-    let emit = defineEmits(["dragStart", "drop", "delete"])
+    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo"])
+    let emit = defineEmits(["dragStart", "drop", "delete", "assign", "startAssign", "hover", "hoverEnd"])
 
     function getDescription() {
         let description = props.card.description
@@ -37,6 +37,14 @@
                 submenu: labelMenu
             },
             {
+                name: "Assign sub cards",
+                action: "assignSubCards"
+            },
+            {
+                name: "Unasign",
+                action: "unasign"
+            },
+            {
                 name: "Delete card",
                 action: "delete",
                 danger: true
@@ -44,17 +52,7 @@
         ]
     })
 
-    let actions = [
-        {
-            name: "Labels",
-            submenu: labelMenu
-        },
-        {
-            name: "Delete card",
-            action: "delete",
-            danger: true
-        }
-    ]
+    let actions = []
 
     let top = ref(0)
     let left = ref(0)
@@ -89,6 +87,19 @@
         if(action == "delete")  {
             deleteMenuVisible.value = true
         }
+
+        if (action == "assignSubCards") {
+            emit("startAssign")
+        }
+
+        if (action == "unasign") {
+            props.ws.send(JSON.stringify({
+                action: "updateCard",
+                boardId: props.card.boardId,
+                id: props.card.id,
+                cardId: "remove"
+            }))
+        }
     }
 
     function deleteCard() {
@@ -101,10 +112,26 @@
         deleteMenuVisible.value = false
         emit("delete")
     }
+
+    function cardClick() {
+        if (props.assigningSubCards) {
+            emit("assign")
+            return
+        }
+        cardMenuVisible.value = true
+    }
+
+    let notHiddenByMasterCard = useLocalStorage("showSubCards-"+props.card.cardId, true)
+    let notHiddenByBoard = useLocalStorage("showSubCards", true)
+    let forceShowAll = useLocalStorage("showAllCards", false)
+    watch(
+        () => props.card.cardId,
+        () => notHiddenByMasterCard = useLocalStorage("showSubCards-"+props.card.cardId, true)
+    )
 </script>
 
 <template>
-    <div @contextmenu.prevent.stop="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)">
+    <div @contextmenu.prevent.stop="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)" v-if="(notHiddenByMasterCard && (notHiddenByBoard || props.card.cardId == undefined)) || forceShowAll">
         <div 
             @dragenter.prevent="dropSpotVisible = true"
             @dragover.prevent="dropSpotVisible = true" 
@@ -112,7 +139,16 @@
             @drop="e=>{$emit('drop', index); dropSpotVisible = false}" 
             :class="{cardDropSpot: dropSpotVisible && props.showDropSpot, cardDropSpotSmall: true}">
         </div>
-        <div class="container" @click="() => cardMenuVisible = true">
+        <div 
+            :class="{
+                container: true, 
+                assigningTo: props.assigningSubCards ? props.assigningTo.id == props.card.id : false,
+                isAssigned: props.assigningTo != undefined ? props.assigningTo.id == props.card.cardId : false
+            }" 
+            @click="cardClick"
+            @mouseenter="$emit('hover')"
+            @mouseleave="$emit('hoverEnd')"
+        >
             <p class="title">{{ props.card.title }}</p>
             <p v-if="props.card.description != undefined" class="description">{{ getDescription() }}</p>
             <div class="labels">
@@ -192,5 +228,11 @@
         font-size: 1rem;
         line-height: 15px;
         padding: 10px;
+    }
+    .assigningTo {
+        background-color: var(--color-card-assinging-to);
+    }
+    .isAssigned {
+        background-color: var(--color-card-is-subcard);
     }
 </style>

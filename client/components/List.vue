@@ -1,6 +1,6 @@
 <script setup>
-    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels"])
-    let emit = defineEmits(["ctxMenuAction", "dragStart", "drop"])
+    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo"])
+    let emit = defineEmits(["ctxMenuAction", "dragStart", "drop", "assign", "startAssign", "hover", "hoverEnd"])
 
     function editName(txt) {
         if (txt == "") return
@@ -69,9 +69,15 @@
                     :labels="props.labels"
                     :assigned-labels="props.assignedLabels"
                     :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
+                    :assigningSubCards="props.assigningSubCards"
+                    :assigningTo="props.assigningTo"
                     @drag-start="card=>$emit('dragStart', card)"
                     @drop="$emit('drop', index)"
                     @delete="$emit('deleteCard', index, list.id)"
+                    @assign="$emit('assign', card)"
+                    @startAssign="$emit('startAssign', card)"
+                    @hover="$emit('hover', card)"
+                    @hoverEnd="$emit('hoverEnd')"
                 />
             </div>
             <div 
@@ -112,7 +118,13 @@
         background-color: var(--color-btn-create-hover);
     }
 
-    :deep(input) {
+    :deep(.editable) {
+        width: 50dvw;
+        height: 3vh;
+        color: gray;
+    }
+
+    input {
         width: 50dvw;
         height: 3vh;
         color: gray;
@@ -149,7 +161,7 @@
     }
 
     @media (min-width: 1025px) {
-        :deep(input) {
+        :deep(.editable) {
             width: 9vw;
         }
     }

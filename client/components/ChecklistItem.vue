@@ -51,7 +51,6 @@
     .checkbox {
         width: fit-content;
         min-width: 3rem;
-        transform: scale(.85);
     }
     .item {
         width: 70%;
@@ -62,5 +61,10 @@
         align-items: center;
         border-radius: 10px;
         font-size: 1rem;
+        text-align: left;
+    }
+
+    input[type="checkbox"] {
+        transform:scale(1.5)
     }
 </style>

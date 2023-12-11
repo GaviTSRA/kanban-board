@@ -81,6 +81,11 @@ body {
     --color-card-primary: rgb(82, 82, 82);
     --color-card-title: rgb(214, 214, 214);
     --color-card-description: rgb(159, 158, 158);
+
+    /* ---------- Start Theme ---------- */
+    /* Cards */
+    --color-card-is-subcard: gray;
+    --color-card-assinging-to: rgb(54, 54, 54);
 }
   
 *,

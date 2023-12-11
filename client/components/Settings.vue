@@ -8,10 +8,20 @@
             "boardId": props.boardId
         }))
     }    
+    let showSubCards = useLocalStorage("showSubCards", true)
+    let forceShowAllCards = useLocalStorage("showAllCards", false)
 </script>
 
 <template>
     <div class="settings">
+        <div class="showSubCardsOption">
+            <input id="showSubCardsCheckbox" type="checkbox" v-model="forceShowAllCards"/>
+            <label class="showSubCardsText" for="showSubCardsCheckbox">Force show all cards</label>
+        </div>
+        <div class="showSubCardsOption">
+            <input id="showSubCardsCheckbox" type="checkbox" v-model="showSubCards"/>
+            <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
+        </div>
         <h1>Labels</h1>
         <div class="labels">
             <div v-for="label in props.labels">
@@ -23,6 +33,19 @@
 </template>
 
 <style scoped>
+    .showSubCardsText {
+        margin: auto 0;
+        font-size: 1.25rem;
+    }
+    #showSubCardsCheckbox {
+        margin: 10px 20px;
+        transform: scale(2);
+    }
+    .showSubCardsOption {
+        display:flex;
+        flex-direction: row;
+        text-align: left;
+    }
     .newLabel {
         background-color: var(--color-btn-create);
         border-style: none;
@@ -39,6 +62,7 @@
         flex-direction: column;
     }
     h1 {
+        margin-top: 2rem;
         color: aqua;
         margin-left: 10px;   
     }
@@ -52,7 +76,7 @@
         filter: drop-shadow(-10px 15px 15px black)
     }
 
-    :deep(input) {
+    :deep(.editable) {
         width: 20vw;
     }
 
@@ -61,7 +85,7 @@
             width: 25vw;
         }
 
-        :deep(input) {
+        :deep(.editable) {
             width: 5vw;
         }
     }

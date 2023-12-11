@@ -17,6 +17,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         position: number,
         listId: string,
         boardId: string,
+        cardId: string,
         checklists: {
             title: string,
             id: string,
@@ -117,6 +118,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                             card.description = data.description
                             card.listId = data.listId
                             card.checklists = checklists
+                            card.cardId = data.cardId
                             found = true
                             break
                         }
@@ -130,6 +132,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         position: data.position,
                         boardId: data.boardId,
                         listId: data.listId,
+                        cardId: data.cardId,
                         checklists: checklists
                     })
                 }
@@ -339,12 +342,42 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             }
         }
     }
+
+    let assigningSubCards = ref(false)
+    let assigningTo: Ref<Card | undefined> = ref(undefined)
+    function assignCard(card: Card) {
+        ws.send(JSON.stringify({
+            action: "updateCard",
+            boardId: board.value.id,
+            cardId: assigningTo.value?.id,
+            id: card.id
+        }))
+    }
+    function startAssign(card: Card) {
+        assigningTo.value = card
+        assigningSubCards.value = true
+    }
+    function hoverCard(card: Card) {
+        if (!assigningSubCards.value) {
+            assigningTo.value = card
+        }
+    }
+    function hoverEndCard() {
+        if (!assigningSubCards.value) {
+            assigningTo.value = undefined
+        }
+    }
+    function stopAssigning() {
+        assigningTo.value = undefined
+        assigningSubCards.value = false
+    }
 </script>
 
 <template>
     <div @dragend="dragEnd">
         <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="ws"/>
         <Settings v-if="settingsOpened" :ws="ws" :labels="labels" :boardId="board.id"/>
+        <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
@@ -355,6 +388,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         @drag-start="card=>startDragCard(card)"
                         @drop="index=>dropCard(list, index)"
                         @delete-card="(i, id)=>deleteCard(i, id)"
+                        @assign="card=>assignCard(card)"
+                        @start-assign="card=>startAssign(card)"
+                        @hover="card=>hoverCard(card)"
+                        @hoverEnd="hoverEndCard"
                         :list="list" 
                         :cards="cards[list.id]" 
                         :ws="ws"
@@ -362,6 +399,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         :draggingCard="draggingCard"
                         :labels="labels"
                         :assigned-labels="assignedLabels"
+                        :assigningSubCards="assigningSubCards"
+                        :assigningTo="assigningTo"
                         draggable="true" 
                     />
                 </div>
@@ -434,5 +473,17 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
     .newList button:hover {
         background-color: var(--color-btn-create-hover);
+    }
+
+    .stopAssigning {
+        background-color: var(--color-btn-danger);
+        border-style: none;
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        font-size: 2rem;
+        padding: 1rem 2rem;
+        color: white;
+        border-radius: 10px;
     }
 </style>

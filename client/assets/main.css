@@ -89,11 +89,11 @@ body {
 
     --color-accent: #2c3e50;
 
-    --color-header: aqua;
     --color-text-light-1: var(--color-accent);
     --color-text-light-2: rgba(60, 60, 60, 0.66);
     --color-text-dark-1: var(--color-white-1);
     --color-text-dark-2: rgba(235, 235, 235, 0.64);
+    --color-header: rgb(52, 232, 232);
 
     --color-btn-create: green;
     --color-btn-create-hover: rgb(0, 187, 0);
@@ -127,6 +127,10 @@ body {
     --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-2);
 
     /* Board header */
+    --color-header-background: var(--color-black-3);
+    --color-header-title: var(--color-header);
+    --color-header-desc: var(--color-text);
+    --color-header-settings-btn: var(--color-btn-create);
 
     /* Lists */
     

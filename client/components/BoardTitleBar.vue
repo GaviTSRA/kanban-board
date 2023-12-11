@@ -35,7 +35,7 @@
     .settings {
         margin: auto 10px auto auto;
         height: 2rem;
-        background-color: var(--color-btn-create);
+        background-color: var(--color-header-settings-btn);
         border-style: none;
         border-radius: 10px;
     }
@@ -52,14 +52,14 @@
         left: 0;
         width: 100vw;
         height: 7vh;
-        background-color: var(--color-background-mute);
+        background-color: var(--color-header-background);
         overflow: hidden;
     }
 
     .title {
         font-size: 1.5rem;
         margin: auto 10px;
-        color: aqua;
+        color: var(--color-header-title);
         height: fit-content;
     }
 
@@ -79,7 +79,7 @@
         width: 25vw;
         height: 100%;
         resize: none;
-        color: var(--color-text);
+        color: var(--color-header-desc);
         font-size: 1rem;
     }
 

@@ -11,14 +11,16 @@
     let timer
     let x
     let y
-    function detectDoubleClick(event) {
+    async function detectDoubleClick(event) {
         if (timer && Math.abs(x - event.x) < 10 && Math.abs(y - event.y) < 10) {
             text.value = props.text
             x = 0
             y = 0
             clearTimeout(timer)
             editing.value = true
-            console.log("A")
+            await nextTick()
+            input.value?.focus()
+            textarea.value?.focus()
         } else {
             timer = setTimeout(() => {
                 x = 0

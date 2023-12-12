@@ -82,8 +82,8 @@
     .combinedViewBtn {
         position: absolute;
         color: black;
-        left: 10px;
-        top: 10px;
+        right: 10px;
+        bottom: 4rem;
         padding: 1rem 2rem;
         font-size: 1rem;
         background-color: var(--color-boardmenu-combinedview-btn);
@@ -201,6 +201,12 @@
             top: 10px;
             right: 10px;
             bottom: auto;
+        }
+        .combinedViewBtn {
+            left: 10px;
+            top: 10px;
+            bottom: auto;
+            right: auto;
         }
     }
 

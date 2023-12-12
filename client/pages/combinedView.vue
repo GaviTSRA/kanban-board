@@ -48,6 +48,7 @@
         description: ""
     })
     let lists: Ref<List[]> = ref([])
+    let allLists: Ref<List[]> = ref([])
     let cards: Ref<{[listId: string]: Card[]}> = ref({})
     let labels: Ref<Label[]> = ref([])
     let assignedLabels: Ref<{[labelId:string]: string}[]> = ref([])
@@ -96,6 +97,12 @@
                     if (list.title == data.title) {
                         found = true
                         listIdOverrides[data.id] = list.id
+                        allLists.value.push({
+                            id: data.id,
+                            title: data.title,
+                            position: data.position,
+                            boardId: data.boardId
+                        })
                     }
                 }
                 if (!found) {
@@ -159,7 +166,10 @@
                     })
                 }
                 for (const [listId, listCards] of Object.entries(cards.value)) {
-                    cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)
+                    cards.value[listId] = listCards.sort((a: Card, b: Card) => {
+                        if (a.boardId != b.boardId) return a.boardId > b.boardId ? -1 : 1
+                        return a.position < b.position ? -1 : 1
+                    })
                     for (let card of listCards) {
                         card.subcardCount = 0
                         card.subcardsDone = 0
@@ -297,10 +307,116 @@
         assigningTo.value = undefined
         assigningSubCards.value = false
     }
+
+    let isDraggingCard = ref(false)
+    let draggingCard: Card | undefined = undefined
+    function startDragCard(card: Card) {
+        isDraggingCard.value = false
+        isDraggingCard.value = true
+        draggingCard = card
+    }
+
+    let moveQueue: Ref<Card[]> = ref([])
+    let listDroppedIn: Ref<{[id: string]: List}> = ref({})
+    let indexDroppedIn: Ref<{[id: string]: number}> = ref({})
+    let subcards: Ref<{[id: string]: Card[]}> = ref({})
+    function dropCard(list: List, index: number) {
+        let droppedList = list
+        if (list.boardId != draggingCard?.boardId) {
+            for (let _list of allLists.value) {
+                if (listIdOverrides[_list.id] == list.id) {
+                    list = _list
+                    if (list.boardId != draggingCard?.boardId) {
+                        console.log("A") 
+                        return
+                    }
+                    break
+                }
+            }
+        }
+
+        if (list.boardId != draggingCard?.boardId) return
+
+        let i = 0
+        for (let card of cards.value[droppedList.id]) {
+            if (card.boardId == draggingCard?.boardId) {
+                index -= i
+                break
+            }
+            i++
+        }
+
+        if (index < 0) return
+
+        if (draggingCard?.position < index && draggingCard?.listId == list.id) index -= 1
+        if (index < 0) index = 0
+        isDraggingCard.value = false
+        wss[draggingCard.boardId].send(JSON.stringify({
+            "action": "updateCard",
+            "id": draggingCard?.id,
+            "listId": list.id,
+            "boardId": draggingCard.boardId,
+            "position": index
+        }))
+
+        if (draggingCard?.listId != list.id) {
+            for (let card of cards.value[draggingCard?.listId]) {
+                if (card.id == draggingCard?.id) continue
+                if (card.position > draggingCard?.position) {
+                    wss[draggingCard.boardId].send(JSON.stringify({
+                        "action": "updateCard",
+                        "boardId": draggingCard.boardId,
+                        "id": card.id,
+                        "position": card.position -= 1
+                    }))
+                }
+            }
+        }
+        for (let card of cards.value[list.id]) {
+            if (card.id == draggingCard?.id) continue
+            if (
+                (card.listId == draggingCard?.listId && card.position < draggingCard?.position && card.position >= index) ||
+                (list.id != draggingCard?.listId && card.position >= index) 
+                ) {
+                    wss[draggingCard.boardId].send(JSON.stringify({
+                    "action": "updateCard",
+                    "boardId": draggingCard.boardId,
+                    "id": card.id,
+                    "position": card.position += 1
+                }))
+            }
+            if ((list.id == draggingCard?.listId && card.position > draggingCard?.position && card.position <= index)) {
+                wss[draggingCard.boardId].send(JSON.stringify({
+                    "action": "updateCard",
+                    "boardId": draggingCard.boardId,
+                    "id": card.id,
+                    "position": card.position -= 1
+                }))
+            }
+        }
+
+        let _subcards = []
+        for (let list of lists.value) {
+            for (let otherCard of cards.value[list.id]) {
+                if (otherCard.cardId == draggingCard?.id) _subcards.push(otherCard)
+            }
+        }
+
+        if (_subcards.length > 0) {
+            moveQueue.value.push(draggingCard)
+            listDroppedIn.value[draggingCard.id] = list
+            indexDroppedIn.value[draggingCard.id] = index
+            subcards.value[draggingCard.id] = _subcards
+        }
+    }
+
+    function dragEnd() {
+        isDraggingCard.value = false
+    }
 </script>
 
 <template>
-    <div>
+    <div @dragend="dragEnd">
         <BoardTitleBar :editable="false" @settings="settingsOpened = !settingsOpened" :board="board" :ws="undefined"/>
         <Settings :creationEnabled="false" v-if="settingsOpened" :ws="undefined" :label-has-own-ws="true" :labels="labels"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
@@ -310,8 +426,8 @@
                     <List 
                         @ctxMenuAction="action=>{}" 
                         @dragstart="()=>{}" 
-                        @drag-start="card=>{}"
-                        @drop="index=>{}"
+                        @drag-start="card=>startDragCard(card)"
+                        @drop="index=>dropCard(list, index)"
                         @delete-card="(i, id)=>deleteCard(i, id)"
                         @assign="card=>assignCard(card)"
                         @start-assign="card=>startAssign(card)"
@@ -321,8 +437,8 @@
                         :list="list" 
                         :cards="cards[list.id]" 
                         :ws="wss[list.boardId]"
-                        :is-dragging-card="false"
-                        :draggingCard="false"
+                        :is-dragging-card="isDraggingCard"
+                        :draggingCard="draggingCard"
                         :labels="labels"
                         :assigned-labels="assignedLabels"
                         :assigningSubCards="assigningSubCards"

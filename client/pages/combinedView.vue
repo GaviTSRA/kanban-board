@@ -220,16 +220,6 @@
         }
     }
 
-    function deleteList() {
-        deleteMenuVisible.value = false
-        wss[listToDelete?.boardId].send(JSON.stringify({
-            "action": "updateList",
-            "boardId": listToDelete?.boardId,
-            "id": listToDelete?.id,
-            "delete": true
-        }))
-    }
-
     let settingsOpened = ref(false)
 
     function deleteCard(index: number, id: string) {
@@ -311,7 +301,6 @@
                 </div>
             </div>
         </div>
-        <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
     </div>
 </template>
 

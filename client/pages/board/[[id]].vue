@@ -263,10 +263,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         }
     }
 
-    let showMoveSubcardsMenu = ref(false)
-    let listDroppedIn: Ref<List | undefined> = ref(undefined)
-    let indexDroppedIn = ref(0)
-    let subcards: Ref<Card[]> = ref([])
+    let moveQueue: Ref<Card[]> = ref([])
+    let listDroppedIn: Ref<{[id: string]: List}> = ref({})
+    let indexDroppedIn: Ref<{[id: string]: number}> = ref({})
+    let subcards: Ref<{[id: string]: Card[]}> = ref({})
     function dropCard(list: List, index: number) {
         if (draggingCard?.position < index && draggingCard?.listId == list.id) index -= 1
         if (index < 0) index = 0
@@ -323,10 +323,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         }
 
         if (_subcards.length > 0) {
-            showMoveSubcardsMenu.value = true
-            listDroppedIn.value = list
-            indexDroppedIn.value = index
-            subcards.value = _subcards
+            moveQueue.value.push(draggingCard)
+            listDroppedIn.value[draggingCard.id] = list
+            indexDroppedIn.value[draggingCard.id] = index
+            subcards.value[draggingCard.id] = _subcards
         }
     }
 
@@ -408,14 +408,12 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         assigningSubCards.value = false
     }
 
-    function moveSubcards() {
-        showMoveSubcardsMenu.value = false
-
-        let index = indexDroppedIn.value
-        for (let subcard of subcards.value) {
+    function moveSubcards(card: Card) {
+        let index = indexDroppedIn.value[card.id]
+        for (let subcard of subcards.value[card.id]) {
             index++
             startDragCard(subcard)
-            dropCard(listDroppedIn.value, index)
+            dropCard(listDroppedIn.value[card.id], index)
         }
     }
 </script>
@@ -461,7 +459,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
             </div>
         </div>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
-        <DecisionMenu v-if="showMoveSubcardsMenu" @confirm="moveSubcards" @cancel="showMoveSubcardsMenu = false" optionOk="Confirm" text="Move subcards?" optionCancel="Cancel"/>
+        <DecisionMenu v-if="moveQueue.length > 0" @confirm="()=>moveSubcards(moveQueue.shift())" @cancel="moveQueue.shift()" optionOk="Confirm" :text="'Move subcards of '+moveQueue[0].title+'?'" optionCancel="Cancel"/>
     </div>
 </template>
 

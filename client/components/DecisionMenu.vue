@@ -21,7 +21,7 @@
         height: 20vh;
         top: 40vh;
         filter: drop-shadow(0 0 5rem black);
-        background-color: var(--color-background-light);
+        background-color: var(--color-decisionmenu-background);
         display: flex;
         flex-direction: column;
         border-radius: 10px;
@@ -42,16 +42,16 @@
         border-radius: 5px;
     }
     .btnOk {
-        background-color: var(--color-btn-create);
+        background-color: var(--color-decisionmenu-btn-ok);
     }
     .btnOk:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-decisionmenu-btn-ok-hover);
     }
     .btnCancel {
-        background-color: var(--color-btn-danger);
+        background-color: var(--color-decisionmenu-btn-cancel);
     }
     .btnCancel:hover {
-        background-color: var(--color-btn-danger-hover);
+        background-color: var(--color-decisionmenu-btn-cancel-hover);
     }
 
     @media (min-width: 1025px) {

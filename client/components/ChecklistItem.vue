@@ -38,7 +38,7 @@
     .deleteBtn {
         margin-left: 1rem;
         margin-right: 10px;
-        background-color: rgba(0,0,0,0);
+        background-color: var(--color-cardmenu-checklist-delete-item);
         border-radius: 10px;
         border-style: none;
         margin-left: auto;

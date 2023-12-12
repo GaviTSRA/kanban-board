@@ -75,7 +75,7 @@
         height: calc(var(--itemCount) * 4vh);
         display: flex;
         flex-direction: column;
-        background-color: var(--color-background-mute);
+        background-color: var(--color-ctxmenu-background);
         border-style: none;
         border-radius: 10px;
         filter:drop-shadow(-4px 4px 5px black);
@@ -87,7 +87,7 @@
         z-index: 9999;
         text-align: left;
         padding-left: 20px;
-        background-color: var(--color-background-mute);
+        background-color: var(--color-ctxmenu-background);
         border-style: none;
         border-width: 2px;
         width:40vw;
@@ -95,8 +95,8 @@
         border-radius: 10px;
     }
     .rcMenu .nodanger:hover {
-        background-color: var(--color-background-light);
-        border-color: var(--color-background-mute);
+        background-color: var(--color-ctxmenu-hover);
+        border-color: var(--color-ctxmenu-background);
     }
 
     .rcMenu p {
@@ -108,12 +108,12 @@
     }
 
     .danger {
-        color: rgb(255, 74, 74);
+        color: var(--color-ctxmenu-danger-txt);
     }
 
     .danger:hover {
-        background-color: var(--color-btn-danger);
-        border-color: red;
+        background-color: var(--color-ctxmenu-danger-hover);
+        border-color: var(--color-ctxmenu-danger-hover);
         color: black;
     }
 

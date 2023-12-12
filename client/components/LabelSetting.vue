@@ -70,6 +70,7 @@
     }
     .labelColor {
         height: fit-content;
+        width: 5vw;
         margin: 10px;
     }
     .label {

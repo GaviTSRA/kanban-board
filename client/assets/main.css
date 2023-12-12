@@ -135,10 +135,13 @@ body {
     --color-header-settings-btn: var(--color-btn-create);
     
     /* Settings */
-    /* TODO */
+    --color-settings-background: var(--color-black-2);
+    --color-settings-header: var(--color-header);
+    --color-settings-labels-new: var(--color-btn-create);
+    --color-settings-labels-new-hover: var(--color-btn-create-hover);
 
     /* Lists */
-    --color-list-background: var(--color-black-3);
+    --color-list-background: var(--color-black-2);
     --color-list-scrollbar: var(--color-black-4);
     --color-list-title: var(--color-text-dark-2);
 
@@ -169,9 +172,25 @@ body {
 
     --color-cardmenu-checklist-new: var(--color-btn-create);
     --color-cardmenu-checklist-new-hover: var(--color-btn-create-hover);
-
     --color-cardmenu-checklist-title: var(--color-header);
-    /* TODO */
+    --color-cardmenu-checklist-delete: black;
+    --color-cardmenu-checklist-delete-hover: var(--color-btn-danger);
+    --color-cardmenu-checklist-new-item: black;
+    --color-cardmenu-checklist-new-item-hover: var(--color-btn-create);
+    --color-cardmenu-checklist-delete-item: rgba(0, 0, 0, 0);
+
+    /* ctx menu */
+    --color-ctxmenu-background: var(--color-black-3);
+    --color-ctxmenu-hover: var(--color-black-4);
+    --color-ctxmenu-danger-hover: var(--color-btn-danger);
+    --color-ctxmenu-danger-txt: var(--color-btn-danger-hover);
+
+    /* decision menu */
+    --color-decisionmenu-background: var(--color-black-4);
+    --color-decisionmenu-btn-ok: var(--color-btn-create);
+    --color-decisionmenu-btn-ok-hover: var(--color-btn-create-hover);
+    --color-decisionmenu-btn-cancel: var(--color-btn-danger);
+    --color-decisionmenu-btn-cancel-hover: var(--color-btn-danger-hover);
 }
   
 *,

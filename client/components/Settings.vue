@@ -47,7 +47,7 @@
         text-align: left;
     }
     .newLabel {
-        background-color: var(--color-btn-create);
+        background-color: var(--color-settings-labels-new);
         border-style: none;
         border-radius: 10px;
         padding: .5rem 1rem;;
@@ -55,7 +55,7 @@
         margin: 30px auto;
     }
     .newLabel:hover {
-        background-color: var(--color-btn-create-hover);
+        background-color: var(--color-settings-labels-new-hover);
     }
     .labels { 
         display: flex;
@@ -63,7 +63,7 @@
     }
     h1 {
         margin-top: 2rem;
-        color: aqua;
+        color: var(--color-settings-header);
         margin-left: 10px;   
     }
     .settings {
@@ -72,7 +72,7 @@
         right: 0;
         width: 80vw;
         height: 100vh;
-        background-color: var(--color-background-soft);
+        background-color: var(--color-settings-background);
         filter: drop-shadow(-10px 15px 15px black)
     }
 

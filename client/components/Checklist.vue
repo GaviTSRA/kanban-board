@@ -53,7 +53,7 @@
         color: var(--color-cardmenu-checklist-title);
     }
     .delete {
-        background-color: black;
+        background-color: var(--color-cardmenu-checklist-delete);
         border-style: none;
         padding: .5rem 1rem;
         border-radius: 10px;
@@ -62,14 +62,14 @@
         mask: url(/trash-2.svg) no-repeat center;
     }
     .delete:hover {
-        background-color: var(--color-btn-danger);
+        background-color: var(--color-cardmenu-checklist-delete-hover);
     }
     .newItemBtn {
         transform: scale(1.25);
         align-self: center;
         margin-right: 95%;
         margin-left: 10px;
-        background-color: black;
+        background-color: var(--color-cardmenu-checklist-new-item);
         border-style: none;
         padding: 1rem 1rem;
         border-radius: 10px;
@@ -77,7 +77,7 @@
         mask: url(/plus-square.svg) no-repeat center;
     }
     .newItemBtn:hover {
-        background-color: var(--color-btn-create);
+        background-color: var(--color-cardmenu-checklist-new-item-hover);
     }
     .checklist {
         padding: 0 0 1rem 0;

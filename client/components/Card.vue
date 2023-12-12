@@ -128,6 +128,56 @@
         () => props.card.cardId,
         () => notHiddenByMasterCard = useLocalStorage("showSubCards-"+props.card.cardId, true)
     )
+
+    function shadeColor(color, percent) {
+        var R = parseInt(color.substring(1,3),16);
+        var G = parseInt(color.substring(3,5),16);
+        var B = parseInt(color.substring(5,7),16);
+
+        // R = parseInt(R * (100 + percent) / 100);
+        // G = parseInt(G * (100 + percent) / 100);
+        // B = parseInt(B * (100 + percent) / 100);
+
+        const COLOR_MAX = 180
+        R = (R<COLOR_MAX)?R:COLOR_MAX;  
+        G = (G<COLOR_MAX)?G:COLOR_MAX;  
+        B = (B<COLOR_MAX)?B:COLOR_MAX;
+
+        const COLOR_MIN = 50
+        R = (R>COLOR_MIN)?R:COLOR_MIN;  
+        G = (G>COLOR_MIN)?G:COLOR_MIN;  
+        B = (B>COLOR_MIN)?B:COLOR_MIN;
+
+        if (Math.abs(G-R)<60) G+=60
+        if (Math.abs(G-B)<60) G-=60
+        if (Math.abs(B-G)<60) B+=60
+        if (Math.abs(B-R)<60) B-=60
+        if (Math.abs(R-B)<60) R+=60
+        if (Math.abs(R-G)<60) R-=60
+
+        R = (R<COLOR_MAX)?R:COLOR_MAX;  
+        G = (G<COLOR_MAX)?G:COLOR_MAX;  
+        B = (B<COLOR_MAX)?B:COLOR_MAX;
+
+        R = (R>COLOR_MIN)?R:COLOR_MIN;  
+        G = (G>COLOR_MIN)?G:COLOR_MIN;  
+        B = (B>COLOR_MIN)?B:COLOR_MIN;
+
+        R = Math.round(R)
+        G = Math.round(G)
+        B = Math.round(B)
+
+        var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+        var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+        var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+        return "#"+RR+GG+BB;
+    }
+
+    function getColor(string) {
+
+        return shadeColor(string)
+    }
 </script>
 
 <template>
@@ -148,8 +198,8 @@
                 hasAssigned: props.card.subcards != 0
             }"
             :style="{
-                'border-color': '#'+(props.card.cardId != undefined ? props.card.cardId.slice(0, 6) : '000000'),
-                '--id-color': '#'+props.card.id.slice(0, 6)
+                'border-color': props.card.cardId != undefined ? getColor('#'+props.card.cardId.slice(0, 6)) : '#000000',
+                '--id-color': getColor('#'+props.card.id.slice(0, 6))
             }"
             @click="cardClick"
             @mouseenter="$emit('hover')"
@@ -186,6 +236,7 @@
 
 <style scoped>
     .assigned {
+        border-width: 5px;
         border-style: solid;
     }
     .boardName {

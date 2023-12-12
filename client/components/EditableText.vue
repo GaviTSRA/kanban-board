@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["text", "textarea", "focus"])
+    let props = defineProps(["text", "textarea", "focus", "editable"])
     let emit = defineEmits(["edit"])
 
     let text = ref("")
@@ -12,6 +12,7 @@
     let x
     let y
     async function detectDoubleClick(event) {
+        if (props.editable != undefined && !props.editable) return
         if (timer && Math.abs(x - event.x) < 10 && Math.abs(y - event.y) < 10) {
             text.value = props.text
             x = 0

@@ -1,6 +1,6 @@
 <script setup>
     let emit = defineEmits(["settings"])
-    let props = defineProps(["board", "ws"])
+    let props = defineProps(["board", "ws", "editable"])
     let board = props.board
 
     function saveNew(which, txt) {
@@ -24,8 +24,8 @@
     <div class="header">
         <!-- TODO icon? -->
         <NuxtLink to="/" class="back">Back</NuxtLink>
-        <EditableText :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
-        <EditableText :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <EditableText :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
+        <EditableText :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
         <!-- TODO icon -->
         <button @click="$emit('settings')" class="settings">Settings</button>
     </div>

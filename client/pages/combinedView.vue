@@ -220,21 +220,6 @@
         }
     }
 
-    let deleteMenuVisible = ref(false)
-    let listToDelete: List | undefined = undefined
-    function listCtxAction(action: string, list: List) {
-        if (action == "moveLeft") {
-            alert("Not available in combined view!")
-        }
-        if (action == "moveRight") {
-            alert("Not available in combined view!")
-        }
-        if (action == "delete") {
-            listToDelete = list
-            deleteMenuVisible.value = true
-        }
-    }
-
     function deleteList() {
         deleteMenuVisible.value = false
         wss[listToDelete?.boardId].send(JSON.stringify({
@@ -293,14 +278,14 @@
 
 <template>
     <div>
-        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="undefined"/>
+        <BoardTitleBar :editable="false" @settings="settingsOpened = !settingsOpened" :board="board" :ws="undefined"/>
         <Settings :creationEnabled="false" v-if="settingsOpened" :ws="undefined" :label-has-own-ws="true" :labels="labels"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
                     <List 
-                        @ctxMenuAction="action=>listCtxAction(action, list)" 
+                        @ctxMenuAction="action=>{}" 
                         @dragstart="()=>{}" 
                         @drag-start="card=>{}"
                         @drop="index=>{}"

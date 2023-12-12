@@ -59,7 +59,7 @@
 
 <template>
     <div class="list" @contextmenu.prevent.stop="openMenu">
-        <EditableText :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
+        <EditableText :editable="props.allowCreation" :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <div class="cards">
             <div v-for="(card, index) in props.cards">

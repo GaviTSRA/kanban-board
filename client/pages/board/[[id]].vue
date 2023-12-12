@@ -18,6 +18,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         listId: string,
         boardId: string,
         cardId: string,
+        subcardCount?: number,
+        subcardsDone?: number,
         checklists: {
             title: string,
             id: string,
@@ -137,7 +139,23 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     })
                 }
                 for (const [listId, listCards] of Object.entries(cards.value)) {
-                    cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)   
+                    cards.value[listId] = listCards.sort((a: Card, b: Card) => a.position < b.position ? -1 : 1)
+                    for (let card of listCards) {
+                        card.subcardCount = 0
+                        card.subcardsDone = 0
+                        for (const [listId2, listCards2] of Object.entries(cards.value)) {
+                            for (let card2 of listCards2) {
+                                if (card.id == card2.cardId) {
+                                    for (let checklist of card2.checklists) {
+                                        for (let item of checklist.ChecklistItems) {
+                                            card.subcardCount++
+                                            if (item.checked) card.subcardsDone++
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 break
         

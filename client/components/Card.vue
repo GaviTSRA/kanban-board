@@ -142,14 +142,21 @@
         <div 
             :class="{
                 container: true, 
-                assigningTo: props.assigningSubCards ? props.assigningTo.id == props.card.id : false,
+                assigningTo: props.assigningTo ? props.assigningTo.cardId == props.card.id : false,
                 isAssigned: props.assigningTo != undefined ? props.assigningTo.id == props.card.cardId : false
             }" 
             @click="cardClick"
             @mouseenter="$emit('hover')"
             @mouseleave="$emit('hoverEnd')"
         >
-            <p class="title">{{ props.card.title }}</p>
+            <div class="firstLine">
+                <p class="title">{{ props.card.title }}</p>
+                <p 
+                    class="subcardCount" 
+                    :class="{subcardCount: true, progress: true, complete: card.subcardCount == card.subcardsDone}"
+                    v-if="props.card.subcardCount > 0"
+                >{{ card.subcardsDone }}/{{ card.subcardCount }}</p>
+            </div>
             <p v-if="props.card.description != undefined" class="description">{{ getDescription() }}</p>
             <div class="labels">
                 <div v-for="label in labels" >
@@ -171,6 +178,15 @@
 </template>
 
 <style scoped>
+    .subcardCount {
+        margin: auto;
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+    .firstLine {
+        display: flex;
+        flex-direction: row;
+    }
     .progress {
         display: inline-block;
         padding: 0 .25rem;

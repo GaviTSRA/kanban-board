@@ -251,12 +251,13 @@ function send(boardId: string, data: any) {
                 break
         
             case "updateLabel":
+                let label
                 if (data.new) {
-                    await Label.create({
+                    label = await Label.create({
                         BoardId: data.boardId
                     })
                 } else {
-                    let label = await Label.findByPk(data.id)
+                    label = await Label.findByPk(data.id)
                     if (data.delete) {
                         label?.destroy()
                         send(req.params.boardId, {
@@ -282,7 +283,7 @@ function send(boardId: string, data: any) {
                     }
                     await label?.save()
                 }
-                await sendLabels(ws, req.params.boardId)
+                await sendLabel(label)
                 break
 
             case "toggleLabel":
@@ -294,15 +295,27 @@ function send(boardId: string, data: any) {
                         }
                     })
                     if (assignment == null) {
-                        AssignedLabel.create({
+                        assignment = await AssignedLabel.create({
                             LabelId: data.labelId,
                             BoardId: data.boardId,
                             CardId: data.cardId
                         })
+                        send(data.boardId, {
+                            "type": "assignedLabel", // @ts-ignore
+                            "labelId": assignment.LabelId, // @ts-ignore
+                            "boardId": assignment.BoardId, // @ts-ignore
+                            "cardId": assignment.CardId
+                        })
                     } else {
+                        send(data.boardId, {
+                            "type": "assignedLabel", // @ts-ignore
+                            "labelId": assignment.LabelId, // @ts-ignore
+                            "boardId": assignment.BoardId, // @ts-ignore
+                            "cardId": assignment.CardId,
+                            "remove": true
+                        })
                         assignment.destroy()
                     }
-                    await sendLabels(ws, req.params.boardId)
                 }
                 break
         }
@@ -384,30 +397,34 @@ async function sendLabels(ws: WebSocket, boardId: string) {
         },
         include: Card
     })
-    send(boardId, {"type": "clearAssignedLabels"})
+    // send(boardId, {"type": "clearAssignedLabels"})
     for (let label of labels) {
-        send(boardId, {
-            "type": "label", // @ts-ignore
-            "id": label.id, // @ts-ignore
-            "boardId": label.BoardId, // @ts-ignore
-            "title": label.title, // @ts-ignore
-            "color": label.color, // @ts-ignore
-            "textColor": label.textColor
-        }) //@ts-ignore
-        let assignments = await AssignedLabel.findAll({
-            where: {
-                BoardId: boardId, //@ts-ignore
-                LabelId: label.id
-            }
-        })
-        for (let assignment of assignments) {
-            send(boardId, {
-                "type": "assignedLabel", // @ts-ignore
-                "labelId": assignment.LabelId, // @ts-ignore
-                "boardId": assignment.BoardId, // @ts-ignore
-                "cardId": assignment.CardId
-            })
+        sendLabel(label)
+    }
+}
+
+async function sendLabel(label: any) {
+    send(label.BoardId, {
+        "type": "label", // @ts-ignore
+        "id": label.id, // @ts-ignore
+        "boardId": label.BoardId, // @ts-ignore
+        "title": label.title, // @ts-ignore
+        "color": label.color, // @ts-ignore
+        "textColor": label.textColor
+    })
+    let assignments = await AssignedLabel.findAll({
+        where: {
+            BoardId: label.BoardId, //@ts-ignore
+            LabelId: label.id
         }
+    })
+    for (let assignment of assignments) {
+        send(label.BoardId, {
+            "type": "assignedLabel", // @ts-ignore
+            "labelId": assignment.LabelId, // @ts-ignore
+            "boardId": assignment.BoardId, // @ts-ignore
+            "cardId": assignment.CardId
+        })
     }
 }
 

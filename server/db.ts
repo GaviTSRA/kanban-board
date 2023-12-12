@@ -1,6 +1,8 @@
 import { DataTypes, ModelDefined, Optional, Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('postgres://postgres:password@192.168.60.106:5432/template1')
+const sequelize = new Sequelize('postgres://postgres:password@192.168.60.106:5432/template1', {
+    logging: () => {}
+})
 
 try {
     await sequelize.authenticate();

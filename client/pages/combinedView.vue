@@ -212,14 +212,17 @@
 
             case "assignedLabel":
                 found = false
-                assignedLabels.value.push({
-                    cardId: data.cardId,
-                    labelId: data.labelId
-                })
+                if (data.remove) {
+                    assignedLabels.value = assignedLabels.value.filter(el => {
+                        return el.labelId != data.labelId || el.cardId != data.cardId
+                    })
+                } else {
+                    assignedLabels.value.push({
+                        cardId: data.cardId,
+                        labelId: data.labelId
+                    })
+                }
                 break
-            
-            case "clearAssignedLabels":
-                assignedLabels.value = []
         }
     }
 

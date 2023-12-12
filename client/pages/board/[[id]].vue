@@ -203,9 +203,6 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     })
                 }
                 break
-            
-            case "clearAssignedLabels":
-                assignedLabels.value = []
         }
     }
 

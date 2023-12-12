@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["ws", "labels", "boardId"])
+    let props = defineProps(["ws", "labels", "boardId", "labelHasOwnWs", "creationEnabled"])
     
     function newLabel() {
         props.ws.send(JSON.stringify({
@@ -25,9 +25,9 @@
         <h1>Labels</h1>
         <div class="labels">
             <div v-for="label in props.labels">
-                <LabelSetting :label="label" :ws="props.ws" :boardId="props.boardId"/>
+                <LabelSetting :label="label" :ws="props.labelHasOwnWs ? label.ws : props.ws"/>
             </div>
-            <button @click="newLabel" class="newLabel">New Label</button>
+            <button v-if="creationEnabled" @click="newLabel" class="newLabel">New Label</button>
         </div>
     </div>
 </template>

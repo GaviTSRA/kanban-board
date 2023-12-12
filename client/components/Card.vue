@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo"])
+    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo", "boardName"])
     let emit = defineEmits(["dragStart", "drop", "delete", "assign", "startAssign", "hover", "hoverEnd"])
 
     function getDescription() {
@@ -170,6 +170,7 @@
                     >{{ checklist.ChecklistItems?.filter(item=>item.checked).length }}/{{ checklist.ChecklistItems?.length }}</span> {{ checklist.title }}
                 </div>
             </div>
+            <p class="boardName">{{ props.boardName }}</p>
         </div>
         <CardMenu :labels="props.labels" :assigned-labels="props.assignedLabels" :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
@@ -178,6 +179,10 @@
 </template>
 
 <style scoped>
+    .boardName {
+        font-size: 1rem;
+        margin-left: 10px;
+    }
     .subcardCount {
         margin: auto;
         margin-right: 10px;

@@ -29,7 +29,7 @@ app.post("/", async (req, res) => {
 })
 
 app.delete("/", async (req, res) => {
-    if (!req.body.id) {
+    if (!req.body.id || req.body.id == undefined) {
         res.sendStatus(400)
         return
     }
@@ -312,6 +312,7 @@ function send(boardId: string, data: any) {
 async function sendBoard(ws: WebSocket, board: BoardAttributes) {
     send(board.id, {  // TODO fix ts
         "type": "board",       // @ts-ignore
+        "id": board.id,       // @ts-ignore
         "title": board?.title, // @ts-ignore
         "description": board?.description
     })
@@ -388,7 +389,7 @@ async function sendLabels(ws: WebSocket, boardId: string) {
         send(boardId, {
             "type": "label", // @ts-ignore
             "id": label.id, // @ts-ignore
-            "boardId": label.boardId, // @ts-ignore
+            "boardId": label.BoardId, // @ts-ignore
             "title": label.title, // @ts-ignore
             "color": label.color, // @ts-ignore
             "textColor": label.textColor

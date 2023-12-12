@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo"])
+    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo", "cardHasOwnWs", "boardNames", "allowCreation"])
     let emit = defineEmits(["ctxMenuAction", "dragStart", "drop", "assign", "startAssign", "hover", "hoverEnd"])
 
     function editName(txt) {
@@ -64,13 +64,14 @@
         <div class="cards">
             <div v-for="(card, index) in props.cards">
                 <Card 
-                    :ws="props.ws" 
+                    :ws="props.cardHasOwnWs ? card.ws : props.ws" 
                     :card="card"
                     :labels="props.labels"
                     :assigned-labels="props.assignedLabels"
                     :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
                     :assigningSubCards="props.assigningSubCards"
                     :assigningTo="props.assigningTo"
+                    :board-name="props.boardNames ? props.boardNames[card.boardId] : ''"
                     @drag-start="card=>$emit('dragStart', card)"
                     @drop="$emit('drop', index)"
                     @delete="$emit('deleteCard', index, list.id)"
@@ -86,9 +87,8 @@
                 @drop="$emit('drop', props.cards.length)" 
                 class="cardDropSpot">
             </div>
-            <!-- v-if="props.isDraggingCard && (props.draggingCard.listId != props.list.id || Math.abs(props.cards.length - 1 - draggingCard?.position) > 0)"  -->
         </div>
-        <form @submit.prevent="createCard" class="newCard">
+        <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
             <input type="text" v-model="newCardName"/>
             <button @click="createCard">Add card</button>
         </form>

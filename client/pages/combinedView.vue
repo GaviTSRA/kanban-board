@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { mergeProps } from 'vue';
-import BoardTitleBar from '~/components/BoardTitleBar.vue';
+    import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
     const route = useRoute()
 
@@ -20,6 +19,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         cardId: string,
         subcardCount?: number,
         subcardsDone?: number,
+        ws: WebSocket,
         checklists: {
             title: string,
             id: string,
@@ -37,12 +37,13 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         boardId: string,
         title: string,
         color: string,
-        textColor: string
+        textColor: string,
+        ws: WebSocket
     }
 
     let board = ref({
         id: route.params.id as string,
-        title: "", 
+        title: "Combined View", 
         description: ""
     })
     let lists: Ref<List[]> = ref([])
@@ -50,20 +51,30 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     let labels: Ref<Label[]> = ref([])
     let assignedLabels: Ref<{[labelId:string]: string}[]> = ref([])
 
-    let ws = new WebSocket("ws://localhost:3001/board/"+route.params.id)
+    let boards = useLocalStorage("combinedViewBoards", [])
+    let wss: {[boardId: string]: WebSocket} = {}
 
-    ws.onclose = () => {
-        window.location.href = "/"
+    for (let b of boards.value) {
+        let ws = new WebSocket("ws://localhost:3001/board/"+b)
+        ws.onclose = () => {
+            window.location.href = "/"
+        }
+        ws.onmessage = wsMsgHandler
+        wss[b] = ws
     }
 
-    ws.onmessage = msg => {
+    let boardNames: {[id: string]: string} = {}
+    let listIdOverrides: {[id: string]: string} = {}
+
+    function wsMsgHandler(msg) {
         const data = JSON.parse(msg.data)
 
         let found
         switch(data.type) {
             case "board":
-                board.value.title = data.title
-                board.value.description = data.description
+                boardNames[data.id] = data.title
+                if (board.value.description != "") board.value.description += ", "
+                board.value.description += data.title
                 break
 
             case "list":
@@ -81,6 +92,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         found = true
                         break
                     }
+                    if (list.title == data.title) {
+                        found = true
+                        listIdOverrides[data.id] = list.id
+                    }
                 }
                 if (!found) {
                     if (!cards.value[data.id]) {
@@ -97,6 +112,9 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 break
             
             case "card":
+                let listId = data.listId
+                if (listId in listIdOverrides) listId = listIdOverrides[listId]
+
                 found = false
                 let checklists = data.checklists
                 if (data.checklists) {
@@ -107,18 +125,18 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                 } else {
                     checklists = []
                 }
-                for (const [listId, listCards] of Object.entries(cards.value)) {
+                for (const [_listId, listCards] of Object.entries(cards.value)) {
                     for (let card of listCards) {
                         if (card.id == data.id) {
-                            if (card.listId != data.listId) {
-                                cards.value[listId] = listCards.filter(c => c.id != card.id)
+                            if (listId != card.listId) {
+                                cards.value[card.listId] = listCards.filter(c => c.id != card.id)
                                 break
                             }
                             card.title = data.title
                             card.boardId = data.boardId
                             card.position = data.position
                             card.description = data.description
-                            card.listId = data.listId
+                            card.listId = listId
                             card.checklists = checklists
                             card.cardId = data.cardId
                             found = true
@@ -127,15 +145,16 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                     }
                 }
                 if (!found) {
-                    cards.value[data.listId as string].push({
+                    cards.value[listId as string].push({
                         id: data.id,
                         title: data.title,
                         description: data.description,
                         position: data.position,
                         boardId: data.boardId,
-                        listId: data.listId,
+                        listId: listId,
                         cardId: data.cardId,
-                        checklists: checklists
+                        checklists: checklists,
+                        ws: wss[data.boardId]
                     })
                 }
                 for (const [listId, listCards] of Object.entries(cards.value)) {
@@ -182,7 +201,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         title: data.title,
                         color: data.color,
                         boardId: data.boardId,
-                        textColor: data.textColor
+                        textColor: data.textColor,
+                        ws: wss[data.boardId]
                     })
                 }
                 break
@@ -200,153 +220,14 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         }
     }
 
-    let newListName = ref("")
-    function createNewList() {
-        if (newListName.value == "") return
-
-        ws.send(JSON.stringify({
-            "action": "updateList",
-            "new": true,
-            "position": lists.value.length,
-            "boardId": board.value.id,
-            "title": newListName.value
-        }))
-
-        newListName.value = ""
-    }
-
-    let dragging = ref(false)
-    let draggingList: List | undefined = undefined
-    function startDrag(list: List) {
-        draggingList = list
-        dragging.value = false
-        dragging.value = true
-    }
-    
-    let isDraggingCard = ref(false)
-    let draggingCard: Card | undefined = undefined
-    function startDragCard(card: Card) {
-        isDraggingCard.value = false
-        isDraggingCard.value = true
-        draggingCard = card
-    }
-
-    function drop(index: number) {
-        if (draggingList?.position < index) index -= 1
-        if (index < 0) index = 0
-        dragging.value = false
-        ws.send(JSON.stringify({
-            "action": "updateList",
-            "id": draggingList?.id,
-            "boardId": board.value.id,
-            "position": index
-        }))
-
-        for (let list of lists.value) {
-            if (list.id == draggingList?.id) continue
-            if (list.position < draggingList?.position && list.position >= index) {
-                ws.send(JSON.stringify({
-                    "action": "updateList",
-                    "boardId": board.value.id,
-                    "id": list.id,
-                    "position": list.position += 1
-                }))
-            }
-            if (list.position > draggingList?.position && list.position <= index) {
-                ws.send(JSON.stringify({
-                    "action": "updateList",
-                    "boardId": board.value.id,
-                    "id": list.id,
-                    "position": list.position -= 1
-                }))
-            }
-        }
-    }
-
-    let showMoveSubcardsMenu = ref(false)
-    let listDroppedIn: Ref<List | undefined> = ref(undefined)
-    let indexDroppedIn = ref(0)
-    let subcards: Ref<Card[]> = ref([])
-    function dropCard(list: List, index: number) {
-        if (draggingCard?.position < index && draggingCard?.listId == list.id) index -= 1
-        if (index < 0) index = 0
-        isDraggingCard.value = false
-        ws.send(JSON.stringify({
-            "action": "updateCard",
-            "id": draggingCard?.id,
-            "listId": list.id,
-            "boardId": board.value.id,
-            "position": index
-        }))
-
-        if (draggingCard?.listId != list.id) {
-            for (let card of cards.value[draggingCard?.listId]) {
-                if (card.id == draggingCard?.id) continue
-                if (card.position > draggingCard?.position) {
-                    ws.send(JSON.stringify({
-                        "action": "updateCard",
-                        "boardId": board.value.id,
-                        "id": card.id,
-                        "position": card.position -= 1
-                    }))
-                }
-            }
-        }
-        for (let card of cards.value[list.id]) {
-            if (card.id == draggingCard?.id) continue
-            if (
-                (card.listId == draggingCard?.listId && card.position < draggingCard?.position && card.position >= index) ||
-                (list.id != draggingCard?.listId && card.position >= index) 
-                ) {
-                ws.send(JSON.stringify({
-                    "action": "updateCard",
-                    "boardId": board.value.id,
-                    "id": card.id,
-                    "position": card.position += 1
-                }))
-            }
-            if ((list.id == draggingCard?.listId && card.position > draggingCard?.position && card.position <= index)) {
-                ws.send(JSON.stringify({
-                    "action": "updateCard",
-                    "boardId": board.value.id,
-                    "id": card.id,
-                    "position": card.position -= 1
-                }))
-            }
-        }
-
-        let _subcards = []
-        for (let list of lists.value) {
-            for (let otherCard of cards.value[list.id]) {
-                if (otherCard.cardId == draggingCard?.id) _subcards.push(otherCard)
-            }
-        }
-
-        if (_subcards.length > 0) {
-            showMoveSubcardsMenu.value = true
-            listDroppedIn.value = list
-            indexDroppedIn.value = index
-            subcards.value = _subcards
-        }
-    }
-
-    function dragEnd() {
-        dragging.value = false
-        isDraggingCard.value = false
-    }
-
     let deleteMenuVisible = ref(false)
     let listToDelete: List | undefined = undefined
     function listCtxAction(action: string, list: List) {
         if (action == "moveLeft") {
-            if (list.position == 0) return
-            startDrag(list)
-            drop(list.position-1)
+            alert("Not available in combined view!")
         }
         if (action == "moveRight") {
-            if (list.position == lists.value.length - 1) return
-            startDrag(list)
-            drop(list.position+2)
+            alert("Not available in combined view!")
         }
         if (action == "delete") {
             listToDelete = list
@@ -356,10 +237,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
 
     function deleteList() {
         deleteMenuVisible.value = false
-        ws.send(JSON.stringify({
+        wss[listToDelete?.boardId].send(JSON.stringify({
             "action": "updateList",
-            "boardId": board.value.id,
-            "id": listToDelete.id,
+            "boardId": listToDelete?.boardId,
+            "id": listToDelete?.id,
             "delete": true
         }))
     }
@@ -369,9 +250,9 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     function deleteCard(index: number, id: string) {
         for (let card of cards.value[id]) {
             if ((card.position > index)) {
-                ws.send(JSON.stringify({
+                wss[card.boardId].send(JSON.stringify({
                     "action": "updateCard",
-                    "boardId": board.value.id,
+                    "boardId": wss[card.boardId],
                     "id": card.id,
                     "position": card.position -= 1
                 }))
@@ -382,9 +263,10 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
     let assigningSubCards = ref(false)
     let assigningTo: Ref<Card | undefined> = ref(undefined)
     function assignCard(card: Card) {
-        ws.send(JSON.stringify({
+        if (card.boardId != assigningTo.value?.boardId) return
+        wss[card.boardId].send(JSON.stringify({
             action: "updateCard",
-            boardId: board.value.id,
+            boardId: card.boardId,
             cardId: assigningTo.value?.id,
             id: card.id
         }))
@@ -407,82 +289,51 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         assigningTo.value = undefined
         assigningSubCards.value = false
     }
-
-    function moveSubcards() {
-        showMoveSubcardsMenu.value = false
-
-        let index = indexDroppedIn.value
-        for (let subcard of subcards.value) {
-            index++
-            startDragCard(subcard)
-            dropCard(listDroppedIn.value, index)
-        }
-    }
 </script>
 
 <template>
-    <div @dragend="dragEnd">
-        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="ws"/>
-        <Settings :creationEnabled="true" v-if="settingsOpened" :ws="ws" :labels="labels" :boardId="board.id"/>
+    <div>
+        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="undefined"/>
+        <Settings :creationEnabled="false" v-if="settingsOpened" :ws="undefined" :label-has-own-ws="true" :labels="labels"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
-                    <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
                     <List 
                         @ctxMenuAction="action=>listCtxAction(action, list)" 
-                        @dragstart="()=>startDrag(list)" 
-                        @drag-start="card=>startDragCard(card)"
-                        @drop="index=>dropCard(list, index)"
+                        @dragstart="()=>{}" 
+                        @drag-start="card=>{}"
+                        @drop="index=>{}"
                         @delete-card="(i, id)=>deleteCard(i, id)"
                         @assign="card=>assignCard(card)"
                         @start-assign="card=>startAssign(card)"
                         @hover="card=>hoverCard(card)"
                         @hoverEnd="hoverEndCard"
-                        :cardHasOwnWs="false"
+                        :card-has-own-ws="true"
                         :list="list" 
                         :cards="cards[list.id]" 
-                        :ws="ws"
-                        :is-dragging-card="isDraggingCard"
-                        :draggingCard="draggingCard"
+                        :ws="wss[list.boardId]"
+                        :is-dragging-card="false"
+                        :draggingCard="false"
                         :labels="labels"
                         :assigned-labels="assignedLabels"
                         :assigningSubCards="assigningSubCards"
                         :assigningTo="assigningTo"
-                        :allowCreation="true"
-                        draggable="true" 
+                        :board-names="boardNames"
+                        :allowCreation="false"
+                        draggable="true"
                     />
                 </div>
             </div>
-            <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
-            <div class="newList">
-                <input type="text" v-model="newListName"/>
-                <button @click="createNewList">Create new list</button>
-            </div>
         </div>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
-        <DecisionMenu v-if="showMoveSubcardsMenu" @confirm="moveSubcards" @cancel="showMoveSubcardsMenu = false" optionOk="Confirm" text="Move subcards?" optionCancel="Cancel"/>
     </div>
 </template>
 
 <style scoped>
-    .last {
-        margin-left: 1rem;
-    }
     .listAndDropSpot {
         display: flex;
         margin-left: 1rem;
-    }
-
-    .dragDropSpot {
-        margin-top: 10px;
-        width: 2.5rem;
-        background-color: var(--color-background);
-        filter:contrast(60%);
-        border-color: black;
-        border-style: solid;
-        border-radius: 10px;
-        height: 2.5rem;
     }
 
     .lists {
@@ -492,43 +343,6 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         width: 100vw;
         height: 93vh;
     }
-
-    .newList {
-        background-color: var(--color-list-background);
-        width: 15rem;
-        min-width: 15rem;
-        height: fit-content;
-        display: flex;
-        flex-direction: column;
-        margin-top: 10px;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        align-items: center;
-        border-radius: 10px;
-    }
-
-    .newList input {
-        width: 75%;
-        margin-top: 10px;
-        height: 2rem;
-    }
-
-    .newList button {
-        margin: 10px 0;
-        background-color: var(--color-card-new-btn);
-        border-style: none;
-        border-radius: 10px;
-        padding: .5rem 1rem;
-    }
-
-    .newList button:hover {
-        background-color: var(--color-card-new-btn-hover);
-    }
-
-    .newList button:active {
-        background-color: var(--color-card-new-btn-active)
-    }
-
     .stopAssigning {
         background-color: var(--color-board-stop-assign);
         border-style: none;

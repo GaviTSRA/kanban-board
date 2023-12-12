@@ -39,8 +39,8 @@
     let selected: Ref<string[]> = ref([])
 
     function saveSelected() {
-        let storage = useLocalStorage("combinedViewBoards", "")
-        storage.value = JSON.stringify(selected.value)
+        let storage = useLocalStorage("combinedViewBoards", [])
+        storage.value = selected.value
     }
     function change(boardId: string) {
         if (selected.value.includes(boardId)) selected.value = selected.value.filter(e=>e != boardId)

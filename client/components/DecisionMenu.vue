@@ -1,10 +1,19 @@
 <script setup>
-    defineEmits(["cancel", "confirm"])
+    let emit = defineEmits(["cancel", "confirm"])
     let props = defineProps(["text", "optionOk", "optionCancel"])
+
+    let canCancel = false
+    setTimeout(() => {
+        canCancel = true
+    }, 1)
+
+    function cancel() {
+        if (canCancel) emit('cancel')
+    }
 </script>
 
 <template>
-    <div class="deleteMenu">
+    <div class="deleteMenu" v-click-away="cancel">
         <p>{{ props["text"] }}</p>
         <div>
             <button @click="$emit('confirm')" class="btnOk">{{ props["optionOk"] }}</button>

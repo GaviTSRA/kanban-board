@@ -8,13 +8,13 @@
         alpha: false
     });
 
-    let props = defineProps(["label", "ws", "boardId"])
+    let props = defineProps(["label", "ws"])
 
     let name = ref(props.label.title)
     function save() {
         props.ws.send(JSON.stringify({
             "action": "updateLabel",
-            "boardId": props.boardId,
+            "boardId": props.label.boardId,
             "id": props.label.id,
             "color": props.label.color,
             "textColor": props.label.textColor,
@@ -41,7 +41,7 @@
             props.ws.send(JSON.stringify({
                 "action": "updateLabel",
                 "delete": true,
-                "boardId": props.boardId,
+                "boardId": props.label.boardId,
                 "id": props.label.id
             }))
         }

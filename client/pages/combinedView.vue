@@ -238,9 +238,36 @@
         }
     }
 
+    function checkChildren(children: Card[], other: Card) {
+        for (let subCard of children) {
+            if (subCard.cardId == other.id) return false
+
+            let subcards = []
+            for (let list of lists.value) {
+                for (let _card of cards.value[list.id]) {
+                    if (_card.cardId == subCard.id) subcards.push(_card)
+                }
+            }
+
+            if (!checkChildren(subcards, other)) return false
+        }
+        return true
+    }
+
     let assigningSubCards = ref(false)
     let assigningTo: Ref<Card | undefined> = ref(undefined)
     function assignCard(card: Card) {
+        let subcards = []
+        for (let list of lists.value) {
+            for (let subcard of cards.value[list.id]) {
+                if (subcard.cardId == card.id) subcards.push(subcard)
+            }
+        }
+
+        if(!checkChildren(subcards, card)) {
+            
+            return
+        }
         if (card.boardId != assigningTo.value?.boardId) return
         wss[card.boardId].send(JSON.stringify({
             action: "updateCard",

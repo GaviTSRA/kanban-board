@@ -142,9 +142,15 @@
         <div 
             :class="{
                 container: true, 
-                assigningTo: props.assigningTo ? props.assigningTo.cardId == props.card.id : false,
-                isAssigned: props.assigningTo != undefined ? props.assigningTo.id == props.card.cardId : false
-            }" 
+                // assigningTo: props.assigningTo ? props.assigningTo.cardId == props.card.id : false,
+                // isAssigned: props.assigningTo != undefined ? props.assigningTo.id == props.card.cardId : false,
+                assigned: props.card.cardId != undefined,
+                hasAssigned: props.card.subcards != 0
+            }"
+            :style="{
+                'border-color': '#'+(props.card.cardId != undefined ? props.card.cardId.slice(0, 6) : '000000'),
+                '--id-color': '#'+props.card.id.slice(0, 6)
+            }"
             @click="cardClick"
             @mouseenter="$emit('hover')"
             @mouseleave="$emit('hoverEnd')"
@@ -179,6 +185,9 @@
 </template>
 
 <style scoped>
+    .assigned {
+        border-style: solid;
+    }
     .boardName {
         font-size: 1rem;
         margin-left: 10px;
@@ -255,5 +264,9 @@
     }
     .isAssigned {
         background-color: var(--color-card-is-subcard);
+    }
+    .hasAssigned {
+        background-color: var(--id-color);
+        text-shadow: black 1px 1px;
     }
 </style>

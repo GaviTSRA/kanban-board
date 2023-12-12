@@ -19,6 +19,7 @@
         cardId: string,
         subcardCount?: number,
         subcardsDone?: number,
+        subcards?: number,
         ws: WebSocket,
         checklists: {
             title: string,
@@ -162,9 +163,11 @@
                     for (let card of listCards) {
                         card.subcardCount = 0
                         card.subcardsDone = 0
+                        card.subcards = 0
                         for (const [listId2, listCards2] of Object.entries(cards.value)) {
                             for (let card2 of listCards2) {
                                 if (card.id == card2.cardId) {
+                                    card.subcards++
                                     for (let checklist of card2.checklists) {
                                         for (let item of checklist.ChecklistItems) {
                                             card.subcardCount++

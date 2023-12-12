@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo", "boardName"])
+    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo", "boardName", "allLists", "allCards"])
     let emit = defineEmits(["dragStart", "drop", "delete", "assign", "startAssign", "hover", "hoverEnd"])
 
     function getDescription() {
@@ -174,10 +174,34 @@
         return "#"+RR+GG+BB;
     }
 
-    function getColor(string) {
-
-        return shadeColor(string)
+    function getParent(id) {
+        for (let list of props.allLists) {
+            for (let card of props.allCards[list.id]) {
+                if (card.id == id) {
+                    if (card.cardId) return getParent(card.cardId)
+                    return card
+                }
+            }
+        }
     }
+
+    function getColor(string) {
+        if (colorAllSame.value) {
+            let child
+            for (let list of props.allLists) {
+                for (let card of props.allCards[list.id]) {
+                    if (card.id == string) child = card
+                }
+            }
+            if (child.cardId == null) return shadeColor("#" + string.slice(0, 6))
+            let parent = getParent(child.cardId)
+            return shadeColor("#" + parent.id.slice(0, 6))
+        }
+
+        return shadeColor("#" + string.slice(0, 6))
+    }
+
+    let colorAllSame = useLocalStorage("colorAllSame", false)
 </script>
 
 <template>
@@ -198,8 +222,8 @@
                 hasAssigned: props.card.subcards != 0
             }"
             :style="{
-                'border-color': props.card.cardId != undefined ? getColor('#'+props.card.cardId.slice(0, 6)) : '#000000',
-                '--id-color': getColor('#'+props.card.id.slice(0, 6))
+                'border-color': props.card.cardId != undefined ? getColor(props.card.cardId) : '#000000',
+                '--id-color': getColor(props.card.id)
             }"
             @click="cardClick"
             @mouseenter="$emit('hover')"

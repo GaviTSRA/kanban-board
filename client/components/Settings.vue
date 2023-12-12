@@ -10,6 +10,7 @@
     }    
     let showSubCards = useLocalStorage("showSubCards", true)
     let forceShowAllCards = useLocalStorage("showAllCards", false)
+    let colorAllSame = useLocalStorage("colorAllSame", false)
 </script>
 
 <template>
@@ -21,6 +22,10 @@
         <div class="showSubCardsOption">
             <input id="showSubCardsCheckbox" type="checkbox" v-model="showSubCards"/>
             <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
+        </div>
+        <div class="showSubCardsOption">
+            <input id="showSubCardsCheckbox" type="checkbox" v-model="colorAllSame"/>
+            <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
         </div>
         <h1>Labels</h1>
         <div class="labels">

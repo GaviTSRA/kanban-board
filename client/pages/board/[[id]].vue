@@ -409,7 +409,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         }
 
         if(!checkChildren(subcards, card)) {
-            
+
             return
         }
 
@@ -479,6 +479,8 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
                         :assigningSubCards="assigningSubCards"
                         :assigningTo="assigningTo"
                         :allowCreation="true"
+                        :all-cards="cards"
+                        :all-lists="lists"
                         draggable="true" 
                     />
                 </div>

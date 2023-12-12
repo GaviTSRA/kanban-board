@@ -326,6 +326,8 @@
                         :assigningTo="assigningTo"
                         :board-names="boardNames"
                         :allowCreation="false"
+                        :all-cards="cards"
+                        :all-lists="lists"
                         draggable="true"
                     />
                 </div>

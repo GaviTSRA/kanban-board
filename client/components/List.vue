@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo", "cardHasOwnWs", "boardNames", "allowCreation"])
+    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo", "cardHasOwnWs", "boardNames", "allowCreation", "allLists", "allCards"])
     let emit = defineEmits(["ctxMenuAction", "dragStart", "drop", "assign", "startAssign", "hover", "hoverEnd"])
 
     function editName(txt) {
@@ -72,6 +72,8 @@
                     :assigningSubCards="props.assigningSubCards"
                     :assigningTo="props.assigningTo"
                     :board-name="props.boardNames ? props.boardNames[card.boardId] : ''"
+                    :all-cards="props.allCards"
+                    :all-lists="props.allLists"
                     @drag-start="card=>$emit('dragStart', card)"
                     @drop="$emit('drop', index)"
                     @delete="$emit('deleteCard', index, list.id)"

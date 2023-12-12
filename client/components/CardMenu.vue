@@ -29,6 +29,7 @@
     }
 
     function toggle(label) {
+        if (label.boardId != props.card.boardId) return
         props.ws.send(JSON.stringify({
             "action": "toggleLabel",
             "boardId": props.card.boardId,

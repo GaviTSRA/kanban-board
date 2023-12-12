@@ -76,6 +76,7 @@
         menuVisible.value = false
         if (action.startsWith('changeLabel')) {
             let label = action.split(":")[1]
+            if (props.labels.filter(el=>{return el.id == label})[0].boardId != props.card.boardId) return
             props.ws.send(JSON.stringify({
                 "action": "toggleLabel",
                 "boardId": props.card.boardId,

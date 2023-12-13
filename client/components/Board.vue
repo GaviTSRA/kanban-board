@@ -337,8 +337,8 @@
 
 <template>
     <div @dragend="dragEnd">
-        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="isCombinedView ? ws : undefined"/>
-        <Settings :creationEnabled="!isCombinedView" v-if="settingsOpened" :ws="isCombinedView ? ws : undefined" :labels="labels" :boardId="board.id"/>
+        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="!isCombinedView ? props.ws : undefined"/>
+        <Settings :creationEnabled="!isCombinedView" v-if="settingsOpened" :ws="!isCombinedView ? ws : undefined" :labels="labels" :boardId="board.id"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">

@@ -27,17 +27,26 @@
         <EditableText :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
         <EditableText :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
         <!-- TODO icon -->
-        <button @click="$emit('settings')" class="settings">Settings</button>
+        <button @click="$emit('settings')" class="settings"></button>
     </div>
 </template>
 
 <style scoped>
     .settings {
-        margin: auto 10px auto auto;
+        margin: auto;
+        margin-right: 1rem;
         height: 2rem;
+        width: 2rem;
         background-color: var(--color-header-settings-btn);
-        border-style: none;
-        border-radius: 10px;
+        mask: url(/settings.svg) no-repeat center;
+        transition: .6s;
+    }
+    .settings:hover {
+        transform: rotate(180deg);
+    }
+    .settings:active {
+        transition: 1s;
+        transform: rotate(300deg);
     }
     .back {
         margin: auto 10px;

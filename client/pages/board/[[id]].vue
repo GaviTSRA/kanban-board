@@ -164,7 +164,7 @@ import BoardTitleBar from '~/components/BoardTitleBar.vue';
         
             case "label":
                 if (data.delete) {
-                    labels.value = labels.value.filter(label => label.id != data.id)
+                    labels.value = labels.value.filter(label => {return label.id != data.id})
                     break
                 }
 

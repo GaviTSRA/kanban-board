@@ -7,7 +7,8 @@
             "new": true,
             "boardId": props.boardId
         }))
-    }    
+    }   
+
     let showSubCards = useLocalStorage("showSubCards", true)
     let forceShowAllCards = useLocalStorage("showAllCards", false)
     let colorAllSame = useLocalStorage("colorAllSame", false)
@@ -29,7 +30,7 @@
         </div>
         <h1>Labels</h1>
         <div class="labels">
-            <div v-for="label in props.labels">
+            <div v-for="label in props.labels" class="label">
                 <LabelSetting :label="label" :ws="props.labelHasOwnWs ? label.ws : props.ws"/>
             </div>
             <button v-if="creationEnabled" @click="newLabel" class="newLabel">New Label</button>
@@ -38,6 +39,9 @@
 </template>
 
 <style scoped>
+    .label {
+        height: 2rem;
+    }
     .showSubCardsText {
         margin: auto 0;
         font-size: 1.25rem;

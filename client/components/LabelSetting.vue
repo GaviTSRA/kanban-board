@@ -35,31 +35,37 @@
         menuVisible.value = true
     }
 
-    function ctxMenuClicked(action) {
-        menuVisible.value = false
-        if (action == "delete") {
-            props.ws.send(JSON.stringify({
-                "action": "updateLabel",
-                "delete": true,
-                "boardId": props.label.boardId,
-                "id": props.label.id
-            }))
-        }
+    function deleteLabel() {
+        props.ws.send(JSON.stringify({
+            "action": "updateLabel",
+            "delete": true,
+            "boardId": props.label.boardId,
+            "id": props.label.id
+        }))
     }
 </script>
 
 <template>
     <div class="label" @contextmenu.prevent="openMenu">
-        <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
         <form @change="save" class="label">
             <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
             <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>
             <EditableText :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
+            <button class="deleteBtn" @click.prevent="deleteLabel"><img src="/trash-2.svg"/></button>
         </form>
     </div>
 </template>
 
 <style scoped>
+    .deleteBtn {
+        margin-top: auto;
+        margin-bottom: 0;
+        margin-right: 10px;
+        padding: .5rem;
+        background-color: var(--color-cardmenu-checklist-delete-item);
+        border-radius: 10px;
+        border-style: none;
+    }
     .labelName {
         padding: 0 .5rem;
         text-align: center;

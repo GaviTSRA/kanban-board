@@ -90,26 +90,37 @@
                 class="cardDropSpot">
             </div>
         </div>
-        <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
-            <input type="text" v-model="newCardName"/>
-            <button @click="createCard"></button>
-        </form>
+        <div class="newCardContainer">
+            <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
+                <input type="text" v-model="newCardName"/>
+                <button @click="createCard"></button>
+            </form>
+        </div>
     </div>
 </template>
 
 <style scoped>
+    .newCardContainer {
+        box-shadow: 0px -4px 10px black;
+        position:relative;
+        z-index: 5;
+    }
     .title {
+        position: relative;
         height: 4vh;
         border-style: solid;
         border-color: var(--color-black-4);
         border-width: 0;
         border-bottom-width: 4px;
+        filter: drop-shadow(0px 4px 3px black);
+        z-index: 5;
     }
     .cardDropSpot {
         height: 2rem;
         width: 100%;
     }
     .newCard {
+        filter: none;
         display: flex;
         padding: .5rem;
         border-color: var(--color-black-4);

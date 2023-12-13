@@ -16,8 +16,8 @@
     if (x == undefined) x = 0
     if (y == undefined) y = 0
 
-    let showSubmenu: Ref<{[name: string]: [enabled: boolean]}> = ref({})
-    let hoversOverSubmenu: Ref<{[name: string]: [enabled: boolean]}> = ref({})
+    let showSubmenu: Ref<{[name: string]: boolean}> = ref({})
+    let hoversOverSubmenu: Ref<{[name: string]: boolean}> = ref({})
 
     for (let action of actions) {
         showSubmenu.value[action.name] = false

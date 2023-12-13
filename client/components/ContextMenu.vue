@@ -28,7 +28,7 @@
         emit('action-clicked', action);
     }
 
-    function vw(percent) {
+    function vw(percent: number) {
         var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
         return (percent * w) / 100;
     }
@@ -38,14 +38,14 @@
         submenuLeft = vw(10)
     }
 
-    function hideSubmenu(action) {
+    function hideSubmenu(action: string) {
         setTimeout(() => {
             if (hoversOverSubmenu.value[action]) return
             showSubmenu.value[action] = false
         }, 100)
     }
 
-    function hideMenuFromSub(action) {
+    function hideMenuFromSub(action: string) {
         showSubmenu.value[action] = false
         hoversOverSubmenu.value[action] = false
     }

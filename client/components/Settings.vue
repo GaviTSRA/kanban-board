@@ -78,6 +78,8 @@
         margin-left: 10px;   
     }
     .settings {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
         overflow-y: scroll;
         z-index: 7;
         position: fixed;
@@ -86,6 +88,17 @@
         height: 100vh;
         background-color: var(--color-settings-background);
         filter: drop-shadow(-10px 15px 15px black)
+    }
+
+    ::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+        background: var(--color-list-background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-list-scrollbar);
+        -webkit-border-radius: 10px;
     }
 
     :deep(.editable) {

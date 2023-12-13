@@ -309,6 +309,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        text-shadow: none;
     }
 
     .cardDropSpotSmall {

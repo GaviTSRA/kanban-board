@@ -35,7 +35,8 @@
         boardId: string,
         title: string,
         color: string,
-        textColor: string
+        textColor: string,
+        empty: boolean
     }
 
     let board = ref({
@@ -54,7 +55,7 @@
         window.location.href = "/"
     }
 
-    ws.onmessage = msg => {
+    ws.onmessage = async msg => {
         const data = JSON.parse(msg.data)
 
         let found
@@ -162,6 +163,10 @@
             case "label":
                 if (data.delete) {
                     labels.value = labels.value.filter(label => {return label.id != data.id})
+                    labels.value.push({
+                        id: data.id,
+                        empty: true
+                    })
                     break
                 }
 

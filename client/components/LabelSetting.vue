@@ -22,19 +22,6 @@
         }))
     }
 
-    let actions = [
-        ["Delete label", "delete", true]
-    ]
-    let top = ref(0)
-    let left = ref(0)
-    let menuVisible = ref(false)
-    async function openMenu(event) {
-        top.value = event.y
-        left.value = event.x
-        
-        menuVisible.value = true
-    }
-
     function deleteLabel() {
         props.ws.send(JSON.stringify({
             "action": "updateLabel",
@@ -46,7 +33,7 @@
 </script>
 
 <template>
-    <div class="label" @contextmenu.prevent="openMenu">
+    <div class="label" v-if="!label.empty">
         <form @change="save" class="label">
             <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
             <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>

@@ -36,7 +36,7 @@
         title: string,
         color: string,
         textColor: string,
-        empty: boolean
+        empty?: boolean
     }
 
     let board = ref({

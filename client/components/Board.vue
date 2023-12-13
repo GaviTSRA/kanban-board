@@ -272,8 +272,8 @@
 
             let subcards = []
             for (let list of props.lists) {
-                for (let _card of props.cards[list.id]) {
-                    if (_card.cardId == subCard.id) subcards.push(_card)
+                for (let card of props.cards[list.id]) {
+                    if (card.cardId == subCard.id) subcards.push(card)
                 }
             }
 

@@ -52,6 +52,7 @@
         left: 0;
         width: 100vw;
         height: 7vh;
+        min-height: 3rem;
         background-color: var(--color-header-background);
         overflow: hidden;
     }

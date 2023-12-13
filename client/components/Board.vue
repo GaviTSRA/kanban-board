@@ -408,7 +408,7 @@
         display: flex;
         flex-direction: row;
         width: 100vw;
-        height: 93vh;
+        height: 88vh;
     }
 
     .newList {

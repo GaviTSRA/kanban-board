@@ -98,6 +98,9 @@
 </template>
 
 <style scoped>
+    .title {
+        height: 3vh;
+    }
     .cardDropSpot {
         height: 2rem;
         width: 100%;
@@ -149,7 +152,7 @@
 
     .cards {
         height: fit-content;
-        max-height: 80vh;
+        max-height: 65vh;
         overflow: scroll;
         scrollbar-width: thin;
         scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
@@ -170,6 +173,12 @@
     @media (min-width: 1025px) {
         :deep(.editable) {
             width: 9vw;
+        }
+    }
+
+    @media (min-height: 800px) {
+        .cards {
+            max-height: 75vh
         }
     }
 </style>

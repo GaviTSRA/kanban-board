@@ -76,6 +76,7 @@
         margin-left: 10px;   
     }
     .settings {
+        overflow-y: scroll;
         z-index: 7;
         position: fixed;
         right: 0;

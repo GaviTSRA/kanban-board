@@ -25,9 +25,9 @@
 <style scoped>
     .deleteMenu {
         position: absolute;
-        width: 80vw;
-        left: 10vw;
-        height: 20vh;
+        width: 40vw;
+        left: 30vw;
+        height: 40vh;
         top: 40vh;
         filter: drop-shadow(0 0 5rem black);
         background-color: var(--color-decisionmenu-background);
@@ -63,10 +63,29 @@
         background-color: var(--color-decisionmenu-btn-cancel-hover);
     }
 
-    @media (min-width: 1025px) {
+    @media (min-width: 1225px) {
         .deleteMenu {
             left: 40vw;
             width: 20vw;
+        }
+    }
+
+    @media (max-height: 400px) {
+        .deleteMenu {
+            height: 50vh;
+        }
+    }
+
+    @media (max-width: 500px) {
+        .deleteMenu {
+            width: 100vw;
+            left: 0;
+        }
+    }
+
+    @media (min-height: 800px) {
+        .deleteMenu {
+            height: 20vh;
         }
     }
 </style>

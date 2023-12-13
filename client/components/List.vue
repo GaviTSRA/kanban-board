@@ -92,31 +92,44 @@
         </div>
         <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
             <input type="text" v-model="newCardName"/>
-            <button @click="createCard">Add card</button>
+            <button @click="createCard"></button>
         </form>
     </div>
 </template>
 
 <style scoped>
     .title {
-        height: 3vh;
+        height: 4vh;
+        border-style: solid;
+        border-color: var(--color-black-4);
+        border-width: 0;
+        border-bottom-width: 4px;
     }
     .cardDropSpot {
         height: 2rem;
         width: 100%;
     }
+    .newCard {
+        display: flex;
+        padding: .5rem;
+        border-color: var(--color-black-4);
+        border-width: 0;
+        border-top-width: 4px;
+        border-style: solid;
+    }
     .newCard input {
-        width: 65%;
+        width: 85%;
         margin-right: 10px;
     }
 
     .newCard button {
-        width: 20%;
+        transform: scale(1.35);
+        width: 15%;
         background-color: var(--color-card-new-btn);
-        border-style: none;
-        padding: .5rem .25rem;
-        border-radius: 10px;
-        margin-bottom: 10px;
+        padding: .7rem;
+        margin-top: 1px;
+        background-color: black;
+        mask: url(/plus-circle.svg) no-repeat center;
     }
 
     .newCard button:hover {

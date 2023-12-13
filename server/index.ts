@@ -1,9 +1,9 @@
 import express from "express"
-import expressWs, { WebsocketMethod } from "express-ws"
+import expressWs from "express-ws"
 import cors from "cors"
 import WebSocket from "ws"
 import bodyParser from 'body-parser';
-import { Board, List, Card, BoardAttributes, Label, ListAttributes, AssignedLabel, ChecklistItem, Checklist } from "./db.js";
+import { Board, List, Card, BoardAttributes, Label, AssignedLabel, ChecklistItem, Checklist } from "./db.js";
 
 const app = expressWs(express()).app
 const port = 3001
@@ -88,6 +88,11 @@ function send(boardId: string, data: any) {
         if (data.boardId != req.params.boardId) return
 
         console.log(data.action)
+        if (!checkDataValid(data)) {
+            console.log("Not valid: ")
+            console.log(data)
+            return
+        }
 
         switch (data.action) {
             case "updateBoard":
@@ -115,6 +120,7 @@ function send(boardId: string, data: any) {
                     })
                 } else {
                     list = await List.findByPk(data.id)
+                    if (!list) return
                     if (data.delete) {
                         let cards = await Card.findAll({
                             where: { // @ts-ignore
@@ -163,6 +169,7 @@ function send(boardId: string, data: any) {
                             include: [ ChecklistItem ]
                         }]
                     })
+                    if (!card) return
                     if (data.delete) {
                         card?.destroy()
                         send(req.params.boardId, {
@@ -207,6 +214,7 @@ function send(boardId: string, data: any) {
                                 })
                             } else {
                                 let dbChecklist = await Checklist.findByPk(checklist.id)
+                                if (!dbChecklist) return
                                 if (checklist.delete) {
                                     dbChecklist?.destroy()
                                 } else {
@@ -223,6 +231,7 @@ function send(boardId: string, data: any) {
                                         })
                                     } else {
                                         let dbItem = await ChecklistItem.findByPk(item.id)
+                                        if (!dbItem) return
                                         if (item.delete || checklist.delete) {
                                             dbItem?.destroy()
                                         } else {
@@ -245,6 +254,7 @@ function send(boardId: string, data: any) {
                             include: [ ChecklistItem ]
                         }]
                     })
+                    if (!card) return
                 }
                 if (!data.delete)
                     await sendCard(ws, card)
@@ -258,6 +268,7 @@ function send(boardId: string, data: any) {
                     })
                 } else {
                     label = await Label.findByPk(data.id)
+                    if (!label) return
                     if (data.delete) {
                         label?.destroy()
                         send(req.params.boardId, {
@@ -321,6 +332,16 @@ function send(boardId: string, data: any) {
         }
     })
 })
+
+function checkDataValid(data: any) {
+    if (data.title && (data.title == "" || typeof data.title != "string")) return false
+    if (data.description && typeof data.description != "string") return false
+    if (data.position && typeof data.position != "number") return false
+    if (data.id && !(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(data.id))) return false
+    if (data.listId && !(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(data.listId))) return false
+    if (data.cardId && (!(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(data.cardId)) && data.cardId != "remove")) return false
+    return true
+}
 
 async function sendBoard(ws: WebSocket, board: BoardAttributes) {
     send(board.id, {  // TODO fix ts

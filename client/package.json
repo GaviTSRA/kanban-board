@@ -20,6 +20,7 @@
   "dependencies": {
     "@melloware/coloris": "^0.22.0",
     "vue-window-size": "^2.0.0",
+    "vue3-all-click-away": "^1.0.0",
     "vue3-click-away": "^1.2.4"
   }
 }

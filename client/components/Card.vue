@@ -206,7 +206,7 @@
 </script>
 
 <template>
-    <div @contextmenu.prevent.stop="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)" v-if="(notHiddenByMasterCard && (notHiddenByBoard || props.card.cardId == undefined)) || forceShowAll">
+    <div @contextmenu.prevent="openMenu" draggable="true" @dragstart.stop="$emit('dragStart', props.card)" v-if="(notHiddenByMasterCard && (notHiddenByBoard || props.card.cardId == undefined)) || forceShowAll">
         <div 
             @dragenter.prevent="dropSpotVisible = true"
             @dragover.prevent="dropSpotVisible = true" 
@@ -254,7 +254,7 @@
             <p class="boardName">{{ props.boardName }}</p>
         </div>
         <CardMenu :labels="props.labels" :assigned-labels="props.assignedLabels" :card="card" v-if="cardMenuVisible" @close="cardMenuVisible = false" :ws="props.ws"/>
-        <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-click-away="() => menuVisible = false"/>
+        <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteCard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete card?" optionCancel="Cancel"/>
     </div>
 </template>

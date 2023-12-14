@@ -51,6 +51,9 @@
 </template>
 
 <style scoped>
+    label {
+        width: 70%;
+    }
     .header {
         margin-top: 3rem;
     }

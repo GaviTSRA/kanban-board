@@ -36,12 +36,8 @@
     }
 
     let selectingForCombinedView = ref(false)
-    let selected: Ref<string[]> = ref([])
+    let selected: Ref<string[]> = useLocalStorage("combinedViewBoards", [])
 
-    function saveSelected() {
-        let storage = useLocalStorage("combinedViewBoards", [])
-        storage.value = selected.value
-    }
     function change(boardId: string) {
         if (selected.value.includes(boardId)) selected.value = selected.value.filter(e=>e != boardId)
         else selected.value.push(boardId)
@@ -52,15 +48,13 @@
     <div class="container">
         <div class="cards">
             <div v-for="board in boards" class="cardContainer">
-                <input @change="()=>change(board.id)" class="combinedViewCheckbox" type="checkbox" v-if="selectingForCombinedView"/>
                 <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
             </div>
             <div class="newBoardItem cardContainer" @click="openNewBoardMenu">
                 <div></div>
             </div>
         </div>
-        <button class="combinedViewBtn" v-if="!selectingForCombinedView" @click="selectingForCombinedView = true">Select for combined view</button>
-        <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" event="" @click.native="saveSelected" :class="{'combinedViewBtn': true, disabled: selected.length < 2}" v-if="selectingForCombinedView">Open combined view</NuxtLink>
+        <button class="combinedViewBtn" @click="selectingForCombinedView = true">Combined view</button>
     </div>
     <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
         <h1>Create new board</h1>
@@ -70,17 +64,78 @@
         <textarea maxlength="125" v-model="description" id="description"/>
         <button class="confirm" @click="createBoard">Create</button>
     </div>
+    <div class="darken"  v-if="selectingForCombinedView" @click="selectingForCombinedView = false"></div>
+    <div class="selectCombinedView" v-if="selectingForCombinedView">
+        <h1 class="header">Select boards for combined view</h1>
+        <hr>
+        <div v-for="board in boards" class="boardItem">
+            <Switch :value="selected.includes(board.id)" @change="()=>change(board.id)" class="combinedViewCheckbox"/>
+            <p>{{ board.title }}</p>
+        </div>
+        <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" :class="{'openCombinedViewBtn': true, disabled: selected.length < 2}">Open</NuxtLink>
+    </div>
 </template>
 
 <style scoped>
+    p {
+        margin: auto 0;
+    }
+    hr {    
+        margin-bottom: 3rem;
+    }
+    .header {
+        text-align: center;
+    }
+    .openCombinedViewBtn {
+        position: absolute;
+        width:20%;
+        left: 40%;
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        bottom: 10px;
+        text-align: center;
+        color: black;
+        font-size: 1rem;
+        background-color: var(--color-boardmenu-combinedview-btn);
+    }
+    .openCombinedViewBtn:hover {
+        background-color: var(--color-boardmenu-combinedview-btn-hover);
+    }
+    .openCombinedViewBtn:active {
+        background-color: var(--color-boardmenu-combinedview-btn-active);
+    }
+    .boardItem {
+        display: flex;
+        flex-direction: row;
+        margin-top: 10px;
+    }
+    .darken {
+        position: fixed;
+        height: 100vh;
+        width: 100vw;
+        top: 0;
+        left: 0;
+        background-color: black;
+        z-index: 2;
+        opacity: 50%;
+    }
+    .selectCombinedView {
+        position: fixed;
+        width: 30vw;
+        max-height: 80vh;
+        padding-bottom: 7rem;
+        background-color: var(--color-boardcreate-background);
+        left: 35vw;
+        top: 10vh;
+        z-index: 56;
+        border-radius: 10px;
+    }
     .cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
     }
     .combinedViewCheckbox {
-        transform: scale(2);
-        margin: auto 1rem;
-        height: fit-content;
+        margin: auto 10px;
     }
     .cardContainer {
         display: flex;

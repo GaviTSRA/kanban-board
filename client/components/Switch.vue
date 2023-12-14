@@ -9,7 +9,7 @@
 
 <template>
     <label class="switch">
-        <input type="checkbox" @click="toggleCheckbox" :value="value">
+        <input type="checkbox" @click="toggleCheckbox" :checked="props.value">
         <div class="slider round"></div>
       </label>
 </template>

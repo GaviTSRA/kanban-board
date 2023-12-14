@@ -49,7 +49,6 @@
     }
     .title {
         text-align: left;
-        margin-left: 10px;
         color: var(--color-cardmenu-checklist-title);
     }
     .delete {
@@ -58,7 +57,6 @@
         padding: .5rem 1rem;
         border-radius: 10px;
         font-size: 1rem;
-        margin-left: .5rem;
         mask: url(/trash-2.svg) no-repeat center;
     }
     .delete:hover {
@@ -68,7 +66,6 @@
         transform: scale(1.25);
         align-self: center;
         margin-right: 95%;
-        margin-left: 10px;
         background-color: var(--color-cardmenu-checklist-new-item);
         border-style: none;
         padding: 1rem 1rem;

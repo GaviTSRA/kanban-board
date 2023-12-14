@@ -30,7 +30,7 @@ const Board: ModelDefined<BoardAttributes, BoardOptionalAttributes> = sequelize.
         allowNull: false
     },
     description: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     }
 })
 interface ListAttributes {

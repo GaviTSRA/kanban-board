@@ -375,7 +375,7 @@
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
             <div v-if="!isCombinedView" class="newList">
                 <input type="text" v-model="newListName"/>
-                <button @click="createNewList">Create new list</button>
+                <button @click="createNewList"></button>
             </div>
         </div>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
@@ -417,26 +417,31 @@
         min-width: 15rem;
         height: fit-content;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         margin-top: 10px;
         margin-left: 1rem;
         margin-right: 1rem;
         align-items: center;
         border-radius: 10px;
+        padding: .5rem;
     }
 
     .newList input {
-        width: 75%;
-        margin-top: 10px;
         height: 2rem;
+        width: 90%;
+        margin-right: 10px;
     }
 
     .newList button {
-        margin: 10px 0;
+        transform: scale(1.35);
+        width: 15%;
         background-color: var(--color-card-new-btn);
-        border-style: none;
-        border-radius: 10px;
-        padding: .5rem 1rem;
+        padding: .7rem;
+        margin-top: 1px;
+        margin-left: 15px;
+        background-color: black;
+        mask: url(/plus-circle.svg) no-repeat center;
+        transition: .4s;
     }
 
     .newList button:hover {

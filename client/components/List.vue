@@ -141,6 +141,7 @@
         margin-top: 1px;
         background-color: black;
         mask: url(/plus-circle.svg) no-repeat center;
+        transition: .4s;
     }
 
     .newCard button:hover {

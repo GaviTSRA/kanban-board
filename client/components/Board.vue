@@ -373,10 +373,10 @@
                 </div>
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
-            <div v-if="!isCombinedView" class="newList">
+            <form v-if="!isCombinedView" class="newList" @submit.prevent="createNewList">
                 <input type="text" v-model="newListName"/>
                 <button @click="createNewList"></button>
-            </div>
+            </form>
         </div>
         <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteList" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete list?" optionCancel="Cancel"/>
         <DecisionMenu v-if="moveQueue.length > 0" @confirm="()=>moveSubcards(moveQueue.shift())" @cancel="moveQueue.shift()" optionOk="Confirm" :text="'Move subcards of '+moveQueue[0].title+'?'" optionCancel="Cancel"/>

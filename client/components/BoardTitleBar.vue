@@ -1,5 +1,5 @@
 <script setup>
-    let emit = defineEmits(["settings"])
+    let emit = defineEmits(["settings", "info"])
     let props = defineProps(["board", "ws", "editable"])
     let board = props.board
 
@@ -22,22 +22,31 @@
 
 <template>
     <div class="header">
-        <!-- TODO icon? -->
         <NuxtLink to="/" class="back"></NuxtLink>
         <EditableText :maxlength="20" :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
         <EditableText :maxlength="125" :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <button @click="$emit('info')" class="info"></button>
         <button @click="$emit('settings')" class="settings"></button>
     </div>
 </template>
 
 <style scoped>
     .settings {
-        margin: auto;
+        margin: auto 0;
         margin-right: 1rem;
         height: 2rem;
         width: 2rem;
         background-color: var(--color-header-settings-btn);
         mask: url(/settings.svg) no-repeat center;
+        transition: .6s;
+    }
+    .info {
+        margin: auto;
+        margin-right: 1rem;
+        height: 2rem;
+        width: 2rem;
+        background-color: var(--color-header-settings-btn);
+        mask: url(/info.svg) no-repeat center;
         transition: .6s;
     }
     .settings:hover {

@@ -38,6 +38,12 @@
         textColor: string,
         empty?: boolean
     }
+    interface InfoItem {
+        id: string,
+        boardId: string,
+        title: string,
+        content: string
+    }
 
     let board = ref({
         id: route.params.id as string,
@@ -48,6 +54,7 @@
     let cards: Ref<{[listId: string]: Card[]}> = ref({})
     let labels: Ref<Label[]> = ref([])
     let assignedLabels: Ref<{[labelId:string]: string}[]> = ref([])
+    let infoItems: Ref<InfoItem[]> = ref([])
 
     let ws = new WebSocket("ws://localhost:3001/board/"+route.params.id)
 
@@ -193,7 +200,6 @@
                 break
 
             case "assignedLabel":
-                found = false
                 if (data.remove) {
                     assignedLabels.value = assignedLabels.value.filter(el => {
                         return el.labelId != data.labelId || el.cardId != data.cardId
@@ -202,6 +208,34 @@
                     assignedLabels.value.push({
                         cardId: data.cardId,
                         labelId: data.labelId
+                    })
+                }
+                break
+
+            case "infoItem":
+                if (data.delete) {
+                    infoItems.value = infoItems.value.filter(item => {return item.id != data.id})
+                    infoItems.value.push({
+                        id: data.id,
+                        empty: true
+                    })
+                    break
+                }
+
+                found = false
+                for (let item of infoItems.value) {
+                    if (item.id == data.id) {
+                        item.title = data.title
+                        item.content = data.content
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    infoItems.value.push({
+                        id: data.id,
+                        title: data.title,
+                        content: data.content
                     })
                 }
                 break
@@ -219,5 +253,6 @@
         :cards="cards"
         :labels="labels"
         :assignedLabels="assignedLabels"
+        :infoItems="infoItems"
     />
 </template>

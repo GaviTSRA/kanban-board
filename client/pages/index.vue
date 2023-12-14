@@ -24,7 +24,6 @@
     }
 
     async function createBoard() {
-        // TODO error handling
         let res = (await useFetch<createResponse>("http://localhost:3001", {
             method: "POST",
             body: JSON.stringify({

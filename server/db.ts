@@ -33,14 +33,7 @@ const Board: ModelDefined<BoardAttributes, BoardOptionalAttributes> = sequelize.
         type: DataTypes.STRING
     }
 })
-interface ListAttributes {
-    id: string,
-    title: string,
-    position: number,
-    BoardId: string
-}
-type ListOptionalAttributes = Optional<ListAttributes, "id">
-const List: ModelDefined<ListAttributes, ListOptionalAttributes> = sequelize.define("List", {
+const List = sequelize.define("List", {
     id: {
         type: DataTypes.UUID,
         allowNull: false,
@@ -137,8 +130,26 @@ const ChecklistItem = sequelize.define("ChecklistItem", {
     }
 })
 
+const InfoItem = sequelize.define("InfoItem", {
+    id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        unique: true
+    },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    content: {
+        type: DataTypes.TEXT
+    }
+})
+
 Board.hasMany(List)
 Board.hasMany(Label)
+Board.hasMany(InfoItem)
 
 List.belongsTo(Board)
 List.hasMany(Card)
@@ -160,6 +171,8 @@ Checklist.hasMany(ChecklistItem)
 
 ChecklistItem.belongsTo(Checklist)
 
+InfoItem.belongsTo(Board)
+
 await sequelize.sync({ alter: true })
 
 export {
@@ -168,9 +181,9 @@ export {
     List,
     Card,
     BoardAttributes,
-    ListAttributes,
     Label,
     AssignedLabel,
     Checklist,
-    ChecklistItem
+    ChecklistItem,
+    InfoItem
 }

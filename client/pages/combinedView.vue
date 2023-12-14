@@ -251,5 +251,7 @@
         :assignedLabels="assignedLabels"
         :list-id-overrides="listIdOverrides"
         :board-names="boardNames"
+        :info-items="[]"
     />
+    <!-- TODO: info items on combined view -->
 </template>

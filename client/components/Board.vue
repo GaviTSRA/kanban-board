@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    let props = defineProps(["isCombinedView", "ws", "wss", "board", "lists", "cards", "labels", "assignedLabels", "allLists", "listIdOverrides", "boardNames"])
+    let props = defineProps(["isCombinedView", "ws", "wss", "board", "lists", "cards", "labels", "assignedLabels", "allLists", "listIdOverrides", "boardNames", "infoItems"])
 
     interface List {
         id: string,
@@ -29,13 +29,6 @@
                 ChecklistId: string
             }[]
         }[]
-    }
-    interface Label {
-        id: string,
-        boardId: string,
-        title: string,
-        color: string,
-        textColor: string
     }
 
     function send(data: any) {
@@ -252,6 +245,7 @@
     }
 
     let settingsOpened = ref(false)
+    let infoMenuOpened = ref(false)
 
     function deleteCard(index: number, id: string) {
         for (let card of props.cards[id]) {
@@ -337,7 +331,8 @@
 
 <template>
     <div @dragend="dragEnd">
-        <BoardTitleBar @settings="settingsOpened = !settingsOpened" :board="board" :ws="!isCombinedView ? props.ws : undefined"/>
+        <BoardTitleBar @settings="settingsOpened = !settingsOpened; infoMenuOpened = false" :board="board" :ws="!isCombinedView ? props.ws : undefined" @info="infoMenuOpened = !infoMenuOpened; settingsOpened = false"/>
+        <InfoMenu :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
         <Settings :creationEnabled="!isCombinedView" v-if="settingsOpened" :ws="!isCombinedView ? ws : undefined" :labels="labels" :boardId="board.id"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">

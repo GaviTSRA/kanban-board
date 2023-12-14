@@ -3,7 +3,7 @@ import expressWs from "express-ws"
 import cors from "cors"
 import WebSocket from "ws"
 import bodyParser from 'body-parser';
-import { Board, List, Card, BoardAttributes, Label, AssignedLabel, ChecklistItem, Checklist } from "./db.js";
+import { Board, List, Card, BoardAttributes, Label, AssignedLabel, ChecklistItem, Checklist, InfoItem } from "./db.js";
 
 const app = expressWs(express()).app
 const port = 3001
@@ -74,7 +74,7 @@ function send(boardId: string, data: any) {
     }
     clients[req.params.boardId].push(ws)
 
-    await sendBoard(ws, board as unknown as BoardAttributes)  // TODO fix ts
+    await sendBoard(ws, board as unknown as BoardAttributes)
     await sendLists(ws, req.params.boardId)
     await sendLabels(ws, req.params.boardId)
     await sendCards(ws, req.params.boardId)
@@ -107,7 +107,7 @@ function send(boardId: string, data: any) {
                     })
                 }
                 await board?.save()
-                await sendBoard(ws, board as unknown as BoardAttributes) // TODO fix ts
+                await sendBoard(ws, board as unknown as BoardAttributes)
                 break
 
             case "updateList":
@@ -329,6 +329,40 @@ function send(boardId: string, data: any) {
                     }
                 }
                 break
+            
+            case "updateInfoItem":
+                let item
+                if (data.new) {
+                    item = await InfoItem.create({
+                        BoardId: data.boardId,
+                        title: data.title,
+                        content: data.content
+                    })
+                } else {
+                    item = await InfoItem.findByPk(data.id)
+                    if (!item) return
+                    if (data.delete) {
+                        item?.destroy()
+                        send(req.params.boardId, {
+                            "type": "infoItem",
+                            "id": data.id,
+                            "delete": true
+                        })
+                    }
+                    if (data.title != undefined) {
+                        item?.set({
+                            title: data.title
+                        })
+                    }
+                    if (data.content != undefined) {
+                        item?.set({
+                            content: data.content
+                        })
+                    }
+                    await item?.save()
+                }
+                await sendInfoItem(data.boardId, item)
+                break
         }
     })
 })
@@ -344,12 +378,21 @@ function checkDataValid(data: any) {
 }
 
 async function sendBoard(ws: WebSocket, board: BoardAttributes) {
-    send(board.id, {  // TODO fix ts
+    send(board.id, {
         "type": "board",       // @ts-ignore
         "id": board.id,       // @ts-ignore
         "title": board?.title, // @ts-ignore
         "description": board?.description
     })
+    let infoItems = await InfoItem.findAll({
+        where: {
+            BoardId: board.id
+        }
+    })
+
+    for (let item of infoItems) {
+        sendInfoItem(board.id, item)
+    }
 }
 
 async function sendLists(ws: WebSocket, boardId: string) {
@@ -447,6 +490,15 @@ async function sendLabel(label: any) {
             "cardId": assignment.CardId
         })
     }
+}
+
+async function sendInfoItem(boardId: string, item: any) {
+    send(boardId, {
+        "type": "infoItem",
+        "id": item.id,
+        "title": item.title,
+        "content": item.content
+    })
 }
 
 app.listen(port, () => {

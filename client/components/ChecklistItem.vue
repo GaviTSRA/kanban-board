@@ -50,7 +50,8 @@
     }
     .checkbox {
         width: fit-content;
-        min-width: 3rem;
+        min-width: 1rem;
+        margin-right: 10px;
     }
     .item {
         width: 70%;

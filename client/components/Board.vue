@@ -374,7 +374,7 @@
             </div>
             <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
             <form v-if="!isCombinedView" class="newList" @submit.prevent="createNewList">
-                <input type="text" v-model="newListName"/>
+                <input type="text" v-model="newListName" maxlength="20"/>
                 <button @click="createNewList"></button>
             </form>
         </div>

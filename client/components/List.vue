@@ -59,7 +59,7 @@
 
 <template>
     <div class="list" @contextmenu.prevent="openMenu">
-        <EditableText :editable="props.allowCreation" :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
+        <EditableText :maxlength="20" :editable="props.allowCreation" :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
         <div class="cards">
             <div v-for="(card, index) in props.cards" :key="card.id">
@@ -92,7 +92,7 @@
         </div>
         <div class="newCardContainer">
             <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
-                <input type="text" v-model="newCardName"/>
+                <input type="text" v-model="newCardName" maxlength="255"/>
                 <button @click="createCard"></button>
             </form>
         </div>

@@ -66,8 +66,8 @@
     <div @contextmenu.stop="" @dragstart.prevent.stop="" draggable="true">
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
-            <EditableText :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
-            <EditableText :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
+            <EditableText :maxlength="20" :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
+            <EditableText :maxlength="125" :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
             <div class="labels">
                 <div @click="() => toggle(label)" v-for="label in props.labels">
                     <p :class="{label: true, disabled: !isEnabled(label)}" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>
@@ -193,9 +193,11 @@
 
     .description {
         width: 90%;
+        overflow: wrap;
+        overflow-wrap: break-word;
         background-color: var(--color-cardmenu-desc-background);
         margin: 10px 5%;
-        height: 20%;
+        height: 10%;
         border-radius: 10px;
         text-align: left;
     }

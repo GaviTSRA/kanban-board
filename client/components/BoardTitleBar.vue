@@ -24,8 +24,8 @@
     <div class="header">
         <!-- TODO icon? -->
         <NuxtLink to="/" class="back">Back</NuxtLink>
-        <EditableText :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
-        <EditableText :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <EditableText :maxlength="20" :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
+        <EditableText :maxlength="125" :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
         <button @click="$emit('settings')" class="settings"></button>
     </div>
 </template>
@@ -77,6 +77,7 @@
     }
     
     .description {
+        overflow-wrap: break-word;
         margin: auto 0;
         margin-left: 1rem;
         width: 0;

@@ -63,9 +63,9 @@
     <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
         <h1>Create new board</h1>
         <label for="title">Title</label>
-        <input v-model="title" type="text" id="title"/>
+        <input maxlength="20" v-model="title" type="text" id="title"/>
         <label for="description">Description</label>
-        <textarea v-model="description" id="description"/>
+        <textarea maxlength="125" v-model="description" id="description"/>
         <button class="confirm" @click="createBoard">Create</button>
     </div>
 </template>

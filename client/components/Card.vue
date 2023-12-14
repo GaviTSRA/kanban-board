@@ -331,6 +331,7 @@
         color: var(--color-card-title);
     }
     .description {
+        overflow-wrap: break-word;
         color: var(--color-card-description);
         font-size: 1rem;
         line-height: 15px;

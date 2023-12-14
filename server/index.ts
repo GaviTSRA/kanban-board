@@ -334,8 +334,8 @@ function send(boardId: string, data: any) {
 })
 
 function checkDataValid(data: any) {
-    if (data.title != undefined && (data.title == "" || typeof data.title != "string" || data.title.length > 255)) return false
-    if (data.description && (typeof data.description != "string" || data.description.length > 1000)) return false
+    if (data.title != undefined && (data.title == "" || typeof data.title != "string" || data.title.length > 20)) return false
+    if (data.description && (typeof data.description != "string" || data.description.length > 125)) return false
     if (data.position && typeof data.position != "number") return false
     if (data.id && !(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(data.id))) return false
     if (data.listId && !(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(data.listId))) return false

@@ -33,7 +33,7 @@
     <div class="checklist">
         <div class="titleContainer">
             <button class="delete" @click="deleteList"></button>
-            <EditableText :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
+            <EditableText :maxlength="20" :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
         </div>
         <div v-for="item in props.checklist.ChecklistItems">
             <ChecklistItem @newItem="newItem" @send="$emit('send')" :item="item" />

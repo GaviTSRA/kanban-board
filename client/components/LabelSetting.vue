@@ -37,7 +37,7 @@
         <form @change="save" class="label">
             <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
             <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>
-            <EditableText :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
+            <EditableText :maxlength="20" :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
             <button class="deleteBtn" @click.prevent="deleteLabel"><img src="/trash-2.svg"/></button>
         </form>
     </div>

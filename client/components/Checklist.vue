@@ -38,7 +38,7 @@
         <div v-for="item in props.checklist.ChecklistItems">
             <ChecklistItem @newItem="newItem" @send="$emit('send')" :item="item" />
         </div>
-        <button class="newItemBtn" @click="newItem"></button>
+        <button class="newItemBtn" @click="newItem" v-if="props.checklist.title"></button>
     </div>
 </template>
 

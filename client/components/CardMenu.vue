@@ -46,8 +46,10 @@
     }
 
     function newChecklist() {
-        props.card.checklists.push({"new": true})
-        send()
+        if (!props.card.checklists || props.card.checklists.length == 0 || (props.card.checklists[props.card.checklists.length - 1].title != '')) {
+            props.card.checklists.push({"new": true})
+            send()
+        }
     }
 
     function send() {
@@ -81,7 +83,10 @@
                 <div v-for="checklist in props.card.checklists" class="checklists">
                     <Checklist @send="send" :checklist="checklist" />
                 </div>
-                <button class="newChecklistBtn" @click="newChecklist"></button>
+                <button class="newChecklistBtn" @click="newChecklist" 
+                    v-if="!props.card.checklists || props.card.checklists.length == 0 ||
+                          (props.card.checklists[props.card.checklists.length - 1].title != '')"
+                ></button>
             </div>
         </div>
     </div>

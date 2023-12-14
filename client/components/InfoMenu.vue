@@ -57,7 +57,7 @@
             <div class="icon"></div>
         </div>
     </div>
-    <InfoItemEditMenu :title="title" :content="content" v-if="editing != undefined" @done="(title, content)=>save(title, content)"/>
+    <InfoItemEditMenu @cancel="editing = undefined" :title="title" :content="content" v-if="editing != undefined" @done="(title, content)=>save(title, content)"/>
 </template>
 
 <style scoped>

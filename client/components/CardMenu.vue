@@ -156,7 +156,7 @@
         top: 0;
         left: 0;
         background-color: black;
-        z-index: 2;
+        z-index: 29;
         opacity: 50%;
     }  
     .cardMenu {
@@ -172,7 +172,7 @@
         border-style: solid;
         border-width: 7px;
         opacity: 100%;
-        z-index: 6;
+        z-index: 6999;
         border-radius: 10px;
         filter: drop-shadow(-5px 5px 5px black);
         scrollbar-width: thin;

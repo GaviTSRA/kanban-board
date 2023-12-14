@@ -20,6 +20,7 @@
     <div class="item" v-if="!item.empty"> 
         <div class="container">
             <h1>{{ item.title }}</h1>
+            <hr>
             <div v-html="result"></div>
         </div>
         <div>
@@ -30,6 +31,13 @@
 </template>
 
 <style scoped>
+    :deep(a) {
+        color: var(--color-text-dark-3);
+        text-decoration: underline;
+    }
+    :deep(a:hover) {
+        color: var(--color-white-2)
+    }
     .editItem {
         background-color: var(--color-white-4);
         mask: url(/edit.svg) no-repeat center;

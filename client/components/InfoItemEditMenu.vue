@@ -1,14 +1,23 @@
 <script setup>
     let props = defineProps(["title", "content"])
-    let emit = defineEmits(["done"])
+    let emit = defineEmits(["done", "cancel"])
 
     let title = props.title
     let content = props.content
+
+    let canCancel = false
+    setTimeout(() => {
+        canCancel = true
+    }, 1)
+
+    function cancel() {
+        if(canCancel) emit('cancel')
+    }
 </script>
 
 <template>
     <div class="darken"></div>
-    <div class="menu">
+    <div class="menu" v-click-away="cancel">
         <input v-model="title" class="title"/>
         <textarea v-model="content" class="content"/>
         <button class="done" @click="$emit('done', title, content)">Done</button>

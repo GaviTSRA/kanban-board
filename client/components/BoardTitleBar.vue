@@ -26,7 +26,6 @@
         <NuxtLink to="/" class="back">Back</NuxtLink>
         <EditableText :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
         <EditableText :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
-        <!-- TODO icon -->
         <button @click="$emit('settings')" class="settings"></button>
     </div>
 </template>

@@ -66,7 +66,7 @@
     <div @contextmenu.stop="" @dragstart.prevent.stop="" draggable="true">
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
-            <EditableText :maxlength="20" :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
+            <EditableText :center="true" :maxlength="20" :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
             <EditableText :maxlength="125" :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
             <div class="labels">
                 <div @click="() => toggle(label)" v-for="label in props.labels">

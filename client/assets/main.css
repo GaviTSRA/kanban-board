@@ -22,14 +22,7 @@ input, textarea{
 
 a {
     text-decoration: none;
-    color: hsla(160, 100%, 37%, 1);
     transition: 0.4s;
-}
-
-@media (hover: hover) {
-    a:hover {
-        background-color: hsla(160, 100%, 37%, 0.2);
-    }
 }
 
 body {
@@ -89,7 +82,8 @@ body {
     --color-text-light-1: var(--color-accent);
     --color-text-light-2: rgba(60, 60, 60, 0.66);
     --color-text-dark-1: var(--color-white-1);
-    --color-text-dark-2: rgba(235, 235, 235, 0.64);
+    --color-text-dark-2: rgb(233, 210, 210);
+    --color-text-dark-3: rgba(235, 235, 235, 0.64);
     --color-header: rgb(52, 232, 232);
 
     --color-btn-create: green;
@@ -107,7 +101,7 @@ body {
     --color-boardcard-hover: var(--color-accent);
     --color-boardcard-dropshadow: var(--color-black-2);
     --color-boardcard-header: var(--color-header);
-    --color-boardcard-text: var(--color-text-dark-2);
+    --color-boardcard-text: var(--color-text-dark-3);
 
     --color-boardcreate-background: var(--color-black-4);
 
@@ -122,7 +116,7 @@ body {
     --color-boardmenu-combinedview-btn: var(--color-btn-create);
     --color-boardmenu-combinedview-btn-hover: var(--color-btn-create-hover);
     --color-boardmenu-combinedview-btn-active: var(--color-btn-create-active);
-    --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-2);
+    --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-3);
 
     /* Board */
     --color-board-stop-assign: var(--color-btn-danger);
@@ -131,9 +125,12 @@ body {
     
     /* Board header */
     --color-header-background: var(--color-black-3);
-    --color-header-title: var(--color-header);
-    --color-header-desc: var(--color-text-dark-2);
+    --color-header-title: var(--color-text-dark-2);
+    --color-header-title-background: var(--color-black-4);
+    --color-header-desc: var(--color-text-dark-3);
     --color-header-settings-btn: var(--color-white-4);
+    --color-header-btn-back: black;
+    --color-header-btn-back-hover: var(--color-btn-danger);
     
     /* Settings */
     --color-settings-background: var(--color-black-2);
@@ -144,7 +141,7 @@ body {
     /* Lists */
     --color-list-background: var(--color-black-2);
     --color-list-scrollbar: var(--color-black-4);
-    --color-list-title: var(--color-text-dark-2);
+    --color-list-title: var(--color-text-dark-3);
 
     --color-card-new-btn: var(--color-btn-create);
     --color-card-new-btn-hover: var(--color-btn-create-hover);
@@ -153,7 +150,7 @@ body {
     /* Cards */
     --color-card-primary: rgb(82, 82, 82);
     --color-card-title: var(--color-header);
-    --color-card-description: var(--color-text-dark-2);
+    --color-card-description: var(--color-text-dark-3);
 
     --color-card-small-checklist-background: var(--color-black-2);
     --color-card-small-checklist-complete: green;
@@ -168,7 +165,7 @@ body {
     --color-cardmenu-border: var(--color-black-3);
     --color-cardmenu-scrollbar: var(--color-black-3);
 
-    --color-cardmenu-desc: var(--color-text-dark-2);
+    --color-cardmenu-desc: var(--color-text-dark-3);
     --color-cardmenu-desc-background: var(--color-background);
 
     --color-cardmenu-checklist-new: var(--color-btn-create);

@@ -23,7 +23,7 @@
 <template>
     <div class="header">
         <!-- TODO icon? -->
-        <NuxtLink to="/" class="back">Back</NuxtLink>
+        <NuxtLink to="/" class="back"></NuxtLink>
         <EditableText :maxlength="20" :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
         <EditableText :maxlength="125" :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
         <button @click="$emit('settings')" class="settings"></button>
@@ -48,10 +48,18 @@
         transform: rotate(300deg);
     }
     .back {
+        transform: scale(1.5);
         margin: auto 10px;
-        margin-right: 2rem;
+        margin-right: 1rem;
         border-radius: 3px;
         padding: 2px 5px;
+        background-color: var(--color-header-btn-back);
+        padding: 1rem;
+        mask: url(/arrow-left-circle.svg) no-repeat center;
+        transition: .2s;
+    }
+    .back:hover {
+        background-color: var(--color-header-btn-back-hover)
     }
     .header {
         display: flex;
@@ -66,6 +74,9 @@
     }
 
     .title {
+        background-color: var(--color-header-title-background);
+        padding: .5rem 1rem;
+        border-radius: 10px;
         font-size: 1.5rem;
         margin: auto 10px;
         color: var(--color-header-title);

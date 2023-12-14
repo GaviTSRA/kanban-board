@@ -429,7 +429,6 @@
     .newList input {
         height: 2rem;
         width: 90%;
-        margin-right: 10px;
     }
 
     .newList button {

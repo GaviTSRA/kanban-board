@@ -76,36 +76,44 @@
 </script>
 
 <template>
-    <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
-        <div class="container">
-            <h2>{{ title }}</h2>
-            <p>{{ description }}</p>
-        </div>
-    </NuxtLink>
-    <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
-    <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteBoard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete board?" optionCancel="Cancel"/>
+    <div class="boardCard">
+        <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
+            <div class="container">
+                <h2>{{ title }}</h2>
+                <p>{{ description }}</p>
+            </div>
+        </NuxtLink>
+        <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
+        <DecisionMenu v-if="deleteMenuVisible" @confirm="deleteBoard" @cancel="deleteMenuVisible = false" optionOk="Confirm" text="Delete board?" optionCancel="Cancel"/>
+    </div>
 </template> 
 
 <style scoped>
     .link {
         margin-top: 1rem;
         border-radius: 10px;
+        height: 100%;
+        width: 100%;
     }
     .link:hover {
         transform: translate(10px, -5px);
     }
+    .boardCard {
+        margin-bottom: 10px;
+        height: 100%;
+        width: 100%;
+    }
     .container {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         border-radius: 10px;
         background-color: var(--color-boardcard-background);
-        width: 90vw;
+        width: 100%;
         height: 100%;
-        max-height: 10vh;
-        padding: 2.5rem 1rem;
         align-items: center;
         justify-content: left;
-        text-align: left;
+        text-align: center;
+        transition: .5s;
     }
     .container:hover {
         background-color: var(--color-boardcard-hover);
@@ -114,27 +122,18 @@
 
     h2 {
         color: var(--color-boardcard-header);
-        width: 30%;
-        font-size: 0.75rem;
+        width: 95%;
+        font-size: 1.8rem;
     }
     p {
         color: var(--color-boardcard-text);
-        margin-left: 1rem;
-        width: 70%;
-        font-size: .75rem;
+        width: 85%;
+        font-size: 1rem;
+        overflow-wrap: break-word;
+        text-align: left;
     }
 
     @media (min-width: 1025px) { 
-        .container {
-            width: 50vw;
-            padding: 3.5rem 2rem;
-        }
-        h2 {
-            font-size: 2rem;
-        }
-        p {
-            width: 50%;
-            font-size: 1rem;
-        }
+
     }
 </style>

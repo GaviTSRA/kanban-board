@@ -50,13 +50,15 @@
 
 <template>
     <div class="container">
-        <div v-for="board in boards">
-            <div class="cardContainer">
+        <div class="cards">
+            <div v-for="board in boards" class="cardContainer">
                 <input @change="()=>change(board.id)" class="combinedViewCheckbox" type="checkbox" v-if="selectingForCombinedView"/>
                 <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
             </div>
+            <div class="newBoardItem cardContainer" @click="openNewBoardMenu">
+                <div></div>
+            </div>
         </div>
-        <button class="newBoardBtn" @click="openNewBoardMenu">New Board</button>
         <button class="combinedViewBtn" v-if="!selectingForCombinedView" @click="selectingForCombinedView = true">Select for combined view</button>
         <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" event="" @click.native="saveSelected" :class="{'combinedViewBtn': true, disabled: selected.length < 2}" v-if="selectingForCombinedView">Open combined view</NuxtLink>
     </div>
@@ -71,6 +73,10 @@
 </template>
 
 <style scoped>
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
     .combinedViewCheckbox {
         transform: scale(2);
         margin: auto 1rem;
@@ -78,6 +84,33 @@
     }
     .cardContainer {
         display: flex;
+        height: 40vh;
+        width: 20vw;
+        margin: 10px;
+    }
+    .newBoardItem {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-style: dotted;
+        border-radius: 10px;
+        background-color: var(--color-boardmenu-newitem-background);
+        border-color: var(--color-boardmenu-newitem-border);
+        transition: .5s;
+    }
+    .newBoardItem:hover {
+        background-color: var(--color-boardmenu-newitem-background-hover);
+        border-color: var(--color-boardmenu-newitem-border-hover);
+    }
+    .newBoardItem > div {
+        transition: .5s;
+        padding: 5rem;
+        transform: scale(2.5);
+        background-color: var(--color-boardmenu-newitem-icon);
+        mask: url(/plus-circle.svg) no-repeat center;
+    }
+    .newBoardItem:hover > div {
+        background-color: var(--color-boardmenu-newitem-icon-hover);
     }
     .combinedViewBtn {
         position: absolute;
@@ -106,7 +139,7 @@
         display: flex;
         flex-direction: column;
         background-color: var(--color-boardcreate-background);
-        position: absolute;
+        position: fixed;
         width: 80vw;
         left: 10vw;
         height: 75vh;
@@ -153,28 +186,21 @@
     .create .confirm:active {
         background-color: var(--color-boardcreate-createbtn-active);
     }
-    
-    .newBoardBtn {
-        transition: 0.3s;
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        background-color: var(--color-boardmenu-open-btn);
-        border-style: none;
-        padding: 1rem 2rem;
-        border-radius: 10px;
-        font-size: 1rem;
-    }
-    .newBoardBtn:hover {
-        background-color: var(--color-boardmenu-open-btn-hover);
-    }
-    .newBoardBtn:active {
-        background-color: var(--color-boardmenu-open-btn-active);
-    }
     .container {
         display: flex;
         justify-self: center;
         flex-direction: column;
+    }
+
+    ::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+        background: var(--color-list-background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-list-scrollbar);
+        -webkit-border-radius: 10px;
     }
 
     @media (min-width: 1025px) {
@@ -195,12 +221,6 @@
         }
         #description {
             height: 7vw;
-        }
-        .newBoardBtn {
-            font-size: 2rem;
-            top: 10px;
-            right: 10px;
-            bottom: auto;
         }
         .combinedViewBtn {
             left: 10px;

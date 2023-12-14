@@ -75,7 +75,8 @@ body {
     --color-black-1: #181818;
     --color-black-2: #222222;
     --color-black-3: #282828;
-    --color-black-4: #323232;
+    --color-black-4: #393939;
+    --color-black-5: #3b3b3b;
 
     --color-accent: #2c3e50;
 
@@ -103,15 +104,18 @@ body {
     --color-boardcard-header: var(--color-header);
     --color-boardcard-text: var(--color-text-dark-3);
 
-    --color-boardcreate-background: var(--color-black-4);
+    --color-boardcreate-background: var(--color-black-3);
+
+    --color-boardmenu-newitem-background: var(--color-black-1);
+    --color-boardmenu-newitem-border: var(--color-black-4);
+    --color-boardmenu-newitem-background-hover: var(--color-black-2);
+    --color-boardmenu-newitem-border-hover: var(--color-black-5);
+    --color-boardmenu-newitem-icon: black;
+    --color-boardmenu-newitem-icon-hover: var(--color-btn-create);
 
     --color-boardcreate-createbtn: var(--color-btn-create);
     --color-boardcreate-createbtn-hover: var(--color-btn-create-hover);
     --color-boardcreate-createbtn-active: var(--color-btn-create-active);
-
-    --color-boardmenu-open-btn: var(--color-btn-create);
-    --color-boardmenu-open-btn-hover: var(--color-btn-create-hover);
-    --color-boardmenu-open-btn-active: var(--color-btn-create-active);
 
     --color-boardmenu-combinedview-btn: var(--color-btn-create);
     --color-boardmenu-combinedview-btn-hover: var(--color-btn-create-hover);
@@ -201,6 +205,8 @@ body {
 }
   
 body {
+    scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
+    scrollbar-width: thin;
     user-select: none;
     min-height: 100vh;
     color: var(--color-text);

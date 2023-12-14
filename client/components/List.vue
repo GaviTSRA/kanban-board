@@ -104,6 +104,12 @@
         box-shadow: 0px -4px 10px black;
         position:relative;
         z-index: 5;
+        padding: .5rem;
+        min-height: 1.5rem;
+        border-color: var(--color-black-4);
+        border-width: 0;
+        border-top-width: 4px;
+        border-style: solid;
     }
     .title {
         position: relative;
@@ -122,11 +128,6 @@
     .newCard {
         filter: none;
         display: flex;
-        padding: .5rem;
-        border-color: var(--color-black-4);
-        border-width: 0;
-        border-top-width: 4px;
-        border-style: solid;
     }
     .newCard input {
         width: 85%;

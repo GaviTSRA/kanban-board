@@ -29,8 +29,11 @@
         left: 30vw;
         height: 40vh;
         top: 40vh;
-        filter: drop-shadow(0 0 5rem black);
+        box-shadow: -10px 10px 10px black;
         background-color: var(--color-decisionmenu-background);
+        border-color: var(--color-decisionmenu-border);
+        border-style: solid;
+        border-width: 5px;
         display: flex;
         flex-direction: column;
         border-radius: 10px;

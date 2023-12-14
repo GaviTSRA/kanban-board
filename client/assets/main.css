@@ -188,6 +188,7 @@ body {
 
     /* decision menu */
     --color-decisionmenu-background: var(--color-black-4);
+    --color-decisionmenu-border: var(--color-black-2);
     --color-decisionmenu-btn-ok: var(--color-btn-create);
     --color-decisionmenu-btn-ok-hover: var(--color-btn-create-hover);
     --color-decisionmenu-btn-cancel: var(--color-btn-danger);

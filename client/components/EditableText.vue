@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["text", "textarea", "focus", "editable", "maxlength"])
+    let props = defineProps(["text", "textarea", "focus", "editable", "maxlength", "center"])
     let emit = defineEmits(["edit"])
 
     let text = ref("")
@@ -68,7 +68,7 @@
 </script>
 
 <template>
-    <form @submit.prevent="()=>done(0)" class="container">
+    <form @submit.prevent="()=>done(0)" :class="{container: true, center: props.center}">
         <p @click="detectDoubleClick" v-if="!editing">{{ props.text }}</p>
         <input :maxlength="maxlength" @focus="isFocused = true" @blur="looseFocus" ref="input" class="editable" v-model="text" v-show="editing && !props.textarea" v-click-away="()=>done(false)"/>
         <textarea :maxlength="maxlength" ref="textarea" @focus="isFocused = true" @blur="looseFocus" class="editable" v-model="text" v-show="editing && props.textarea" v-click-away="()=>done(true)"/>
@@ -76,6 +76,13 @@
 </template>
 
 <style scoped>
+    .container {
+        display: flex;
+        align-items: center;
+    }
+    .center {
+        justify-content: center;
+    }
     p {
         min-width: 1rem;
         min-height: 1rem;

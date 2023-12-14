@@ -35,9 +35,9 @@
 <template>
     <div class="label" v-if="!label.empty">
         <form @change="save" class="label">
+            <EditableText :center="true" :maxlength="20" :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
             <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
             <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>
-            <EditableText :maxlength="20" :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
             <button class="deleteBtn" @click.prevent="deleteLabel"><img src="/trash-2.svg"/></button>
         </form>
     </div>
@@ -56,20 +56,21 @@
     .labelName {
         padding: 0 .5rem;
         text-align: center;
-        height: fit-content;
+        height: 2rem;
         width: 10rem;
         margin: 10px;
         border-radius: 10px;
     }
     .labelColor {
-        height: fit-content;
+        height: 2rem;
         width: 5vw;
         margin: 10px;
+        padding-left: 10px;
     }
     .label {
         height: 2rem;
         display: flex;
         flex-direction: row;
-        margin-top: 10px;
+        margin-bottom: 10px;
     }
 </style>

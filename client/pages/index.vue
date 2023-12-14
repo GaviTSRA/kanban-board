@@ -103,7 +103,7 @@
         border-color: var(--color-boardmenu-newitem-border-hover);
     }
     .newBoardItem > div {
-        transition: .5s;
+        transition: .4s;
         padding: 5rem;
         transform: scale(2.5);
         background-color: var(--color-boardmenu-newitem-icon);

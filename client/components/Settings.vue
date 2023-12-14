@@ -21,63 +21,92 @@
 
 <template>
     <div class="settings">
-        <div class="showSubCardsOption">
-            <input id="showSubCardsCheckbox" type="checkbox" v-model="forceShowAllCards"/>
-            <label class="showSubCardsText" for="showSubCardsCheckbox">Force show all cards</label>
+        <div class="localSettings">
+            <h1>Local Settings</h1>
+            <hr>
+            <div class="showSubCardsOption">
+                <Switch class="option" :value="forceShowAllCards" @change="val=>forceShowAllCards = val"/>
+                    <label class="showSubCardsText" for="showSubCardsCheckbox">Force show all cards</label>
+            </div>
+            <div class="showSubCardsOption">
+                <Switch class="option" :value="showSubCards" @change="val=>showSubCards = val"/>
+                <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
+            </div>
+            <div class="showSubCardsOption">
+                <Switch class="option" :value="colorAllSame" @change="val=>colorAllSame = val"/>
+                <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
+            </div>
         </div>
-        <div class="showSubCardsOption">
-            <input id="showSubCardsCheckbox" type="checkbox" v-model="showSubCards"/>
-            <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
-        </div>
-        <div class="showSubCardsOption">
-            <input id="showSubCardsCheckbox" type="checkbox" v-model="colorAllSame"/>
-            <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
-        </div>
-        <h1>Labels</h1>
+        <h1 class="header">Labels</h1>
+        <hr>
         <div class="labels">
             <div v-for="label in props.labels" :key="label.id">
                 <LabelSetting :label="label" :ws="props.labelHasOwnWs ? label.ws : props.ws"/>
             </div>
-            <button v-if="creationEnabled" @click="newLabel" class="newLabel">New Label</button>
+            <div v-if="creationEnabled" class="newLabelItem" @click="newLabel">
+                <div></div>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .header {
+        margin-top: 3rem;
+    }
+    hr {
+        margin-bottom: 10px;
+    }
+    .newLabelItem {
+        height: 2.5rem;
+        border-style: dotted;
+        border-radius: 10px;
+        width: 10rem;
+        margin-left: 10px;
+        margin-top:10px;
+        background-color: var(--color-boardmenu-newitem-background);
+        border-color: var(--color-boardmenu-newitem-border);
+        transition: .3s;
+    }
+    .newLabelItem:hover {
+        background-color: var(--color-boardmenu-newitem-background-hover);
+        border-color: var(--color-boardmenu-newitem-border-hover);
+    }
+    .newLabelItem > div {
+        transition: .2s;
+        padding: .9rem;
+        margin-top: .25rem;
+        background-color: var(--color-settings-newlabel-icon);
+        mask: url(/plus-circle.svg) no-repeat center;
+    }
+    .newLabelItem:hover > div {
+        background-color: var(--color-settings-newlabel-icon-hover);
+    }
     .showSubCardsText {
         margin: auto 0;
         font-size: 1.25rem;
     }
-    #showSubCardsCheckbox {
-        margin: 10px 20px;
-        transform: scale(2);
+    .option {
+        margin: 3px 10px;
     }
     .showSubCardsOption {
         display:flex;
         flex-direction: row;
         text-align: left;
     }
-    .newLabel {
-        background-color: var(--color-settings-labels-new);
-        border-style: none;
-        border-radius: 10px;
-        padding: .5rem 1rem;;
-        height: fit-content;
-        margin: 30px auto;
-    }
-    .newLabel:hover {
-        background-color: var(--color-settings-labels-new-hover);
-    }
     .labels { 
         display: flex;
         flex-direction: column;
     }
     h1 {
-        margin-top: 2rem;
         color: var(--color-settings-header);
         margin-left: 10px;   
     }
     .settings {
+        border-style:solid;
+        border-width: 0;
+        border-color: var(--color-black-4);
+        border-top-width: 5px;
         scrollbar-width: thin;
         scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
         overflow-y: scroll;

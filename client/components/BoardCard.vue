@@ -80,6 +80,7 @@
         <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
             <div class="container">
                 <h2>{{ title }}</h2>
+                <hr>
                 <p>{{ description }}</p>
             </div>
         </NuxtLink>
@@ -89,6 +90,9 @@
 </template> 
 
 <style scoped>
+    hr {
+        width: 100%;
+    }
     .link {
         margin-top: 1rem;
         border-radius: 10px;
@@ -126,8 +130,9 @@
         font-size: 1.8rem;
     }
     p {
+        margin-top: 1rem;
         color: var(--color-boardcard-text);
-        width: 85%;
+        width: 90%;
         font-size: 1rem;
         overflow-wrap: break-word;
         text-align: left;

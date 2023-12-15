@@ -235,7 +235,8 @@
                     infoItems.value.push({
                         id: data.id,
                         title: data.title,
-                        content: data.content
+                        content: data.content,
+                        boardId: data.boardId
                     })
                 }
                 break

@@ -41,6 +41,13 @@
         textColor: string,
         ws: WebSocket
     }
+    interface InfoItem {
+        id: string,
+        boardId: string,
+        title: string,
+        content: string,
+        ws?: WebSocket
+    }
 
     let board = ref({
         id: route.params.id as string,
@@ -52,6 +59,7 @@
     let cards: Ref<{[listId: string]: Card[]}> = ref({})
     let labels: Ref<Label[]> = ref([])
     let assignedLabels: Ref<{[labelId:string]: string}[]> = ref([])
+    let infoItems: Ref<InfoItem[]> = ref([])
 
     let boards = useLocalStorage("combinedViewBoards", [])
     let wss: {[boardId: string]: WebSocket} = {}
@@ -233,6 +241,36 @@
                     })
                 }
                 break
+
+            case "infoItem":
+                if (data.delete) {
+                    infoItems.value = infoItems.value.filter(item => {return item.id != data.id})
+                    infoItems.value.push({
+                        id: data.id,
+                        empty: true
+                    })
+                    break
+                }
+
+                found = false
+                for (let item of infoItems.value) {
+                    if (item.id == data.id) {
+                        item.title = data.title
+                        item.content = data.content
+                        found = true
+                        break
+                    }
+                }
+                if (!found) {
+                    infoItems.value.push({
+                        id: data.id,
+                        title: data.title,
+                        content: data.content,
+                        ws: wss[data.boardId],
+                        boardId: data.boardId
+                    })
+                }
+                break
         }
     }
 
@@ -251,7 +289,6 @@
         :assignedLabels="assignedLabels"
         :list-id-overrides="listIdOverrides"
         :board-names="boardNames"
-        :info-items="[]"
+        :info-items="infoItems"
     />
-    <!-- TODO: info items on combined view -->
 </template>

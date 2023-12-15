@@ -332,7 +332,7 @@
 <template>
     <div @dragend="dragEnd">
         <BoardTitleBar @settings="settingsOpened = !settingsOpened; infoMenuOpened = false" :board="board" :ws="!isCombinedView ? props.ws : undefined" @info="infoMenuOpened = !infoMenuOpened; settingsOpened = false"/>
-        <InfoMenu :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
+        <InfoMenu :item-has-own-ws="isCombinedView" :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
         <Settings :creationEnabled="!isCombinedView" v-if="settingsOpened" :ws="!isCombinedView ? ws : undefined" :labels="labels" :boardId="board.id"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">

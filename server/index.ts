@@ -535,7 +535,8 @@ async function sendInfoItem(boardId: string, item: any) {
         "type": "infoItem",
         "id": item.id,
         "title": item.title,
-        "content": item.content
+        "content": item.content,
+        "boardId": boardId
     })
 }
 

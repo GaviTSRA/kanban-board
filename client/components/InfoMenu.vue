@@ -1,5 +1,5 @@
 <script setup>
-    let props = defineProps(["items", "ws", "boardId"])
+    let props = defineProps(["items", "ws", "boardId", "itemHasOwnWs"])
 
     let title = ref("")
     let content = ref("")
@@ -12,14 +12,17 @@
     }
 
     function editItem(item) {
-        editing.value = item.id
+        editing.value = item
         title.value = item.title
         content.value = item.content
     }
 
     function save(title, content) {
+        let item = editing.value
+        let ws = props.ws
+        if (props.itemHasOwnWs)  ws = item.ws
         if (editing.value == "") {
-            props.ws.send(JSON.stringify({
+            ws.send(JSON.stringify({
                 "action": "updateInfoItem",
                 "new": true,
                 "boardId": props.boardId,
@@ -27,10 +30,10 @@
                 "content": content
             }))
         } else {
-            props.ws.send(JSON.stringify({
+            ws.send(JSON.stringify({
                 "action": "updateInfoItem",
-                "id": editing.value,
-                "boardId": props.boardId,
+                "id": item.id,
+                "boardId": item.boardId,
                 "title": title,
                 "content": content
             }))
@@ -39,10 +42,12 @@
     }
 
     function deleteItem(item) {
-        props.ws.send(JSON.stringify({
+        let ws = props.ws
+        if (props.itemHasOwnWs)  ws = item.ws
+        ws.send(JSON.stringify({
             "action": "updateInfoItem",
             "delete": true,
-            "boardId": props.boardId,
+            "boardId": item.boardId,
             "id": item.id
         }))
     }
@@ -53,7 +58,7 @@
         <div v-for="item in items">
             <InfoItem :item="item" @edit="()=>editItem(item)" @delete="()=>deleteItem(item)"/>
         </div>
-        <div class="newItem" @click="newItem">
+        <div v-if="!itemHasOwnWs" class="newItem" @click="newItem">
             <div class="icon"></div>
         </div>
     </div>

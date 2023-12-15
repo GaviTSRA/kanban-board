@@ -197,7 +197,7 @@
     }
 
     @media (min-width: 1025px) {
-        :deep(.editable) {
+        :deep(.editable textarea, .editable input) {
             width: 9vw;
         }
     }

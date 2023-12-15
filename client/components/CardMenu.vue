@@ -145,7 +145,7 @@
         margin-bottom: 1rem;
     }
 
-    :deep(.editable) {
+    :deep(.editable textarea, .editable input) {
         padding: .5rem 1rem;
     }
 
@@ -194,6 +194,7 @@
         background-color: var(--color-cardmenu-title-background);
         border-radius: 10px;
         color: var(--color-cardmenu-title);
+        width: 100%;
     }
 
     .description {
@@ -205,6 +206,10 @@
         height: 10%;
         border-radius: 10px;
         text-align: left;
+    }
+
+    :deep(p) {
+        width: 100%;
     }
 
     .description :deep(textarea), .description :deep(p) {

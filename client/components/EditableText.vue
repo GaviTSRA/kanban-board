@@ -59,7 +59,7 @@
             editing.value = true
             
             await nextTick()
-            
+
             if (input.value) {
                 input.value.focus()
             }
@@ -67,6 +67,8 @@
                 textarea.value.focus()
         } 
     }
+
+    onMounted(async () => {await focus()})
 </script>
 
 <template>

@@ -265,7 +265,8 @@ function send(boardId: string, data: any) {
                                 for (let item of checklist.ChecklistItems) {
                                     if (item.new) {
                                         await ChecklistItem.create({
-                                            "ChecklistId": checklist.id
+                                            "ChecklistId": checklist.id,
+                                            title: item.title
                                         })
                                     } else {
                                         let dbItem = await ChecklistItem.findByPk(item.id)

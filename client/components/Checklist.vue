@@ -18,14 +18,20 @@
 
     function newItem() {
         props.checklist.ChecklistItems.push({
-            "new": true
+            "new": true,
+            "title": ""
         })
-        emit("send")
     }
 
     function deleteList() {
         props.checklist.delete = true
         emit("send")
+    }
+
+    function send(item) {
+        if (!item.new && (item.title == undefined || item.title == "")) return
+        props.checklist.ChecklistItems = props.checklist.ChecklistItems.filter(el => {return !(el.new && el.delete)})
+        emit('send')
     }
 </script>
 
@@ -36,7 +42,7 @@
             <EditableText :maxlength="20" :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
         </div>
         <div v-for="item in props.checklist.ChecklistItems">
-            <ChecklistItem @newItem="newItem" @send="$emit('send')" :item="item" />
+            <ChecklistItem @newItem="newItem" @send="()=>send(item)" :item="item" />
         </div>
         <button class="newItemBtn" @click="newItem" v-if="props.checklist.title"></button>
     </div>

@@ -2,18 +2,22 @@
     let props = defineProps(["item"])
     let emit = defineEmits(["send", "newItem"])
 
-    function rename(txt) {
+    async function rename(txt) {
         if (txt == "") {
             deleteItem()
             return
         }
+        let createNew
         if (props.item.title == "") {
+            createNew = true
+        }
+        props.item.title = txt
+        emit("send")
+        if (createNew) {
             setTimeout(() => {
                 emit("newItem")
             }, 100)
         }
-        props.item.title = txt
-        emit("send")
     }
 
     function deleteItem() {
@@ -29,7 +33,7 @@
 <template>
     <div class="item">
         <input @change="check" :value="props.item.checked" v-model="props.item.checked" class="checkbox" type="checkbox"/>
-        <EditableText :maxlength="20" :focus="props.item.title==''" :class="{checked: props.item.checked}" :text="props.item.title" @edit="txt=>rename(txt)"/>
+        <EditableText :maxlength="20" :focus="props.item.title == ''" :class="{checked: props.item.checked}" :text="props.item.title" @edit="txt=>rename(txt)"/>
         <button class="deleteBtn" @click="deleteItem"><img src="/trash-2.svg"/></button>
     </div>
 </template>

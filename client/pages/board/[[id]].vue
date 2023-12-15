@@ -248,6 +248,7 @@
 </script>
 
 <template>
+    <ThemeHandler />
     <Board 
         :isCombinedView="false"
         :ws="ws"

@@ -1,0 +1,139 @@
+:root {
+    /* Colors */
+    --color-white-1: #ffffff;
+    --color-white-2: rgb(191, 191, 191);
+    --color-white-3: #a2a2a2;
+    --color-white-4: #757575;
+
+    --color-black-1: #181818;
+    --color-black-2: #222222;
+    --color-black-3: #282828;
+    --color-black-4: #393939;
+    --color-black-5: #3b3b3b;
+
+    --color-accent: #2c3e50;
+    
+    --color-text-light-1: var(--color-accent);
+    --color-text-light-2: rgba(60, 60, 60, 0.66);
+    --color-text-dark-1: var(--color-white-1);
+    --color-text-dark-2: rgb(233, 210, 210);
+    --color-text-dark-3: rgba(235, 235, 235, 0.64);
+    --color-header: rgb(0, 0, 0);
+    
+    color: var(--color-text-dark-2);
+    background: var(--color-background);
+
+    --color-btn-create: green;
+    --color-btn-create-hover: rgb(0, 187, 0);
+    --color-btn-create-active: aqua;
+    --color-btn-danger: rgb(237, 32, 32);
+    --color-btn-danger-hover: rgb(245, 52, 52);
+    --color-btn-danger-active: rgb(128, 5, 5);
+
+    /* Other */
+    --color-background: var(--color-white-1);
+    
+    /* Board select menu */
+    --color-boardcard-background: #dbd9d9;
+    --color-boardcard-hover: var(--color-white-1);
+    --color-boardcard-dropshadow: var(--color-black-2);
+    --color-boardcard-header: var(--color-header);
+    --color-boardcard-text: #363636;
+    --color-boardcard-text-highlight: #000000;
+
+    --color-boardcreate-background: var(--color-white-3);
+
+    --color-boardmenu-newitem-background: var(--color-white-3);
+    --color-boardmenu-newitem-border: var(--color-white-2);
+    --color-boardmenu-newitem-background-hover: var(--color-white-1);
+    --color-boardmenu-newitem-border-hover: var(--color-white-2);
+    --color-boardmenu-newitem-icon: black;
+    --color-boardmenu-newitem-icon-hover: var(--color-btn-create);
+
+    --color-boardcreate-createbtn: var(--color-btn-create);
+    --color-boardcreate-createbtn-hover: var(--color-btn-create-hover);
+    --color-boardcreate-createbtn-active: var(--color-btn-create-active);
+
+    --color-boardmenu-combinedview-btn: var(--color-white-4);
+    --color-boardmenu-combinedview-btn-hover: var(--color-btn-create);
+    --color-boardmenu-combinedview-btn-active: var(--color-btn-create-active);
+    --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-3);
+
+    --color-boardmenu-combinedview-open-btn: var(--color-btn-create);
+    --color-boardmenu-combinedview-open-btn-hover: var(--color-btn-create-hover);
+
+    /* Board */
+    --color-board-stop-assign: var(--color-btn-danger);
+    --color-board-stop-assign-hover: var(--color-btn-danger-hover);
+    --color-board-stop-assign-active: var(--color-btn-danger-active);
+    
+    /* Board header */
+    --color-header-background: var(--color-black-3);
+    --color-header-title: var(--color-text-dark-2);
+    --color-header-title-background: var(--color-black-4);
+    --color-header-desc: var(--color-text-dark-3);
+    --color-header-settings-btn: var(--color-white-4);
+    --color-header-btn-back: black;
+    --color-header-btn-back-hover: var(--color-btn-danger);
+    
+    /* Settings */
+    --color-settings-background: var(--color-black-2);
+    --color-settings-header: var(--color-text-dark-3);
+    --color-settings-labels-new: var(--color-btn-create);
+    --color-settings-labels-new-hover: var(--color-btn-create-hover);
+    --color-settings-newlabel-icon: var(--color-black-4);
+    --color-settings-newlabel-icon-hover: var(--color-btn-create);
+
+    /* Lists */
+    --color-list-background: var(--color-black-2);
+    --color-list-scrollbar: var(--color-black-4);
+    --color-list-title: var(--color-text-dark-3);
+
+    --color-card-new-btn: var(--color-btn-create);
+    --color-card-new-btn-hover: var(--color-btn-create-hover);
+    --color-card-new-btn-active: var(--color-btn-create-active);
+
+    /* Cards */
+    --color-card-primary: rgb(82, 82, 82);
+    --color-card-title: var(--color-header);
+    --color-card-description: var(--color-text-dark-3);
+
+    --color-card-small-checklist-background: var(--color-black-2);
+    --color-card-small-checklist-complete: green;
+
+    --color-card-is-subcard: gray;
+    --color-card-assinging-to: rgb(54, 54, 54);
+
+    /* Card menu */
+    --color-cardmenu-background: var(--color-black-4);
+    --color-cardmenu-title: var(--color-card-title);
+    --color-cardmenu-title-background: var(--color-card-primary);
+    --color-cardmenu-border: var(--color-black-3);
+    --color-cardmenu-scrollbar: var(--color-black-3);
+
+    --color-cardmenu-desc: var(--color-text-dark-3);
+    --color-cardmenu-desc-background: var(--color-background);
+
+    --color-cardmenu-checklist-new: var(--color-btn-create);
+    --color-cardmenu-checklist-new-hover: var(--color-btn-create-hover);
+    --color-cardmenu-checklist-title: var(--color-header);
+    --color-cardmenu-checklist-delete: black;
+    --color-cardmenu-checklist-delete-hover: var(--color-btn-danger);
+    --color-cardmenu-checklist-new-item: black;
+    --color-cardmenu-checklist-new-item-hover: var(--color-btn-create);
+    --color-cardmenu-checklist-delete-item: rgba(0, 0, 0, 0);
+
+    /* ctx menu */
+    --color-ctxmenu-background: var(--color-black-3);
+    --color-ctxmenu-hover: var(--color-black-4);
+    --color-ctxmenu-danger-hover: var(--color-btn-danger);
+    --color-ctxmenu-danger-txt: var(--color-btn-danger-hover);
+
+    /* decision menu */
+    --color-decisionmenu-background: var(--color-black-4);
+    --color-decisionmenu-border: var(--color-black-2);
+    --color-decisionmenu-btn-ok: var(--color-btn-create);
+    --color-decisionmenu-btn-ok-hover: var(--color-btn-create-hover);
+    --color-decisionmenu-btn-cancel: var(--color-btn-danger);
+    --color-decisionmenu-btn-cancel-hover: var(--color-btn-danger-hover);
+}

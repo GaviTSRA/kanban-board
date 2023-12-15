@@ -1,21 +1,24 @@
 <script setup>
-    let props = defineProps(["ws", "labels", "boardId", "labelHasOwnWs", "creationEnabled"])
-    
-    function newLabel() {
-        props.ws.send(JSON.stringify({
-            "action": "updateLabel",
-            "new": true,
-            "boardId": props.boardId
-        }))
-    }   
 
     let showSubCards = useLocalStorage("showSubCards", true)
     let forceShowAllCards = useLocalStorage("showAllCards", false)
     let colorAllSame = useLocalStorage("colorAllSame", false)
+
+    let themes = {
+        "dark": "#111111", 
+        "light": "#EEEEEE"
+    }
+
+    let currentTheme = useLocalStorage("theme", "dark")
+
+    function updateTheme(theme) {
+        currentTheme.value = theme
+        window.location.reload()
+    }
 </script>
 
 <template>
-    <div class="settings">
+     <div class="settings">
         <div class="localSettings">
             <h1>Local Settings</h1>
             <hr>
@@ -32,53 +35,39 @@
                 <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
             </div>
         </div>
-        <h1 class="header">Labels</h1>
-        <hr>
-        <div class="labels">
-            <div v-for="label in props.labels" :key="label.id">
-                <LabelSetting :label="label" :ws="props.labelHasOwnWs ? label.ws : props.ws"/>
-            </div>
-            <div v-if="creationEnabled" class="newLabelItem" @click="newLabel">
-                <div></div>
+        <div class="themes">
+            <h1>Themes</h1>
+            <hr>
+            <div class="allThemes">
+                <div v-for="(color, theme) in themes">
+                    <div class="theme" :style="{'--color': color}" @click="updateTheme(theme)"></div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+    .theme {
+        background-color: var(--color);
+        padding: 2.5rem;
+        width: 1rem;
+        margin: 10px;
+        filter: drop-shadow(0px 0px 5px var(--color));
+        border-radius: 10px;
+    }
+    .allThemes {
+        display: flex;
+        flex-direction: row
+    }
+    .themes {
+        margin-top: 3rem;
+    }
     label {
         width: 70%;
     }
-    .header {
-        margin-top: 3rem;
-    }
     hr {
         margin-bottom: 10px;
-    }
-    .newLabelItem {
-        height: 2.5rem;
-        border-style: dotted;
-        border-radius: 10px;
-        width: 10rem;
-        margin-left: 10px;
-        margin-top:10px;
-        background-color: var(--color-boardmenu-newitem-background);
-        border-color: var(--color-boardmenu-newitem-border);
-        transition: .3s;
-    }
-    .newLabelItem:hover {
-        background-color: var(--color-boardmenu-newitem-background-hover);
-        border-color: var(--color-boardmenu-newitem-border-hover);
-    }
-    .newLabelItem > div {
-        transition: .2s;
-        padding: .9rem;
-        margin-top: .25rem;
-        background-color: var(--color-settings-newlabel-icon);
-        mask: url(/plus-circle.svg) no-repeat center;
-    }
-    .newLabelItem:hover > div {
-        background-color: var(--color-settings-newlabel-icon-hover);
     }
     .showSubCardsText {
         margin: auto 0;
@@ -91,10 +80,6 @@
         display:flex;
         flex-direction: row;
         text-align: left;
-    }
-    .labels { 
-        display: flex;
-        flex-direction: column;
     }
     h1 {
         color: var(--color-settings-header);
@@ -112,7 +97,8 @@
         position: fixed;
         right: 0;
         width: 80vw;
-        height: 100vh;
+        height: 93vh;
+        margin-top: 7vh;
         background-color: var(--color-settings-background);
         filter: drop-shadow(-10px 15px 15px black)
     }

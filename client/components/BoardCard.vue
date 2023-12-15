@@ -104,10 +104,10 @@
         margin-right: auto;
     }
     .stats > p {
-        color: var(--color-text-dark-3);
+        color: var(--color-boardcard-text);
     }
     .stats > p > span {
-        color: var(--color-text-dark-2)
+        color: var(--color-boardcard-text-highlight);
     }
 
     hr {

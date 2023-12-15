@@ -41,15 +41,20 @@
         if (selected.value.includes(boardId)) selected.value = selected.value.filter(e=>e != boardId)
         else selected.value.push(boardId)
     }
+
+    let settingsOpened = ref(false)
 </script>
 
 <template>
+    <ThemeHandler />
     <div class="header">
         <p class="title">Kanban Boards</p>
         <button class="combinedViewBtn" @click="selectingForCombinedView = true"></button>
+        <button @click="settingsOpened = !settingsOpened" class="settingsButton"></button>
     </div>
+    <UserSettings v-if="settingsOpened"/>
     <div class="container">
-        
+    
         <div class="cards">
             <div v-for="board in boards" class="cardContainer">
                 <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
@@ -69,10 +74,10 @@
     </div>
     <div class="darken"  v-if="selectingForCombinedView" @click="selectingForCombinedView = false"></div>
     <div class="selectCombinedView" v-if="selectingForCombinedView">
-        <h1 class="selectHeader">Select boards for combined view</h1>
-        <hr>
-        <div v-for="board in boards" class="boardItem">
-            <Switch :value="selected.includes(board.id)" @change="()=>change(board.id)" class="combinedViewCheckbox"/>
+    <h1 class="selectHeader">Select boards for combined view</h1>
+    <hr>
+    <div v-for="board in boards" class="boardItem">
+        <Switch :value="selected.includes(board.id)" @change="()=>change(board.id)" class="combinedViewCheckbox"/>
             <p>{{ board.title }}</p>
         </div>
         <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" :class="{'openCombinedViewBtn': true, disabled: selected.length < 2}">Open</NuxtLink>
@@ -80,6 +85,22 @@
 </template>
 
 <style scoped>
+    .settingsButton {
+        margin: auto 0;
+        margin-right: 1rem;
+        height: 2rem;
+        width: 2rem;
+        background-color: var(--color-header-settings-btn);
+        mask: url(/settings.svg) no-repeat center;
+        transition: .6s;
+    }
+    .settingsButton:hover {
+        transform: rotate(180deg);
+    }
+    .settingsButton:active {
+        transition: 1s;
+        transform: rotate(300deg);
+    }
     .title {
         background-color: var(--color-header-title-background);
         padding: .5rem 1rem;
@@ -341,4 +362,4 @@
             width: 25rem;
         }
     }
-    </style>
+</style>

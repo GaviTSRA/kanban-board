@@ -280,6 +280,7 @@
 </script>
 
 <template>
+    <ThemeHandler />
     <Board 
         :isCombinedView="true"
         :ws="undefined"

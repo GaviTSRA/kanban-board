@@ -131,7 +131,7 @@
     }
     .cards {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(1, 1fr);
     }
     .combinedViewCheckbox {
         margin: auto 10px;
@@ -139,7 +139,8 @@
     .cardContainer {
         display: flex;
         height: 40vh;
-        width: 20vw;
+        min-height: 20rem;
+        width: 80vw;
         margin: 10px;
     }
     .newBoardItem {
@@ -158,7 +159,7 @@
     }
     .newBoardItem > div {
         transition: .4s;
-        padding: 5rem;
+        padding: 2rem;
         transform: scale(2.5);
         background-color: var(--color-boardmenu-newitem-icon);
         mask: url(/plus-circle.svg) no-repeat center;
@@ -257,7 +258,23 @@
         -webkit-border-radius: 10px;
     }
 
+    @media (min-width: 550px) {
+        .cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .cardContainer {
+            width: 45vw;
+            min-height: 25rem;
+        }
+    }
+
     @media (min-width: 1025px) {
+        .cards {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .cardContainer {
+            width: 25vw;
+        }
         .create {
             width: 40vw;
             left: 30vw;

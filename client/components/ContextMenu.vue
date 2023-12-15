@@ -71,8 +71,8 @@
     }
     .rcMenu {
         position: fixed;
-        width: 40vw;
-        height: calc(var(--itemCount) * 4vh);
+        width: 15rem;
+        height: calc(var(--itemCount) * 3rem);
         display: flex;
         flex-direction: column;
         background-color: var(--color-ctxmenu-background);
@@ -90,8 +90,8 @@
         background-color: var(--color-ctxmenu-background);
         border-style: none;
         border-width: 2px;
-        width:40vw;
-        height: 4vh;
+        width:15rem;
+        height: 3rem;
         border-radius: 10px;
     }
     .rcMenu .nodanger:hover {
@@ -115,15 +115,5 @@
         background-color: var(--color-ctxmenu-danger-hover);
         border-color: var(--color-ctxmenu-danger-hover);
         color: black;
-    }
-
-    @media (min-width: 1025px) {
-        .rcMenu {
-            width: 10vw;
-        }
-
-        .rcMenu .item {
-            width:10vw;
-        }
     }
 </style>

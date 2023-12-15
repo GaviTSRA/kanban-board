@@ -113,7 +113,7 @@
     }
     .title {
         position: relative;
-        height: 4vh;
+        height: 3rem;
         border-style: solid;
         border-color: var(--color-black-4);
         border-width: 0;
@@ -156,13 +156,13 @@
 
     :deep(.editable) {
         width: 50dvw;
-        height: 3vh;
+        height: 2rem;
         color: var(--color-list-title);;
     }
 
     input {
         width: 50dvw;
-        height: 3vh;
+        height: 2rem;
         color: var(--color-list-title);
     }
 
@@ -178,7 +178,7 @@
 
     .cards {
         height: fit-content;
-        max-height: 65vh;
+        max-height: 55vh;
         overflow: scroll;
         scrollbar-width: thin;
         scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);

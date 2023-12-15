@@ -27,7 +27,7 @@
         position: absolute;
         width: 40vw;
         left: 30vw;
-        height: 40vh;
+        height: 15rem;
         top: 40vh;
         box-shadow: -10px 10px 10px black;
         background-color: var(--color-decisionmenu-background);
@@ -73,22 +73,10 @@
         }
     }
 
-    @media (max-height: 400px) {
-        .deleteMenu {
-            height: 50vh;
-        }
-    }
-
-    @media (max-width: 500px) {
+    @media (max-width: 550px) {
         .deleteMenu {
             width: 100vw;
             left: 0;
-        }
-    }
-
-    @media (min-height: 800px) {
-        .deleteMenu {
-            height: 20vh;
         }
     }
 </style>

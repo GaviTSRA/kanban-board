@@ -96,7 +96,7 @@
 
 <style scoped>
     .stats {
-        width: 50%;
+        width: 80%;
         line-height: 3px;
         margin-top: auto;
         margin-bottom: 1rem;
@@ -159,6 +159,8 @@
     }
 
     @media (min-width: 1025px) { 
-
+        .stats {
+            width: 70%;
+        }
     }
 </style>

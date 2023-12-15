@@ -154,8 +154,8 @@
     }
 
 
-    :deep(.editable) {
-        width: 50dvw;
+    .title :deep(.editable) {
+        width: 50vw;
         height: 2rem;
         color: var(--color-list-title);
     }

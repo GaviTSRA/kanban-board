@@ -85,7 +85,10 @@
                 <div class="stats">
                     <p><span>{{ board.lists }}</span> Lists</p>
                     <p><span>{{ board.cards }}</span> Cards</p>
-                    <p><span>{{ board.done }}</span>/<span>{{ board.tasks }}</span> Tasks done</p>
+                    <div class="progress" v-if="board.tasks > 0">
+                        <p><span>{{ board.done }}</span>/<span>{{ board.tasks }}</span> Tasks done</p>
+                        <ProgressBar :value="Math.round(board.done/board.tasks * 100)"></ProgressBar>
+                    </div>
                 </div>
             </div>
         </NuxtLink>
@@ -95,9 +98,30 @@
 </template> 
 
 <style scoped>
+    .progress {
+        display: flex;
+        flex-direction: row;
+        height: fit-content;
+    }
+
+    :deep(.p-progressbar) {
+        height: 1rem;
+        width: 100%;
+        margin-top: .75rem;
+        background-color: var(--color-black-1);
+        border-radius: 10px;
+    }
+    :deep(.p-progressbar-value) {
+        background-color: var(--color-black-4);
+    }
+    :deep(.p-progressbar-value) {
+        color: var(--color-boardcard-text-highlight);
+    }
+
     .stats {
+        height: fit-content;
         width: 80%;
-        line-height: 3px;
+        line-height: 5px;
         margin-top: auto;
         margin-bottom: 1rem;
         margin-left: 20px;

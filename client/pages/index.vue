@@ -44,7 +44,12 @@
 </script>
 
 <template>
+    <div class="header">
+        <p class="title">Kanban Boards</p>
+        <button class="combinedViewBtn" @click="selectingForCombinedView = true"></button>
+    </div>
     <div class="container">
+        
         <div class="cards">
             <div v-for="board in boards" class="cardContainer">
                 <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
@@ -53,7 +58,6 @@
                 <div></div>
             </div>
         </div>
-        <button class="combinedViewBtn" @click="selectingForCombinedView = true">Combined view</button>
     </div>
     <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
         <h1>Create new board</h1>
@@ -65,7 +69,7 @@
     </div>
     <div class="darken"  v-if="selectingForCombinedView" @click="selectingForCombinedView = false"></div>
     <div class="selectCombinedView" v-if="selectingForCombinedView">
-        <h1 class="header">Select boards for combined view</h1>
+        <h1 class="selectHeader">Select boards for combined view</h1>
         <hr>
         <div v-for="board in boards" class="boardItem">
             <Switch :value="selected.includes(board.id)" @change="()=>change(board.id)" class="combinedViewCheckbox"/>
@@ -76,13 +80,33 @@
 </template>
 
 <style scoped>
+    .title {
+        background-color: var(--color-header-title-background);
+        padding: .5rem 1rem;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        margin: auto 10px;
+        color: var(--color-header-title);
+        height: fit-content;
+    }
+    .header {
+        display: flex;
+        flex-direction: row;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 7vh;
+        min-height: 3rem;
+        background-color: var(--color-header-background);
+        overflow: hidden;
+    }
     p {
         margin: auto 0;
     }
     hr {    
         margin-bottom: 3rem;
     }
-    .header {
+    .selectHeader {
         text-align: center;
     }
     .openCombinedViewBtn {
@@ -95,10 +119,10 @@
         text-align: center;
         color: black;
         font-size: 1rem;
-        background-color: var(--color-boardmenu-combinedview-btn);
+        background-color: var(--color-boardmenu-combinedview-open-btn);
     }
     .openCombinedViewBtn:hover {
-        background-color: var(--color-boardmenu-combinedview-btn-hover);
+        background-color: var(--color-boardmenu-combinedview-open-btn-hover);
     }
     .openCombinedViewBtn:active {
         background-color: var(--color-boardmenu-combinedview-btn-active);
@@ -168,15 +192,16 @@
         background-color: var(--color-boardmenu-newitem-icon-hover);
     }
     .combinedViewBtn {
-        position: fixed;
         color: black;
-        right: 10px;
-        bottom: 1rem;
-        padding: 1rem 2rem;
+        margin-left: auto;
+        margin-right: 10px;
+        padding: 1rem 1rem;
         font-size: 1rem;
         background-color: var(--color-boardmenu-combinedview-btn);
         border-style: none;
         border-radius: 10px;
+        mask: url(/layers.svg) no-repeat center;
+        transition: .2s;
     }
     .combinedViewBtn:hover {
         background-color: var(--color-boardmenu-combinedview-btn-hover);

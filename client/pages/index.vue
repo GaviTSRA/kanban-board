@@ -168,10 +168,10 @@
         background-color: var(--color-boardmenu-newitem-icon-hover);
     }
     .combinedViewBtn {
-        position: absolute;
+        position: fixed;
         color: black;
         right: 10px;
-        bottom: 4rem;
+        bottom: 1rem;
         padding: 1rem 2rem;
         font-size: 1rem;
         background-color: var(--color-boardmenu-combinedview-btn);

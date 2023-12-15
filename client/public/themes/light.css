@@ -41,12 +41,14 @@
     --color-boardcard-header: var(--color-header);
     --color-boardcard-text: #363636;
     --color-boardcard-text-highlight: #000000;
+    --color-boardcard-progressbar-background: var(--color-white-1);
+    --color-boardcard-progressbar-fill: var(--color-white-3);
 
     --color-boardcreate-background: var(--color-white-3);
 
-    --color-boardmenu-newitem-background: var(--color-white-1);
+    --color-boardmenu-newitem-background: #dbd9d9;
     --color-boardmenu-newitem-border: var(--color-white-3);
-    --color-boardmenu-newitem-background-hover: var(--color-white-2);
+    --color-boardmenu-newitem-background-hover: var(--color-white-1);
     --color-boardmenu-newitem-border-hover: var(--color-white-4);
     --color-boardmenu-newitem-icon: black;
     --color-boardmenu-newitem-icon-hover: var(--color-btn-create);
@@ -69,10 +71,10 @@
     --color-board-stop-assign-active: var(--color-btn-danger-active);
     
     /* Board header */
-    --color-header-background: var(--color-white-3);
-    --color-header-title: var(--color-text-light-2);
-    --color-header-title-background: var(--color-white-4);
-    --color-header-desc: var(--color-text-white-3);
+    --color-header-background: var(--color-white-2);
+    --color-header-title: var(--color-header);
+    --color-header-title-background: var(--color-white-3);
+    --color-header-desc: var(--color-text-light-1);
     --color-header-settings-btn: var(--color-black-4);
     --color-header-btn-back: black;
     --color-header-btn-back-hover: var(--color-btn-danger);

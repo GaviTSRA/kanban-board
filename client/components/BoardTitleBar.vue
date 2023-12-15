@@ -103,6 +103,7 @@
         width: 0;
         min-height: 1rem;
         visibility: hidden;
+        color: var(--color-header-desc);
     }
 
     .description :deep(textarea) {

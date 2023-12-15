@@ -40,6 +40,8 @@
     --color-boardcard-header: var(--color-header);
     --color-boardcard-text: var(--color-text-dark-3);
     --color-boardcard-text-highlight: var(--color-text-dark-2);
+    --color-boardcard-progressbar-background: var(--color-black-1);
+    --color-boardcard-progressbar-fill: var(--color-black-4);
 
     --color-boardcreate-background: var(--color-black-3);
 

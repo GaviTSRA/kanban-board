@@ -108,11 +108,11 @@
         height: 1rem;
         width: 100%;
         margin-top: .75rem;
-        background-color: var(--color-black-1);
+        background-color: var(--color-boardcard-progressbar-background);
         border-radius: 10px;
     }
     :deep(.p-progressbar-value) {
-        background-color: var(--color-black-4);
+        background-color: var(--color-boardcard-progressbar-fill);
     }
     :deep(.p-progressbar-value) {
         color: var(--color-boardcard-text-highlight);

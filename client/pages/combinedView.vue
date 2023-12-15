@@ -46,7 +46,8 @@
         boardId: string,
         title: string,
         content: string,
-        ws?: WebSocket
+        ws?: WebSocket,
+        images: string
     }
 
     let board = ref({
@@ -257,6 +258,7 @@
                     if (item.id == data.id) {
                         item.title = data.title
                         item.content = data.content
+                        item.images = JSON.parse(data.images)
                         found = true
                         break
                     }
@@ -267,7 +269,8 @@
                         title: data.title,
                         content: data.content,
                         ws: wss[data.boardId],
-                        boardId: data.boardId
+                        boardId: data.boardId,
+                        images: JSON.parse(data.images)
                     })
                 }
                 break

@@ -374,7 +374,8 @@ function send(boardId: string, data: any) {
                     item = await InfoItem.create({
                         BoardId: data.boardId,
                         title: data.title,
-                        content: data.content
+                        content: data.content,
+                        images: data.images
                     })
                 } else {
                     item = await InfoItem.findByPk(data.id)
@@ -395,6 +396,11 @@ function send(boardId: string, data: any) {
                     if (data.content != undefined) {
                         item?.set({
                             content: data.content
+                        })
+                    }
+                    if (data.images != undefined) {
+                        item?.set({
+                            images: data.images
                         })
                     }
                     await item?.save()
@@ -536,7 +542,8 @@ async function sendInfoItem(boardId: string, item: any) {
         "id": item.id,
         "title": item.title,
         "content": item.content,
-        "boardId": boardId
+        "boardId": boardId,
+        "images": item.images
     })
 }
 

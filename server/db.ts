@@ -144,6 +144,9 @@ const InfoItem = sequelize.define("InfoItem", {
     },
     content: {
         type: DataTypes.TEXT
+    },
+    images: {
+        type: DataTypes.TEXT
     }
 })
 

@@ -56,7 +56,7 @@
 <template>
     <div class="infoMenu">
         <div v-for="item in items">
-            <InfoItem :item="item" @edit="()=>editItem(item)" @delete="()=>deleteItem(item)"/>
+            <InfoItem :ws="itemHasOwnWs ? item.ws : ws" :item="item" @edit="()=>editItem(item)" @delete="()=>deleteItem(item)"/>
         </div>
         <div v-if="!itemHasOwnWs" class="newItem" @click="newItem">
             <div class="icon"></div>

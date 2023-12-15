@@ -32,6 +32,7 @@
 
     /* Other */
     --color-background: var(--color-black-1);
+    --color-shadow: black;
     
     /* Board select menu */
     --color-boardcard-background: var(--color-black-3);

@@ -86,12 +86,12 @@
         text-align: center;
     }
     .openCombinedViewBtn {
-        position: absolute;
-        width:20%;
-        left: 40%;
+        display: block;
+        width:6rem;
+        margin: 0 auto;
+        margin-top: 6rem;
         padding: 1rem 2rem;
         border-radius: 10px;
-        bottom: 10px;
         text-align: center;
         color: black;
         font-size: 1rem;
@@ -120,11 +120,11 @@
     }
     .selectCombinedView {
         position: fixed;
-        width: 30vw;
+        width: 70vw;
         max-height: 80vh;
-        padding-bottom: 7rem;
+        padding-bottom: 1rem;
         background-color: var(--color-boardcreate-background);
-        left: 35vw;
+        left: 15vw;
         top: 10vh;
         z-index: 56;
         border-radius: 10px;
@@ -269,6 +269,10 @@
     }
 
     @media (min-width: 1025px) {
+        .selectCombinedView {
+            width: 30vw;
+            left: 35vw;
+        }
         .cards {
             grid-template-columns: repeat(3, 1fr);
         }

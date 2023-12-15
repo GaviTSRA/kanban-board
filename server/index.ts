@@ -12,7 +12,45 @@ app.use(bodyParser.json())
 
 app.get("/", async (req, res) => {
     const boards = await Board.findAll()
-    res.send(JSON.stringify(boards))
+    let finalBoards = []
+
+    for (let board of boards) {
+        // @ts-ignore
+        const lists = await List.findAll({where: {BoardId: board.id}})
+        // @ts-ignore
+        const cards = await Card.findAll({where: {BoardId: board.id},  include: [{
+            model: Checklist,
+            include: [ ChecklistItem ]
+        }]})
+
+        let tasks = 0
+        let done = 0
+
+        for (let card of cards) {
+            //@ts-ignore
+            for (let checklist of card.Checklists) {
+                for (let item of checklist.ChecklistItems) {
+                    tasks++
+                    if (item.checked) done++
+                }
+            }
+        }
+
+        finalBoards.push({
+            //@ts-ignore
+            "id": board.id,
+            //@ts-ignore
+            "title": board.title,
+            //@ts-ignore
+            "description": board.description,
+            "lists": lists.length,
+            "cards": cards.length,
+            "tasks": tasks,
+            "done": done,
+        })
+    }
+
+    res.send(JSON.stringify(finalBoards))
 })
 
 app.post("/", async (req, res) => {

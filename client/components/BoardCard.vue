@@ -82,6 +82,11 @@
                 <h2>{{ title }}</h2>
                 <hr>
                 <p>{{ description }}</p>
+                <div class="stats">
+                    <p><span>{{ board.lists }}</span> Lists</p>
+                    <p><span>{{ board.cards }}</span> Cards</p>
+                    <p><span>{{ board.done }}</span>/<span>{{ board.tasks }}</span> Tasks done</p>
+                </div>
             </div>
         </NuxtLink>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
@@ -90,6 +95,21 @@
 </template> 
 
 <style scoped>
+    .stats {
+        width: 50%;
+        line-height: 3px;
+        margin-top: auto;
+        margin-bottom: 1rem;
+        margin-left: 20px;
+        margin-right: auto;
+    }
+    .stats > p {
+        color: var(--color-text-dark-3);
+    }
+    .stats > p > span {
+        color: var(--color-text-dark-2)
+    }
+
     hr {
         width: 100%;
     }

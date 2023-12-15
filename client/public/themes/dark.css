@@ -87,7 +87,8 @@
     /* Lists */
     --color-list-background: var(--color-black-2);
     --color-list-scrollbar: var(--color-black-4);
-    --color-list-title: var(--color-text-dark-3);
+    --color-list-title: var(--color-text-light-1);
+    --color-list-outline: var(--color-black-4);
 
     --color-card-new-btn: var(--color-btn-create);
     --color-card-new-btn-hover: var(--color-btn-create-hover);

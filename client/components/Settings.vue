@@ -114,7 +114,7 @@
         width: 80vw;
         height: 100vh;
         background-color: var(--color-settings-background);
-        filter: drop-shadow(-10px 15px 15px black)
+        filter: drop-shadow(-10px 15px 15px var(--color-shadow))
     }
 
     ::-webkit-scrollbar {

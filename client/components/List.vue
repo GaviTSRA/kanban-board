@@ -101,12 +101,12 @@
 
 <style scoped>
     .newCardContainer {
-        box-shadow: 0px -4px 10px black;
+        box-shadow: 0px -4px 10px var(--color-shadow);
         position:relative;
         z-index: 5;
         padding: .5rem;
         min-height: 1.5rem;
-        border-color: var(--color-black-4);
+        border-color: var(--color-list-outline);
         border-width: 0;
         border-top-width: 4px;
         border-style: solid;
@@ -115,10 +115,10 @@
         position: relative;
         height: 3rem;
         border-style: solid;
-        border-color: var(--color-black-4);
+        border-color: var(--color-list-outline);
         border-width: 0;
         border-bottom-width: 4px;
-        filter: drop-shadow(0px 4px 3px black);
+        filter: drop-shadow(0px 4px 3px var(--color-shadow));
         z-index: 5;
     }
     .cardDropSpot {
@@ -157,7 +157,7 @@
     :deep(.editable) {
         width: 50dvw;
         height: 2rem;
-        color: var(--color-list-title);;
+        color: var(--color-list-title);
     }
 
     input {

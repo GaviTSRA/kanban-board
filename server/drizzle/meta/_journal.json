@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1723900710472,
+      "tag": "0000_flaky_lorna_dane",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1723904482428,
+      "tag": "0001_complex_sleeper",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1723905946748,
+      "tag": "0002_aromatic_ultimatum",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1723909136054,
+      "tag": "0003_simple_mauler",
+      "breakpoints": true
+    }
+  ]
+}

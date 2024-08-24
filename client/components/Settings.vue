@@ -1,5 +1,9 @@
-<script setup>
-    let props = defineProps(["ws", "labels", "boardId", "labelHasOwnWs", "creationEnabled"])
+<script setup lang="ts">
+    const props = defineProps<{
+        ws: WebSocket,
+        labels: Label[],
+        boardId: string
+    }>()
     
     function newLabel() {
         props.ws.send(JSON.stringify({
@@ -20,15 +24,15 @@
             <h1>Local Settings</h1>
             <hr>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="forceShowAllCards" @change="val=>forceShowAllCards = val"/>
+                <Switch class="option" :value="forceShowAllCards" @change="(val: boolean)=>forceShowAllCards = val"/>
                     <label class="showSubCardsText" for="showSubCardsCheckbox">Force show all cards</label>
             </div>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="showSubCards" @change="val=>showSubCards = val"/>
+                <Switch class="option" :value="showSubCards" @change="(val: boolean)=>showSubCards = val"/>
                 <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
             </div>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="colorAllSame" @change="val=>colorAllSame = val"/>
+                <Switch class="option" :value="colorAllSame" @change="(val: boolean)=>colorAllSame = val"/>
                 <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
             </div>
         </div>
@@ -36,9 +40,9 @@
         <hr>
         <div class="labels">
             <div v-for="label in props.labels" :key="label.id">
-                <LabelSetting :label="label" :ws="props.labelHasOwnWs ? label.ws : props.ws"/>
+                <LabelSetting :label="label" :ws="props.ws"/>
             </div>
-            <div v-if="creationEnabled" class="newLabelItem" @click="newLabel">
+            <div class="newLabelItem" @click="newLabel">
                 <div></div>
             </div>
         </div>

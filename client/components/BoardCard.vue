@@ -1,5 +1,7 @@
 <script setup lang="ts">
-    let props = defineProps(["board"])
+    const props = defineProps<{
+        board: BoardCard
+    }>()
     
     let title: string = props.board["title"]
     if (title.length > 30) {
@@ -29,7 +31,7 @@
     let menu = ref(null)
     let deleteMenuVisible = ref(false)
 
-    async function openMenu(event: Event) {
+    async function openMenu(event: { y: number; x: number; }) {
         top.value = event.y
         left.value = event.x
         
@@ -64,8 +66,8 @@
         }
     ]
 
-    let touchTimer
-    function touchStart(e) {
+    let touchTimer: NodeJS.Timeout | undefined
+    function touchStart(e: { y: number; x: number; }) {
         touchTimer = setTimeout(() => openMenu(e), 500); 
     }
 

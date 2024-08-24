@@ -1,9 +1,16 @@
-<script setup>
-    let emit = defineEmits(["settings", "info"])
-    let props = defineProps(["board", "ws", "editable"])
+<script setup lang="ts">
+    const props = defineProps<{
+        board: Board,
+        ws: WebSocket,
+    }>()
+    const emit = defineEmits<{
+        settings: [],
+        info: []
+    }>()
+
     let board = props.board
 
-    function saveNew(which, txt) {
+    function saveNew(which: string, txt: string) {
         if (which == "title") {
             props.ws.send(JSON.stringify({
                 "action": "updateBoard",
@@ -23,8 +30,8 @@
 <template>
     <div class="header">
         <NuxtLink to="/" class="back"></NuxtLink>
-        <EditableText :maxlength="20" :editable="props.editable" :text="board.title" @edit="txt=>saveNew('title', txt)" class="title"/>
-        <EditableText :maxlength="125" :editable="props.editable" :text="board.description" :textarea="true" @edit="txt=>saveNew('description', txt)" class="description"/>
+        <EditableText :maxlength="20" :text="board.title" @edit="(txt: string)=>saveNew('title', txt)" class="title"/>
+        <EditableText :maxlength="125" :text="board.description" :textarea="true" @edit="(txt: string)=>saveNew('description', txt)" class="description"/>
         <button @click="$emit('info')" class="info"></button>
         <button @click="$emit('settings')" class="settings"></button>
     </div>

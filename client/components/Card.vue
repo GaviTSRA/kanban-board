@@ -1,6 +1,26 @@
-<script setup>
-    let props = defineProps(["card", "ws", "showDropSpot", "labels", "assignedLabels", "assigningSubCards", "assigningTo", "boardName", "allLists", "allCards"])
-    let emit = defineEmits(["dragStart", "drop", "delete", "assign", "startAssign", "hover", "hoverEnd"])
+<script setup lang="ts">
+    const props = defineProps<{
+        card: Card,
+        ws: WebSocket,
+        showDropSpot: boolean,
+        labels: Label[],
+        assignedLabels: {[labelId:string]: string}[],
+        assigningSubCards: boolean,
+        assigningTo: Card,
+        boardName: string,
+        allLists: List[],
+        allCards: {[listId: string]: Card[]}
+    }>()
+    const emit = defineEmits<{
+        dragStart: [card: Card]
+        drop: [],
+        delete: [],
+        assign: [],
+        startAssign: []
+        update: [value: string]
+        hover: [],
+        hoverEnd: []
+    }>()
 
     function getDescription() {
         let description = props.card.description
@@ -52,12 +72,18 @@
         ]
     })
 
-    let actions = []
+    type ActionEntry = {
+        name: string, 
+        action?: string, 
+        danger?: boolean
+        submenu?: ActionEntry
+    }
+    let actions: ActionEntry[] = []
 
     let top = ref(0)
     let left = ref(0)
     let menuVisible = ref(false)
-    async function openMenu(event) {
+    async function openMenu(event: { y: number; x: number; stopPropagation: any; }) {
         top.value = event.y
         left.value = event.x
         
@@ -65,14 +91,14 @@
         event.stopPropagation
     }
 
-    function isEnabled(label) {
+    function isEnabled(label: Label) {
         let filtered = props.assignedLabels.filter(el => {
             return el.labelId == label.id && el.cardId == props.card.id
         })
         return filtered.length > 0
     }
 
-    function ctxMenuClicked(action) {
+    function ctxMenuClicked(action: string) {
         menuVisible.value = false
         if (action.startsWith('changeLabel')) {
             let label = action.split(":")[1]
@@ -98,7 +124,7 @@
                 action: "updateCard",
                 boardId: props.card.boardId,
                 id: props.card.id,
-                cardId: "remove"
+                cardId: null
             }))
         }
     }
@@ -130,7 +156,7 @@
         () => notHiddenByMasterCard = useLocalStorage("showSubCards-"+props.card.cardId, true)
     )
 
-    function shadeColor(color, percent) {
+    function shadeColor(color: string) {
         var R = parseInt(color.substring(1,3),16);
         var G = parseInt(color.substring(3,5),16);
         var B = parseInt(color.substring(5,7),16);
@@ -175,7 +201,7 @@
         return "#"+RR+GG+BB;
     }
 
-    function getParent(id) {
+    function getParent(id: string) {
         for (let list of props.allLists) {
             for (let card of props.allCards[list.id]) {
                 if (card.id == id) {
@@ -186,7 +212,7 @@
         }
     }
 
-    function getColor(string) {
+    function getColor(string: string) {
         if (colorAllSame.value) {
             let child
             for (let list of props.allLists) {
@@ -194,8 +220,10 @@
                     if (card.id == string) child = card
                 }
             }
+            if (!child) return "#FFFFFF"
             if (child.cardId == null) return shadeColor("#" + string.slice(0, 6))
             let parent = getParent(child.cardId)
+            if (!parent) return "#FFFFFF"
             return shadeColor("#" + parent.id.slice(0, 6))
         }
 
@@ -211,7 +239,7 @@
             @dragenter.prevent="dropSpotVisible = true"
             @dragover.prevent="dropSpotVisible = true" 
             @dragleave="dropSpotVisible = false"
-            @drop="e=>{$emit('drop', index); dropSpotVisible = false}" 
+            @drop="e=>{$emit('drop'); dropSpotVisible = false}" 
             :class="{cardDropSpot: dropSpotVisible && props.showDropSpot, cardDropSpotSmall: true}">
         </div>
         <div 
@@ -235,7 +263,7 @@
                 <p 
                     class="subcardCount" 
                     :class="{subcardCount: true, progress: true, complete: card.subcardCount == card.subcardsDone}"
-                    v-if="props.card.subcardCount > 0"
+                    v-if="props.card.subcardCount && props.card.subcardCount > 0"
                 >{{ card.subcardsDone }}/{{ card.subcardCount }}</p>
             </div>
             <p v-if="props.card.description != undefined" class="description">{{ getDescription() }}</p>

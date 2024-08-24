@@ -1,11 +1,15 @@
-<script setup>
-    let props = defineProps(["data"])
-    let emit = defineEmits(["delete"])
+<script setup lang="ts">
+    const props = defineProps<{
+        data: string
+    }>()
+    const emit = defineEmits<{
+        delete: []
+    }>()
 </script>
 
 <template>
     <div class="imageContainer">
-        <img :src="data"/>
+        <img :src="props.data"/>
         <div class="delete" @click="$emit('delete')"></div>
     </div>
 </template>

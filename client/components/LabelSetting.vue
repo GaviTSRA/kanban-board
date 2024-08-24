@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     import "@melloware/coloris/dist/coloris.css";
     import Coloris from "@melloware/coloris";
     Coloris.init();
@@ -8,7 +8,10 @@
         alpha: false
     });
 
-    let props = defineProps(["label", "ws"])
+    const props = defineProps<{
+        label: Label,
+        ws: WebSocket,
+    }>()
 
     let name = ref(props.label.title)
     function save() {
@@ -35,7 +38,7 @@
 <template>
     <div class="label" v-if="!label.empty">
         <form @change="save" class="label">
-            <EditableText :center="true" :maxlength="20" :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="txt=>{name = txt; save()}"/>
+            <EditableText :center="true" :maxlength="20" :text="props.label.title" class="labelName" :style="{'color': props.label.textColor, 'background-color': props.label.color}" @edit="(txt: string)=>{name = txt; save()}"/>
             <input type="text" v-model="props.label.color" data-coloris class="labelColor" />
             <input type="text" v-model="props.label.textColor" data-coloris class="labelColor"/>
             <button class="deleteBtn" @click.prevent="deleteLabel"><img src="/trash-2.svg"/></button>

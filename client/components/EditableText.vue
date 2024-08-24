@@ -1,6 +1,15 @@
-<script setup>
-    let props = defineProps(["text", "textarea", "focus", "editable", "maxlength", "center"])
-    let emit = defineEmits(["edit"])
+<script setup lang="ts">
+    const props = defineProps<{
+        text: string,
+        textarea: boolean,
+        focus: boolean,
+        editable: boolean,
+        maxlength: number,
+        center: boolean
+    }>()
+    const emit = defineEmits<{
+        edit: [value: string],
+    }>()
 
     let text = ref("")
     let editing = ref(false)
@@ -8,10 +17,10 @@
     let input = ref(null)
     let textarea = ref(null)
 
-    let timer
-    let x
-    let y
-    async function detectDoubleClick(event) {
+    let timer: NodeJS.Timeout | undefined
+    let x: number
+    let y: number
+    async function detectDoubleClick(event: { x: number; y: number; }) {
         if (props.editable != undefined && !props.editable) return
         if (timer && Math.abs(x - event.x) < 10 && Math.abs(y - event.y) < 10) {
             text.value = props.text
@@ -33,7 +42,7 @@
     }
 
     let isFocused = ref(false)
-    function done(isTextArea) {
+    function done(isTextArea: boolean) {
         if (isTextArea && !props.textarea) return
         if (!isTextArea && props.textarea) return
         if (!isFocused.value) return

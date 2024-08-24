@@ -1,8 +1,12 @@
-<script setup>
-    let props = defineProps(["checklist"])
-    let emit = defineEmits(["send"])
+<script setup lang="ts">
+    const props = defineProps<{
+        checklist: Checklist,
+    }>()
+    const emit = defineEmits<{
+        send: []
+    }>()
 
-    function updateTitle(txt) {
+    function updateTitle(txt: string) {
         if (txt == "") {
             deleteList()
             return
@@ -30,7 +34,7 @@
 
     function send(item) {
         if (!item.new && (item.title == undefined || item.title == "")) return
-        props.checklist.ChecklistItems = props.checklist.ChecklistItems.filter(el => {return !(el.new && el.delete)})
+        props.checklist.ChecklistItems = props.checklist.ChecklistItems.filter((el: { new: any; delete: any; }) => {return !(el.new && el.delete)})
         emit('send')
     }
 </script>
@@ -39,7 +43,7 @@
     <div class="checklist">
         <div class="titleContainer">
             <button class="delete" @click="deleteList"></button>
-            <EditableText :maxlength="20" :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="txt=>updateTitle(txt)"/>
+            <EditableText :maxlength="20" :focus="props.checklist.title==''" class="title" :text="props.checklist.title" @edit="(txt: any)=>updateTitle(txt)"/>
         </div>
         <div v-for="item in props.checklist.ChecklistItems">
             <ChecklistItem @newItem="newItem" @send="()=>send(item)" :item="item" />

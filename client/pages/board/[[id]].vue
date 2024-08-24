@@ -1,51 +1,6 @@
 <script setup lang="ts">
     const route = useRoute()
 
-    interface List {
-        id: string,
-        title: string,
-        position: number,
-        boardId: string
-    }
-    interface Card {
-        id: string,
-        title: string,
-        description: string,
-        position: number,
-        listId: string,
-        boardId: string,
-        cardId: string,
-        subcardCount?: number,
-        subcardsDone?: number,
-        subcards?: number,
-        checklists: {
-            title: string,
-            id: string,
-            CardId: string,
-            ChecklistItems: {
-                title: string,
-                id: string,
-                checked: boolean,
-                ChecklistId: string
-            }[]
-        }[]
-    }
-    interface Label {
-        id: string,
-        boardId: string,
-        title: string,
-        color: string,
-        textColor: string,
-        empty?: boolean
-    }
-    interface InfoItem {
-        id: string,
-        boardId: string,
-        title: string,
-        content: string,
-        images: string
-    }
-
     let board = ref({
         id: route.params.id as string,
         title: "", 
@@ -107,10 +62,10 @@
                 found = false
                 let checklists = data.checklists
                 if (data.checklists) {
-                    checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-                    for (let checklist of checklists) {
-                        checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-                    }
+                    // checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
+                    // for (let checklist of checklists) {
+                    //     checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
+                    // }
                 } else {
                     checklists = []
                 }
@@ -171,10 +126,6 @@
             case "label":
                 if (data.delete) {
                     labels.value = labels.value.filter(label => {return label.id != data.id})
-                    labels.value.push({
-                        id: data.id,
-                        empty: true
-                    })
                     break
                 }
 
@@ -216,10 +167,6 @@
             case "infoItem":
                 if (data.delete) {
                     infoItems.value = infoItems.value.filter(item => {return item.id != data.id})
-                    infoItems.value.push({
-                        id: data.id,
-                        empty: true
-                    })
                     break
                 }
 

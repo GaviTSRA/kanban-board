@@ -1,6 +1,10 @@
-<script setup>
-    let props = defineProps(["value"])
-    let emit = defineEmits(["change"])
+<script setup lang="ts">
+    const props = defineProps<{
+        value: boolean
+    }>()
+    const emit = defineEmits<{
+        change: [value: boolean]
+    }>()
 
     function toggleCheckbox() {
         emit("change", !props.value)

@@ -1,6 +1,13 @@
-<script setup>
-    let emit = defineEmits(["cancel", "confirm"])
-    let props = defineProps(["text", "optionOk", "optionCancel"])
+<script setup lang="ts">
+    const props = defineProps<{
+        text: string,
+        optionOk: string,
+        optionCancel: string
+    }>()
+    const emit = defineEmits<{
+        cancel: [],
+        confirm: []
+    }>()
 
     let canCancel = false
     setTimeout(() => {

@@ -1,8 +1,14 @@
-<script setup>
+<script setup lang="ts">
     import markdownit from 'markdown-it'
     
-    let props = defineProps(["item", "ws"])
-    let emit = defineEmits(['edit', "delete"])
+    const props = defineProps<{
+        item: InfoItem,
+        ws: WebSocket
+    }>()
+    const emit = defineEmits<{
+        edit: [],
+        delete: []
+    }>()
 
     const md = markdownit()
     const result = ref(md.render(props.item.content))
@@ -26,10 +32,10 @@
     }
 
     function image() {
-        document.getElementById("fileUpload").click()
+        document.getElementById("fileUpload")?.click()
     }
 
-    function deleteImg(index) {
+    function deleteImg(index: number) {
         props.item.images.splice(index, 1)
         props.ws.send(JSON.stringify({
             "action": "updateInfoItem",

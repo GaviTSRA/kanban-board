@@ -1,27 +1,30 @@
-<script setup>
-    let props = defineProps(["items", "ws", "boardId", "itemHasOwnWs"])
+<script setup lang="ts">
+    const props = defineProps<{
+        items: InfoItem[],
+        ws: WebSocket,
+        boardId: string
+    }>()
 
     let title = ref("")
     let content = ref("")
-    let editing = ref(undefined)
+    let editing: Ref<InfoItem | undefined> = ref(undefined)
 
     function newItem() {
-        editing.value = ""
+        editing.value = undefined
         title.value = ""
         content.value = ""
     }
 
-    function editItem(item) {
+    function editItem(item: InfoItem) {
         editing.value = item
         title.value = item.title
         content.value = item.content
     }
 
-    function save(title, content) {
+    function save(title: string, content: string) {
         let item = editing.value
         let ws = props.ws
-        if (props.itemHasOwnWs)  ws = item.ws
-        if (editing.value == "") {
+        if (editing.value === undefined) {
             ws.send(JSON.stringify({
                 "action": "updateInfoItem",
                 "new": true,
@@ -29,7 +32,7 @@
                 "title": title,
                 "content": content
             }))
-        } else {
+        } else if (item) {
             ws.send(JSON.stringify({
                 "action": "updateInfoItem",
                 "id": item.id,
@@ -41,9 +44,8 @@
         editing.value = undefined
     }
 
-    function deleteItem(item) {
+    function deleteItem(item: InfoItem) {
         let ws = props.ws
-        if (props.itemHasOwnWs)  ws = item.ws
         ws.send(JSON.stringify({
             "action": "updateInfoItem",
             "delete": true,
@@ -56,13 +58,13 @@
 <template>
     <div class="infoMenu">
         <div v-for="item in items">
-            <InfoItem :ws="itemHasOwnWs ? item.ws : ws" :item="item" @edit="()=>editItem(item)" @delete="()=>deleteItem(item)"/>
+            <InfoItem :ws="ws" :item="item" @edit="()=>editItem(item)" @delete="()=>deleteItem(item)"/>
         </div>
-        <div v-if="!itemHasOwnWs" class="newItem" @click="newItem">
+        <div class="newItem" @click="newItem">
             <div class="icon"></div>
         </div>
     </div>
-    <InfoItemEditMenu @cancel="editing = undefined" :title="title" :content="content" v-if="editing != undefined" @done="(title, content)=>save(title, content)"/>
+    <InfoItemEditMenu @cancel="editing = undefined" :title="title" :content="content" v-if="editing != undefined" @done="(title: string, content: string)=>save(title, content)"/>
 </template>
 
 <style scoped>

@@ -1,42 +1,25 @@
 <script setup lang="ts">
-    let props = defineProps(["isCombinedView", "ws", "wss", "board", "lists", "cards", "labels", "assignedLabels", "allLists", "listIdOverrides", "boardNames", "infoItems"])
-
-    interface List {
-        id: string,
-        title: string,
-        position: number,
-        boardId: string
-    }
-    interface Card {
-        id: string,
-        title: string,
-        description: string,
-        position: number,
-        listId: string,
-        boardId: string,
-        cardId: string,
-        subcardCount?: number,
-        subcardsDone?: number,
-        subcards?: number,
-        checklists: {
-            title: string,
-            id: string,
-            CardId: string,
-            ChecklistItems: {
-                title: string,
-                id: string,
-                checked: boolean,
-                ChecklistId: string
-            }[]
-        }[]
-    }
+    const props = defineProps<{
+        isCombinedView: boolean,
+        ws: WebSocket | undefined,
+        wss: {[boardId: string]: WebSocket} | undefined,
+        board: Board,
+        lists: List[],
+        cards: {[listId: string]: Card[]},
+        labels: Label[],
+        assignedLabels: {[labelId:string]: string},
+        allLists: List[] | undefined,
+        listIdOverrides: {[id: string]: string} | undefined,
+        boardNames: string[] | undefined,
+        infoItems: InfoItem[]
+    }>()
 
     function send(data: any) {
-        if (props.isCombinedView) {
+        if (props.isCombinedView && props.wss) {
             let raw = JSON.parse(data)
             let boardId = raw.boardId
             props.wss[boardId].send(data)
-        } else {
+        } else if (props.ws) {
             props.ws.send(data)
         }
     }
@@ -77,10 +60,9 @@
     }
 
     function drop(index: number) {
-        if (props.isCombinedView) return
+        if (props.isCombinedView || !draggingList) return
 
-        // @ts-ignore
-        if (draggingList?.position < index) index -= 1
+        if (draggingList.position < index) index -= 1
         if (index < 0) index = 0
         dragging.value = false
         send(JSON.stringify({
@@ -92,8 +74,7 @@
 
         for (let list of props.lists) {
             if (list.id == draggingList?.id) continue
-            // @ts-ignore
-            if (list.position < draggingList?.position && list.position >= index) {
+            if (list.position < draggingList.position && list.position >= index) {
                 send(JSON.stringify({
                     "action": "updateList",
                     "boardId": props.board.id,
@@ -101,8 +82,7 @@
                     "position": list.position += 1
                 }))
             }
-            // @ts-ignore
-            if (list.position > draggingList?.position && list.position <= index) {
+            if (list.position > draggingList.position && list.position <= index) {
                 send(JSON.stringify({
                     "action": "updateList",
                     "boardId": props.board.id,
@@ -118,13 +98,14 @@
     let indexDroppedIn: Ref<{[id: string]: number}> = ref({})
     let subcards: Ref<{[id: string]: Card[]}> = ref({})
     function dropCard(list: List, index: number) {
+        console.info(draggingCard);
+        if (!draggingCard) return;
         let droppedList = list
-        if (list.boardId != draggingCard?.boardId) {
+        if (list.boardId != draggingCard.boardId && props.allLists && props.listIdOverrides) {
             for (let _list of props.allLists) {
                 if (props.listIdOverrides[_list.id] == list.id) {
                     list = _list
-                    if (list.boardId != draggingCard?.boardId) {
-                        console.log("A") 
+                    if (list.boardId != draggingCard.boardId) {
                         return
                     }
                     break
@@ -132,11 +113,11 @@
             }
         }
 
-        if (list.boardId != draggingCard?.boardId) return
+        if (list.boardId != draggingCard.boardId) return
 
         let i = 0
         for (let card of props.cards[droppedList.id]) {
-            if (card.boardId == draggingCard?.boardId) {
+            if (card.boardId == draggingCard.boardId) {
                 index -= i
                 break
             }
@@ -331,43 +312,39 @@
 
 <template>
     <div @dragend="dragEnd">
-        <BoardTitleBar @settings="settingsOpened = !settingsOpened; infoMenuOpened = false" :board="board" :ws="!isCombinedView ? props.ws : undefined" @info="infoMenuOpened = !infoMenuOpened; settingsOpened = false"/>
-        <InfoMenu :item-has-own-ws="isCombinedView" :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
-        <Settings :creationEnabled="!isCombinedView" v-if="settingsOpened" :ws="!isCombinedView ? ws : undefined" :labels="labels" :boardId="board.id"/>
+        <BoardTitleBar @settings="settingsOpened = !settingsOpened; infoMenuOpened = false" :board="board" :ws="props.ws" @info="infoMenuOpened = !infoMenuOpened; settingsOpened = false"/>
+        <InfoMenu :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
+        <Settings v-if="settingsOpened" :ws="ws" :labels="labels" :boardId="board.id"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
-                    <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && (index - draggingList?.position > 1 || draggingList?.position - index > 0)"></div>
+                    <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && draggingList && (index - draggingList.position > 1 || draggingList.position - index > 0)"></div>
                     <List 
-                        @ctxMenuAction="action=>isCombinedView ? {} : listCtxAction(action, list)" 
+                        @ctxMenuAction="(action: string)=>isCombinedView ? {} : listCtxAction(action, list)" 
                         @dragstart="()=>isCombinedView ? {} : startDrag(list)" 
-                        @drag-start="card=>startDragCard(card)"
-                        @drop="index=>dropCard(list, index)"
-                        @delete-card="(i, id)=>deleteCard(i, id)"
-                        @assign="card=>assignCard(card)"
-                        @start-assign="card=>startAssign(card)"
-                        @hover="card=>hoverCard(card)"
+                        @drag-start="(card: Card)=>startDragCard(card)"
+                        @drop="(index: number)=>dropCard(list, index)"
+                        @delete-card="(i: number, id: string)=>deleteCard(i, id)"
+                        @assign="(card: Card)=>assignCard(card)"
+                        @start-assign="(card: Card)=>startAssign(card)"
+                        @hover="(card: Card)=>hoverCard(card)"
                         @hoverEnd="hoverEndCard"
-                        :cardHasOwnWs="isCombinedView"
                         :list="list" 
                         :cards="cards[list.id]" 
-                        :ws="isCombinedView ? wss[list.boardId] : ws"
+                        :ws="ws"
                         :is-dragging-card="isDraggingCard"
                         :draggingCard="draggingCard"
                         :labels="labels"
                         :assigned-labels="assignedLabels"
                         :assigningSubCards="assigningSubCards"
                         :assigningTo="assigningTo"
-                        :allowCreation="!isCombinedView"
                         :all-cards="cards"
                         :all-lists="lists"
-                        :draggable="!isCombinedView" 
-                        :board-names="isCombinedView ? boardNames : undefined"
                     />
                 </div>
             </div>
-            <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && Math.abs(lists.length - 1 - draggingList?.position) > 0"></div>
+            <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && draggingList && Math.abs(lists.length - 1 - draggingList.position) > 0"></div>
             <form v-if="!isCombinedView" class="newList" @submit.prevent="createNewList">
                 <input type="text" v-model="newListName" maxlength="20"/>
                 <button @click="createNewList"></button>

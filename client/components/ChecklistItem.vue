@@ -1,8 +1,13 @@
-<script setup>
-    let props = defineProps(["item"])
-    let emit = defineEmits(["send", "newItem"])
+<script setup lang="ts">
+    const props = defineProps<{
+        item: ChecklistItem
+    }>()
+    const emit = defineEmits<{
+        send: [],
+        newItem: []
+    }>()
 
-    async function rename(txt) {
+    async function rename(txt: string) {
         if (txt == "") {
             deleteItem()
             return
@@ -33,7 +38,7 @@
 <template>
     <div class="item">
         <input @change="check" :value="props.item.checked" v-model="props.item.checked" class="checkbox" type="checkbox"/>
-        <EditableText :maxlength="20" :focus="props.item.title == ''" :class="{checked: props.item.checked}" :text="props.item.title" @edit="txt=>rename(txt)"/>
+        <EditableText :maxlength="20" :focus="props.item.title == ''" :class="{checked: props.item.checked}" :text="props.item.title" @edit="(txt: string)=>rename(txt)"/>
         <button class="deleteBtn" @click="deleteItem"><img src="/trash-2.svg"/></button>
     </div>
 </template>

@@ -1,6 +1,12 @@
-<script setup>
-    let props = defineProps(["title", "content"])
-    let emit = defineEmits(["done", "cancel"])
+<script setup lang="ts">
+    const props = defineProps<{
+        title: string,
+        content: string
+    }>()
+    const emit = defineEmits<{
+        done: [title: string, content: string],
+        cancel: []
+    }>()
 
     let title = props.title
     let content = props.content

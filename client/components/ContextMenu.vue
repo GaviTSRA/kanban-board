@@ -6,12 +6,16 @@
         submenu?: Action[]
     }
 
-    let { actions, x, y }: {
-        actions?: Action[],
+    const props = defineProps<{
+        actions: Action[],
         x?: number, 
         y?: number
-    } = defineProps(['actions', 'x', 'y'])
-    const emit = defineEmits(['action-clicked'])
+    }>()
+    const emit = defineEmits<{
+        "action-clicked": [action: string],
+    }>()
+
+    let { actions, x, y } = props
 
     if (x == undefined) x = 0
     if (y == undefined) y = 0

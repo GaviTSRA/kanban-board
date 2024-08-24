@@ -1,8 +1,29 @@
-<script setup>
-    let props = defineProps(["list", "ws", "cards", "draggingCard", "isDraggingCard", "assignedLabels", "labels", "assigningSubCards", "assigningTo", "cardHasOwnWs", "boardNames", "allowCreation", "allLists", "allCards"])
-    let emit = defineEmits(["ctxMenuAction", "dragStart", "drop", "assign", "startAssign", "hover", "hoverEnd"])
+<script setup lang="ts">
+    const props = defineProps<{
+        list: List,
+        ws: WebSocket,
+        cards: Card[],
+        draggingCard: Card,
+        isDraggingCard: boolean,
+        assignedLabels: {[id: string]: string},
+        labels: Label[],
+        assigningSubCards: boolean,
+        assigningTo: Card,
+        allLists: List[],
+        allCards: []
+    }>()
+    const emit = defineEmits<{
+        ctxMenuAction: [action: string],
+        dragStart: [card: Card],
+        drop: [index: number],
+        deleteCard: [index: number, listId: string]
+        assign: [card: Card],
+        startAssign: [card: Card],
+        hover: [card: Card],
+        hoverEnd: []
+    }>()
 
-    function editName(txt) {
+    function editName(txt: string) {
         if (txt == "") return
         props.ws.send(JSON.stringify({
             "action": "updateList",
@@ -30,14 +51,14 @@
     let top = ref(0)
     let left = ref(0)
     let menuVisible = ref(false)
-    async function openMenu(event) {
+    async function openMenu(event: { y: number; x: number; }) {
         top.value = event.y
         left.value = event.x
         
         menuVisible.value = true
     }
 
-    function ctxMenuClicked(action) {
+    function ctxMenuClicked(action: string) {
         menuVisible.value = false
         emit("ctxMenuAction", action)
     }
@@ -59,19 +80,18 @@
 
 <template>
     <div class="list" @contextmenu.prevent="openMenu">
-        <EditableText :center="true" :maxlength="20" :editable="props.allowCreation" :text="props.list.title" @edit="txt=>editName(txt)" class="title"/>
+        <EditableText :center="true" :maxlength="20" :text="props.list.title" @edit="(txt: string)=>editName(txt)" class="title"/>
         <ContextMenu :actions="actions" @action-clicked="ctxMenuClicked" :x="left" :y="top" v-if="menuVisible" v-all-click-away="() => menuVisible = false"/>
         <div class="cards">
             <div v-for="(card, index) in props.cards" :key="card.id">
                 <Card 
-                    :ws="props.cardHasOwnWs ? card.ws : props.ws" 
+                    :ws="props.ws" 
                     :card="card"
                     :labels="props.labels"
                     :assigned-labels="props.assignedLabels"
                     :showDropSpot="props.isDraggingCard && (props.draggingCard.listId != props.list.id || (index - draggingCard?.position > 1 || draggingCard?.position - index > 0))"
                     :assigningSubCards="props.assigningSubCards"
                     :assigningTo="props.assigningTo"
-                    :board-name="props.boardNames ? props.boardNames[card.boardId] : ''"
                     :all-cards="props.allCards"
                     :all-lists="props.allLists"
                     @drag-start="card=>$emit('dragStart', card)"
@@ -91,7 +111,7 @@
             </div>
         </div>
         <div class="newCardContainer">
-            <form v-if="allowCreation" @submit.prevent="createCard" class="newCard">
+            <form @submit.prevent="createCard" class="newCard">
                 <input type="text" v-model="newCardName" maxlength="255"/>
                 <button @click="createCard"></button>
             </form>

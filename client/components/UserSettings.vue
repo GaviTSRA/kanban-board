@@ -1,5 +1,4 @@
-<script setup>
-
+<script setup lang="ts">
     let showSubCards = useLocalStorage("showSubCards", true)
     let forceShowAllCards = useLocalStorage("showAllCards", false)
     let colorAllSame = useLocalStorage("colorAllSame", false)
@@ -11,7 +10,7 @@
 
     let currentTheme = useLocalStorage("theme", "dark")
 
-    function updateTheme(theme) {
+    function updateTheme(theme: string) {
         currentTheme.value = theme
         window.location.reload()
     }
@@ -23,15 +22,15 @@
             <h1>Local Settings</h1>
             <hr>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="forceShowAllCards" @change="val=>forceShowAllCards = val"/>
+                <Switch class="option" :value="forceShowAllCards" @change="(val: boolean)=>forceShowAllCards = val"/>
                     <label class="showSubCardsText" for="showSubCardsCheckbox">Force show all cards</label>
             </div>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="showSubCards" @change="val=>showSubCards = val"/>
+                <Switch class="option" :value="showSubCards" @change="(val: boolean)=>showSubCards = val"/>
                 <label class="showSubCardsText" for="showSubCardsCheckbox">Show Subcards</label>
             </div>
             <div class="showSubCardsOption">
-                <Switch class="option" :value="colorAllSame" @change="val=>colorAllSame = val"/>
+                <Switch class="option" :value="colorAllSame" @change="(val: boolean)=>colorAllSame = val"/>
                 <label class="showSubCardsText" for="showSubCardsCheckbox">Color all subcards like 1st parent</label>
             </div>
         </div>

@@ -54,7 +54,6 @@
     </div>
     <UserSettings v-if="settingsOpened"/>
     <div class="container">
-    
         <div class="cards">
             <div v-for="board in boards" class="cardContainer">
                 <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>

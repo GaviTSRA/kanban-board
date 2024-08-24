@@ -183,13 +183,6 @@ function send(boardId: string, data: any) {
                             }
                         }
                     })
-                    // if (data.cardId != undefined) {
-                    //     let cardId = data.cardId
-                    //     if (data.cardId == "remove") cardId = null
-                    //     card?.set({
-                    //         CardId: cardId
-                    //     })
-                    // }
                     // if (data.checklists != undefined) {
                     //     for (let checklist of data.checklists) {
                     //         if (checklist.new) {
@@ -363,7 +356,8 @@ async function sendCards(boardId: string) {
 async function sendCard(boardId: string, card: schema.Card) {
     send(boardId, {
         "type": "card",
-        ...card
+        ...card,
+        boardId
     })
 }
 

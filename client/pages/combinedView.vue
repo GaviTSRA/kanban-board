@@ -1,54 +1,5 @@
 <script setup lang="ts">
-    import BoardTitleBar from '~/components/BoardTitleBar.vue';
-
     const route = useRoute()
-
-    interface List {
-        id: string,
-        title: string,
-        position: number,
-        boardId: string
-    }
-    interface Card {
-        id: string,
-        title: string,
-        description: string,
-        position: number,
-        listId: string,
-        boardId: string,
-        cardId: string,
-        subcardCount?: number,
-        subcardsDone?: number,
-        subcards?: number,
-        ws: WebSocket,
-        checklists: {
-            title: string,
-            id: string,
-            CardId: string,
-            ChecklistItems: {
-                title: string,
-                id: string,
-                checked: boolean,
-                ChecklistId: string
-            }[]
-        }[]
-    }
-    interface Label {
-        id: string,
-        boardId: string,
-        title: string,
-        color: string,
-        textColor: string,
-        ws: WebSocket
-    }
-    interface InfoItem {
-        id: string,
-        boardId: string,
-        title: string,
-        content: string,
-        ws?: WebSocket,
-        images: string
-    }
 
     let board = ref({
         id: route.params.id as string,
@@ -77,7 +28,7 @@
     let boardNames: {[id: string]: string} = {}
     let listIdOverrides: {[id: string]: string} = {}
 
-    function wsMsgHandler(msg) {
+    function wsMsgHandler(msg: { data: string; }) {
         const data = JSON.parse(msg.data)
 
         let found
@@ -135,10 +86,10 @@
                 found = false
                 let checklists = data.checklists
                 if (data.checklists) {
-                    checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-                    for (let checklist of checklists) {
-                        checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-                    }
+                    // checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
+                    // for (let checklist of checklists) {
+                    //     checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
+                    // }
                 } else {
                     checklists = []
                 }

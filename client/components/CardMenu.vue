@@ -1,6 +1,13 @@
-<script setup>
-    let props = defineProps(["card", "ws", "labels", "assignedLabels"])
-    let emit = defineEmits(["close", "rename"])
+<script setup lang="ts">
+    const props = defineProps<{
+        card: Card,
+        ws: WebSocket,
+        labels: Label[],
+        assignedLabels: {[labelId:string]: string}[],
+    }>()
+    const emit = defineEmits<{
+        close: [],
+    }>()
 
     let canClose = false
     setTimeout(() => canClose = true, 100)
@@ -10,7 +17,7 @@
         emit('close')
     }
 
-    function rename(txt) {
+    function rename(txt: string) {
         props.ws.send(JSON.stringify({
             "action": "updateCard",
             "id": props.card.id,
@@ -19,7 +26,7 @@
         }))
     }
 
-    function editDesc(txt) {
+    function editDesc(txt: string) {
         props.ws.send(JSON.stringify({
             "action": "updateCard",
             "id": props.card.id,
@@ -28,7 +35,7 @@
         }))
     }
 
-    function toggle(label) {
+    function toggle(label: Label) {
         props.ws.send(JSON.stringify({
             "action": "toggleLabel",
             "boardId": props.card.boardId,
@@ -37,7 +44,7 @@
         }))
     }
 
-    function isEnabled(label) {
+    function isEnabled(label: Label) {
         let filtered = props.assignedLabels.filter(el => {
             return el.labelId == label.id && el.cardId == props.card.id
         })
@@ -67,8 +74,8 @@
     <div @contextmenu.stop="" @dragstart.prevent.stop="" draggable="true">
         <div @click="close" class="darken"></div>
         <div class="cardMenu">
-            <EditableText :center="true" :maxlength="20" :text="props.card.title" @edit="txt=>rename(txt)" class="title"/>
-            <EditableText :maxlength="125" :textarea="true" :text="props.card.description" @edit="txt=>editDesc(txt)" class="description"/>
+            <EditableText :center="true" :maxlength="20" :text="props.card.title" @edit="(txt: string)=>rename(txt)" class="title"/>
+            <EditableText :maxlength="125" :textarea="true" :text="props.card.description" @edit="(txt: string)=>editDesc(txt)" class="description"/>
             <div class="labels">
                 <div @click="() => toggle(label)" v-for="label in props.labels">
                     <p :class="{label: true, disabled: !isEnabled(label)}" :style="{'color': label.textColor, 'background-color': label.color}">{{ label.title }}</p>

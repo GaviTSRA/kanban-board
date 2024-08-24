@@ -14,8 +14,8 @@
     let text = ref("")
     let editing = ref(false)
 
-    let input = ref(null)
-    let textarea = ref(null)
+    let input: Ref<undefined | HTMLInputElement> = ref(undefined)
+    let textarea: Ref<undefined | HTMLInputElement> = ref(undefined)
 
     let timer: NodeJS.Timeout | undefined
     let x: number
@@ -81,7 +81,7 @@
 </script>
 
 <template>
-    <form @submit.prevent="()=>done(0)" :class="{container: true, center: props.center}">
+    <form @submit.prevent="()=>done(false)" :class="{container: true, center: props.center}">
         <p @click="detectDoubleClick" class="editable" v-if="!editing">{{ props.text }}</p>
         <input :maxlength="maxlength" @focus="isFocused = true" @blur="looseFocus" ref="input" class="editable" v-model="text" v-show="editing && !props.textarea" v-all-click-away="()=>done(false)"/>
         <textarea :maxlength="maxlength" ref="textarea" @focus="isFocused = true" @blur="looseFocus" class="editable" v-model="text" v-show="editing && props.textarea" v-all-click-away="()=>done(true)"/>

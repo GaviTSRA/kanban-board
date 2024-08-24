@@ -57,14 +57,6 @@
     --color-boardcreate-createbtn-hover: var(--color-btn-create-hover);
     --color-boardcreate-createbtn-active: var(--color-btn-create-active);
 
-    --color-boardmenu-combinedview-btn: var(--color-white-4);
-    --color-boardmenu-combinedview-btn-hover: var(--color-btn-create);
-    --color-boardmenu-combinedview-btn-active: var(--color-btn-create-active);
-    --color-boardmenu-combinedview-btn-disabled: var(--color-text-dark-3);
-
-    --color-boardmenu-combinedview-open-btn: var(--color-btn-create);
-    --color-boardmenu-combinedview-open-btn-hover: var(--color-btn-create-hover);
-
     /* Board */
     --color-board-stop-assign: var(--color-btn-danger);
     --color-board-stop-assign-hover: var(--color-btn-danger-hover);

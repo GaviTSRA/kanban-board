@@ -28,10 +28,10 @@
     let menuVisible = ref(false)
     let top = ref(0)
     let left = ref(0)
-    let menu = ref(null)
+    let menu: Ref<undefined | HTMLElement> = ref(undefined)
     let deleteMenuVisible = ref(false)
 
-    async function openMenu(event: { y: number; x: number; }) {
+    async function openMenu(event: PointerEvent) {
         top.value = event.y
         left.value = event.x
         
@@ -40,12 +40,12 @@
         menu.value?.focus()
     }
 
-    async function deleteBoard(boardID: string) {
+    async function deleteBoard() {
         deleteMenuVisible.value = false
         await useFetch("http://localhost:3001", {
             method: "DELETE",
             body: JSON.stringify({
-                id: props.board["id"]
+                id: props.board.id
             })
         })
         window.location.reload()
@@ -67,7 +67,7 @@
     ]
 
     let touchTimer: NodeJS.Timeout | undefined
-    function touchStart(e: { y: number; x: number; }) {
+    function touchStart(e: PointerEvent) {
         touchTimer = setTimeout(() => openMenu(e), 500); 
     }
 
@@ -79,7 +79,7 @@
 
 <template>
     <div class="boardCard">
-        <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="(e) => openMenu(e)" @touchstart="touchStart" @touchend="touchEnd">
+        <NuxtLink class="link" :to="'/board/'+props.board['id']" @contextmenu.prevent="openMenu" @touchstart="touchStart" @touchend="touchEnd">
             <div class="container">
                 <h2>{{ title }}</h2>
                 <hr>

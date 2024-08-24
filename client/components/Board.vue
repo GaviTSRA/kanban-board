@@ -1,33 +1,21 @@
 <script setup lang="ts">
     const props = defineProps<{
-        isCombinedView: boolean,
-        ws: WebSocket | undefined,
-        wss: {[boardId: string]: WebSocket} | undefined,
+        ws: WebSocket,
         board: Board,
         lists: List[],
         cards: {[listId: string]: Card[]},
         labels: Label[],
         assignedLabels: {[labelId:string]: string},
         allLists: List[] | undefined,
-        listIdOverrides: {[id: string]: string} | undefined,
-        boardNames: string[] | undefined,
         infoItems: InfoItem[]
     }>()
 
     function send(data: any) {
-        if (props.isCombinedView && props.wss) {
-            let raw = JSON.parse(data)
-            let boardId = raw.boardId
-            props.wss[boardId].send(data)
-        } else if (props.ws) {
-            props.ws.send(data)
-        }
+        props.ws.send(data)
     }
 
     let newListName = ref("")
     function createNewList() {
-        if (props.isCombinedView) return
-
         if (newListName.value == "") return
 
         send(JSON.stringify({
@@ -44,8 +32,6 @@
     let dragging = ref(false)
     let draggingList: List | undefined = undefined
     function startDrag(list: List) {
-        if (props.isCombinedView) return
-
         draggingList = list
         dragging.value = false
         dragging.value = true
@@ -60,7 +46,7 @@
     }
 
     function drop(index: number) {
-        if (props.isCombinedView || !draggingList) return
+        if (!draggingList) return
 
         if (draggingList.position < index) index -= 1
         if (index < 0) index = 0
@@ -98,22 +84,8 @@
     let indexDroppedIn: Ref<{[id: string]: number}> = ref({})
     let subcards: Ref<{[id: string]: Card[]}> = ref({})
     function dropCard(list: List, index: number) {
-        console.info(draggingCard);
         if (!draggingCard) return;
         let droppedList = list
-        if (list.boardId != draggingCard.boardId && props.allLists && props.listIdOverrides) {
-            for (let _list of props.allLists) {
-                if (props.listIdOverrides[_list.id] == list.id) {
-                    list = _list
-                    if (list.boardId != draggingCard.boardId) {
-                        return
-                    }
-                    break
-                }
-            }
-        }
-
-        if (list.boardId != draggingCard.boardId) return
 
         let i = 0
         for (let card of props.cards[droppedList.id]) {
@@ -196,7 +168,6 @@
     let deleteMenuVisible = ref(false)
     let listToDelete: List | undefined = undefined
     function listCtxAction(action: string, list: List) {
-        if (props.isCombinedView) return
         if (action == "moveLeft") {
             if (list.position == 0) return
             startDrag(list)
@@ -214,7 +185,6 @@
     }
 
     function deleteList() {
-        if (props.isCombinedView) return
         deleteMenuVisible.value = false
         send(JSON.stringify({
             "action": "updateList",
@@ -313,16 +283,16 @@
 <template>
     <div @dragend="dragEnd">
         <BoardTitleBar @settings="settingsOpened = !settingsOpened; infoMenuOpened = false" :board="board" :ws="props.ws" @info="infoMenuOpened = !infoMenuOpened; settingsOpened = false"/>
-        <InfoMenu :ws="!isCombinedView ? ws : undefined" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
+        <InfoMenu :ws="ws" :items="infoItems" v-if="infoMenuOpened" :boardId="board.id"/>
         <Settings v-if="settingsOpened" :ws="ws" :labels="labels" :boardId="board.id"/>
         <button @click="stopAssigning" v-if="assigningSubCards" class="stopAssigning">Stop assigning</button>
         <div class="lists">
             <div v-for="(list, index) in lists">
                 <div class="listAndDropSpot">
-                    <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && draggingList && (index - draggingList.position > 1 || draggingList.position - index > 0)"></div>
+                    <div class="dragDropSpot" @drop="()=>drop(index)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && draggingList && (index - draggingList.position > 1 || draggingList.position - index > 0)"></div>
                     <List 
-                        @ctxMenuAction="(action: string)=>isCombinedView ? {} : listCtxAction(action, list)" 
-                        @dragstart="()=>isCombinedView ? {} : startDrag(list)" 
+                        @ctxMenuAction="(action: string)=>listCtxAction(action, list)" 
+                        @dragstart="()=>startDrag(list)" 
                         @drag-start="(card: Card)=>startDragCard(card)"
                         @drop="(index: number)=>dropCard(list, index)"
                         @delete-card="(i: number, id: string)=>deleteCard(i, id)"
@@ -344,8 +314,8 @@
                     />
                 </div>
             </div>
-            <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="!isCombinedView && dragging && draggingList && Math.abs(lists.length - 1 - draggingList.position) > 0"></div>
-            <form v-if="!isCombinedView" class="newList" @submit.prevent="createNewList">
+            <div class="dragDropSpot last" @drop="()=>drop(lists.length)" @dragenter.prevent=""  @dragover.prevent="" v-if="dragging && draggingList && Math.abs(lists.length - 1 - draggingList.position) > 0"></div>
+            <form class="newList" @submit.prevent="createNewList">
                 <input type="text" v-model="newListName" maxlength="20"/>
                 <button @click="createNewList"></button>
             </form>

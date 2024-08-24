@@ -1,30 +1,14 @@
 <script setup lang="ts">
-    const route = useRoute()
-    const { data } = await useFetch('http://localhost:3001')
-    const boards = JSON.parse(data.value as string) 
-
+    let settingsOpened = ref(false)
     let creatingNewBoard = ref(false)
     let title = ref("")
     let description = ref("")
 
-    interface createResponse {
-        id: string
-    }
-
-    let canCloseNewBoardMenu = false
-    function openNewBoardMenu() {
-        canCloseNewBoardMenu = false
-        creatingNewBoard.value = true
-        setTimeout(() => {
-            canCloseNewBoardMenu = true
-        }, 200)
-    }
-    function closeNewBoardMenu() {
-        if (canCloseNewBoardMenu) creatingNewBoard.value = false
-    }
+    const { data } = await useFetch('http://localhost:3001')
+    const boards = JSON.parse(data.value as string) 
 
     async function createBoard() {
-        let res = (await useFetch<createResponse>("http://localhost:3001", {
+        let res = (await useFetch<{ id: string }>("http://localhost:3001", {
             method: "POST",
             body: JSON.stringify({
                 title: title.value,
@@ -33,37 +17,31 @@
         })).data
         await navigateTo("/board/" + res.value?.id)
     }
-
-    let selectingForCombinedView = ref(false)
-    let selected: Ref<string[]> = useLocalStorage("combinedViewBoards", [])
-
-    function change(boardId: string) {
-        if (selected.value.includes(boardId)) selected.value = selected.value.filter(e=>e != boardId)
-        else selected.value.push(boardId)
-    }
-
-    let settingsOpened = ref(false)
 </script>
 
 <template>
     <ThemeHandler />
+    <UserSettings v-if="settingsOpened"/>
+
     <div class="header">
         <p class="title">Kanban Boards</p>
-        <button class="combinedViewBtn" @click="selectingForCombinedView = true"></button>
         <button @click="settingsOpened = !settingsOpened" class="settingsButton"></button>
     </div>
-    <UserSettings v-if="settingsOpened"/>
+
     <div class="container">
         <div class="cards">
             <div v-for="board in boards" class="cardContainer">
-                <BoardCard :board="board" :selectingForCombinedView="selectingForCombinedView"/>
+                <BoardCard :board="board"/>
             </div>
-            <div class="newBoardItem cardContainer" @click="openNewBoardMenu">
+            <div class="newBoardItem cardContainer" @click="() => creatingNewBoard = true">
                 <div></div>
             </div>
         </div>
     </div>
-    <div class="create" v-if="creatingNewBoard" v-click-away="closeNewBoardMenu">
+
+    <div class="createDarken" v-if="creatingNewBoard" @click="() => creatingNewBoard = false">
+    </div>
+    <div class="create" v-if="creatingNewBoard">
         <h1>Create new board</h1>
         <label for="title">Title</label>
         <input maxlength="20" v-model="title" type="text" id="title"/>
@@ -71,21 +49,12 @@
         <textarea maxlength="125" v-model="description" id="description"/>
         <button class="confirm" @click="createBoard">Create</button>
     </div>
-    <div class="darken"  v-if="selectingForCombinedView" @click="selectingForCombinedView = false"></div>
-    <div class="selectCombinedView" v-if="selectingForCombinedView">
-    <h1 class="selectHeader">Select boards for combined view</h1>
-    <hr>
-    <div v-for="board in boards" class="boardItem">
-        <Switch :value="selected.includes(board.id)" @change="()=>change(board.id)" class="combinedViewCheckbox"/>
-            <p>{{ board.title }}</p>
-        </div>
-        <NuxtLink :to="selected.length >= 2 ? '/combinedView' : null" :class="{'openCombinedViewBtn': true, disabled: selected.length < 2}">Open</NuxtLink>
-    </div>
 </template>
 
 <style scoped>
     .settingsButton {
         margin: auto 0;
+        margin-left: auto;
         margin-right: 1rem;
         height: 2rem;
         width: 2rem;
@@ -123,62 +92,9 @@
     p {
         margin: auto 0;
     }
-    hr {    
-        margin-bottom: 3rem;
-    }
-    .selectHeader {
-        text-align: center;
-    }
-    .openCombinedViewBtn {
-        display: block;
-        width:6rem;
-        margin: 0 auto;
-        margin-top: 6rem;
-        padding: 1rem 2rem;
-        border-radius: 10px;
-        text-align: center;
-        color: black;
-        font-size: 1rem;
-        background-color: var(--color-boardmenu-combinedview-open-btn);
-    }
-    .openCombinedViewBtn:hover {
-        background-color: var(--color-boardmenu-combinedview-open-btn-hover);
-    }
-    .openCombinedViewBtn:active {
-        background-color: var(--color-boardmenu-combinedview-btn-active);
-    }
-    .boardItem {
-        display: flex;
-        flex-direction: row;
-        margin-top: 10px;
-    }
-    .darken {
-        position: fixed;
-        height: 100vh;
-        width: 100vw;
-        top: 0;
-        left: 0;
-        background-color: black;
-        z-index: 2;
-        opacity: 50%;
-    }
-    .selectCombinedView {
-        position: fixed;
-        width: 70vw;
-        max-height: 80vh;
-        padding-bottom: 1rem;
-        background-color: var(--color-boardcreate-background);
-        left: 15vw;
-        top: 10vh;
-        z-index: 56;
-        border-radius: 10px;
-    }
     .cards {
         display: grid;
         grid-template-columns: repeat(1, 1fr);
-    }
-    .combinedViewCheckbox {
-        margin: auto 10px;
     }
     .cardContainer {
         display: flex;
@@ -211,41 +127,24 @@
     .newBoardItem:hover > div {
         background-color: var(--color-boardmenu-newitem-icon-hover);
     }
-    .combinedViewBtn {
-        color: black;
-        margin-left: auto;
-        margin-right: 10px;
-        padding: 1rem 1rem;
-        font-size: 1rem;
-        background-color: var(--color-boardmenu-combinedview-btn);
-        border-style: none;
-        border-radius: 10px;
-        mask: url(/layers.svg) no-repeat center;
-        transition: .2s;
-    }
-    .combinedViewBtn:hover {
-        background-color: var(--color-boardmenu-combinedview-btn-hover);
-    }
-    .combinedViewBtn:active {
-        background-color: var(--color-boardmenu-combinedview-btn-active);
-    }
-    .disabled {
-        background-color: var(--color-boardmenu-combinedview-btn-disabled);
-    }
-    .disabled:hover {
-        background-color: var(--color-boardmenu-combinedview-btn-disabled);   
+    .createDarken {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        opacity: 50%;
     }
     .create {
+        position: fixed;
+        opacity: 100%;
         display: flex;
         flex-direction: column;
         background-color: var(--color-boardcreate-background);
-        position: fixed;
         width: 80vw;
         left: 10vw;
         height: 75vh;
         top: 12.5vh;
         border-radius: 20px;
-        filter: drop-shadow(0 0 300px black);
     }
     .create h1 {
         align-self: center;
@@ -314,10 +213,6 @@
     }
 
     @media (min-width: 1025px) {
-        .selectCombinedView {
-            width: 30vw;
-            left: 35vw;
-        }
         .cards {
             grid-template-columns: repeat(3, 1fr);
         }
@@ -341,12 +236,6 @@
         }
         #description {
             height: 7vw;
-        }
-        .combinedViewBtn {
-            left: 10px;
-            top: 10px;
-            bottom: auto;
-            right: auto;
         }
     }
 

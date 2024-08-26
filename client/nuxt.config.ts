@@ -7,8 +7,5 @@ export default defineNuxtConfig({
   routeRules: {
     "/board/**": {ssr: false}
   },
-  modules: [
-    '@vueuse/nuxt',
-    "nuxt-primevue"
-  ],
+  modules: ['@vueuse/nuxt', "nuxt-primevue", "@pinia/nuxt"],
 })

@@ -7,23 +7,33 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint",
+    "format": "prettier .  --write"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@pinia/nuxt": "^0.5.4",
     "@types/markdown-it": "^14.1.2",
     "@vueuse/core": "^10.7.0",
     "@vueuse/nuxt": "^10.7.0",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-vue": "^9.27.0",
     "nuxt": "^3.8.2",
     "nuxt-primevue": "^0.2.2",
+    "prettier": "3.3.3",
     "vue": "^3.3.8",
+    "vue-eslint-parser": "^9.4.3",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
     "@melloware/coloris": "^0.22.0",
     "@nuxt/content": "^2.9.0",
     "markdown-it": "^14.0.0",
+    "pinia": "^2.2.2",
     "primevue": "^3.44.0",
+    "typescript-eslint": "^8.2.0",
     "vue-window-size": "^2.0.0",
     "vue3-all-click-away": "^1.0.0",
     "vue3-click-away": "^1.2.4"

@@ -294,7 +294,7 @@ function send(boardId: string, data: any) {
                 } else {
                     item = (await db.update(schema.infoItem).set(data).returning())[0]
                 }
-                await sendInfoItem(data.boardId, item)
+                await sendInfoItem(boardId, item)
                 break
         }
     })

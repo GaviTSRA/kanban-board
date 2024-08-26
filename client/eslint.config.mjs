@@ -25,11 +25,17 @@ export default [
         defineNuxtPlugin: "readonly",
         useFetch: "readonly",
         navigateTo: "readonly",
+        Ref: "readonly",
+        useRoute: "readonly",
+        nextTick: "readonly",
+        onBeforeUpdate: "readonly",
+        useLocalStorage: "readonly",
+        onMounted: "readonly",
+        useHead: "readonly",
       },
     },
     rules: {
-      // override/add rules settings here, such as:
-      // 'vue/no-unused-vars': 'error'
+      "vue/multi-word-component-names": "off",
     },
   },
   eslintConfigPrettier,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import "@melloware/coloris/dist/coloris.css";
 import Coloris from "@melloware/coloris";
+import type { Label } from "~/types";
 Coloris.init();
 Coloris({
   el: "#coloris",
@@ -40,8 +41,8 @@ function deleteLabel() {
 </script>
 
 <template>
-  <div class="label" v-if="!label.empty">
-    <form @change="save" class="label">
+  <div v-if="!label.empty" class="label">
+    <form class="label" @change="save">
       <EditableText
         :center="true"
         :maxlength="20"
@@ -59,14 +60,14 @@ function deleteLabel() {
         "
       />
       <input
-        type="text"
         v-model="props.label.color"
+        type="text"
         data-coloris
         class="labelColor"
       />
       <input
-        type="text"
         v-model="props.label.textColor"
+        type="text"
         data-coloris
         class="labelColor"
       />

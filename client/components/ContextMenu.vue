@@ -60,9 +60,9 @@ function hideMenuFromSub(action: string) {
 
 <template>
   <div
-    @contextmenu.prevent.stop=""
     class="rcMenu"
     :style="{ top: y + 'px', left: x + 'px', '--itemCount': actions?.length }"
+    @contextmenu.prevent.stop=""
   >
     <div v-for="action in actions">
       <button
@@ -92,13 +92,13 @@ function hideMenuFromSub(action: string) {
           {{ action.name }}
         </p>
         <ContextMenu
-          class="subMenu"
-          @mouseover="hoversOverSubmenu[action.name] = true"
-          @mouseleave="() => hideMenuFromSub(action.name)"
           v-if="showSubmenu[action.name]"
+          class="subMenu"
           :actions="action.submenu"
           :x="submenuLeft"
           :y="0"
+          @mouseover="hoversOverSubmenu[action.name] = true"
+          @mouseleave="() => hideMenuFromSub(action.name)"
           @action-clicked="(action) => $emit('action-clicked', action)"
         />
       </div>

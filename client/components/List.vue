@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Card, Label, List } from "~/types";
+
 const props = defineProps<{
   list: List;
   ws: WebSocket;
@@ -88,16 +90,16 @@ function createCard() {
       :center="true"
       :maxlength="20"
       :text="props.list.title"
-      @edit="(txt: string) => editName(txt)"
       class="title"
+      @edit="(txt: string) => editName(txt)"
     />
     <ContextMenu
-      :actions="actions"
-      @action-clicked="ctxMenuClicked"
-      :x="left"
-      :y="top"
       v-if="menuVisible"
       v-all-click-away="() => (menuVisible = false)"
+      :actions="actions"
+      :x="left"
+      :y="top"
+      @action-clicked="ctxMenuClicked"
     />
     <div class="cards">
       <div v-for="(card, index) in props.cards" :key="card.id">
@@ -106,35 +108,35 @@ function createCard() {
           :card="card"
           :labels="props.labels"
           :assigned-labels="props.assignedLabels"
-          :showDropSpot="
+          :show-drop-spot="
             props.isDraggingCard &&
             (props.draggingCard.listId != props.list.id ||
               index - draggingCard?.position > 1 ||
               draggingCard?.position - index > 0)
           "
-          :assigningSubCards="props.assigningSubCards"
-          :assigningTo="props.assigningTo"
+          :assigning-sub-cards="props.assigningSubCards"
+          :assigning-to="props.assigningTo"
           :all-cards="props.allCards"
           :all-lists="props.allLists"
           @drag-start="(card) => $emit('dragStart', card)"
           @drop="$emit('drop', index)"
           @delete="$emit('deleteCard', index, list.id)"
           @assign="$emit('assign', card)"
-          @startAssign="$emit('startAssign', card)"
+          @start-assign="$emit('startAssign', card)"
           @hover="$emit('hover', card)"
-          @hoverEnd="$emit('hoverEnd')"
+          @hover-end="$emit('hoverEnd')"
         />
       </div>
       <div
+        class="cardDropSpot"
         @dragenter.prevent=""
         @dragover.prevent=""
         @drop="$emit('drop', props.cards.length)"
-        class="cardDropSpot"
       ></div>
     </div>
     <div class="newCardContainer">
-      <form @submit.prevent="createCard" class="newCard">
-        <input type="text" v-model="newCardName" maxlength="255" />
+      <form class="newCard" @submit.prevent="createCard">
+        <input v-model="newCardName" type="text" maxlength="255" />
         <button @click="createCard"></button>
       </form>
     </div>

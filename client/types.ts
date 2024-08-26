@@ -1,4 +1,4 @@
-interface BoardCard {
+export type BoardCard = {
   id: string;
   title: string;
   description: string;
@@ -6,22 +6,22 @@ interface BoardCard {
   cards: number;
   tasks: number;
   done: number;
-}
+};
 
-interface Board {
+export type Board = {
   id: string;
   title: string;
   description: string;
-}
+};
 
-interface List {
+export type List = {
   id: string;
   title: string;
   position: number;
   boardId: string;
-}
+};
 
-interface Card {
+export type Card = {
   id: string;
   title: string;
   description: string;
@@ -43,21 +43,21 @@ interface Card {
       ChecklistId: string;
     }[];
   }[];
-}
+};
 
-interface Label {
+export type Label = {
   id: string;
   boardId: string;
   title: string;
   color: string;
   textColor: string;
   empty?: boolean;
-}
+};
 
-interface InfoItem {
+export type InfoItem = {
   id: string;
   boardId: string;
   title: string;
   content: string;
   images: string[];
-}
+};

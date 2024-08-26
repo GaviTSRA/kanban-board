@@ -20,13 +20,13 @@ function cancel() {
 </script>
 
 <template>
-  <div class="deleteMenu" v-click-away="cancel">
+  <div v-click-away="cancel" class="deleteMenu">
     <p>{{ props["text"] }}</p>
     <div>
-      <button @click="$emit('confirm')" class="btnOk">
+      <button class="btnOk" @click="$emit('confirm')">
         {{ props["optionOk"] }}
       </button>
-      <button @click="$emit('cancel')" class="btnCancel">
+      <button class="btnCancel" @click="$emit('cancel')">
         {{ props["optionCancel"] }}
       </button>
     </div>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Card, Label } from "~/types";
+
 const props = defineProps<{
   card: Card;
   ws: WebSocket;
@@ -83,25 +85,25 @@ let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
 </script>
 
 <template>
-  <div @contextmenu.stop="" @dragstart.prevent.stop="" draggable="true">
-    <div @click="close" class="darken"></div>
+  <div draggable="true" @contextmenu.stop="" @dragstart.prevent.stop="">
+    <div class="darken" @click="close"></div>
     <div class="cardMenu">
       <EditableText
         :center="true"
         :maxlength="20"
         :text="props.card.title"
-        @edit="(txt: string) => rename(txt)"
         class="title"
+        @edit="(txt: string) => rename(txt)"
       />
       <EditableText
         :maxlength="125"
         :textarea="true"
         :text="props.card.description"
-        @edit="(txt: string) => editDesc(txt)"
         class="description"
+        @edit="(txt: string) => editDesc(txt)"
       />
       <div class="labels">
-        <div @click="() => toggle(label)" v-for="label in props.labels">
+        <div v-for="label in props.labels" @click="() => toggle(label)">
           <p
             :class="{ label: true, disabled: !isEnabled(label) }"
             :style="{ color: label.textColor, 'background-color': label.color }"
@@ -113,8 +115,8 @@ let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
       <div class="showSubCardsOption">
         <input
           id="showSubCardsCheckbox"
-          type="checkbox"
           v-model="showSubCards"
+          type="checkbox"
         />
         <label class="showSubCardsText" for="showSubCardsCheckbox"
           >Show Subcards</label
@@ -122,16 +124,16 @@ let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
       </div>
       <div class="checklistSection">
         <div v-for="checklist in props.card.checklists" class="checklists">
-          <Checklist @send="send" :checklist="checklist" />
+          <Checklist :checklist="checklist" @send="send" />
         </div>
         <button
-          class="newChecklistBtn"
-          @click="newChecklist"
           v-if="
             !props.card.checklists ||
             props.card.checklists.length == 0 ||
             props.card.checklists[props.card.checklists.length - 1].title != ''
           "
+          class="newChecklistBtn"
+          @click="newChecklist"
         ></button>
       </div>
     </div>

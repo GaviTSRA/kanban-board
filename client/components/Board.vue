@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Board, Card, InfoItem, Label, List } from "~/types";
+
 const props = defineProps<{
   ws: WebSocket;
   board: Board;
@@ -213,7 +215,6 @@ function deleteList() {
     JSON.stringify({
       action: "updateList",
       boardId: props.board.id,
-      //@ts-ignore
       id: listToDelete.id,
       delete: true,
     }),
@@ -310,32 +311,32 @@ function moveSubcards(card: Card) {
 <template>
   <div @dragend="dragEnd">
     <BoardTitleBar
+      :board="board"
       @settings="
         settingsOpened = !settingsOpened;
         infoMenuOpened = false;
       "
-      :board="board"
       @info="
         infoMenuOpened = !infoMenuOpened;
         settingsOpened = false;
       "
     />
     <InfoMenu
+      v-if="infoMenuOpened"
       :ws="ws"
       :items="infoItems"
-      v-if="infoMenuOpened"
-      :boardId="board.id"
+      :board-id="board.id"
     />
     <Settings
       v-if="settingsOpened"
       :ws="ws"
       :labels="labels"
-      :boardId="board.id"
+      :board-id="board.id"
     />
     <button
-      @click="stopAssigning"
       v-if="assigningSubCards"
       class="stopAssigning"
+      @click="stopAssigning"
     >
       Stop assigning
     </button>
@@ -343,19 +344,30 @@ function moveSubcards(card: Card) {
       <div v-for="(list, index) in lists">
         <div class="listAndDropSpot">
           <div
-            class="dragDropSpot"
-            @drop="() => drop(index)"
-            @dragenter.prevent=""
-            @dragover.prevent=""
             v-if="
               dragging &&
               draggingList &&
               (index - draggingList.position > 1 ||
                 draggingList.position - index > 0)
             "
+            class="dragDropSpot"
+            @drop="() => drop(index)"
+            @dragenter.prevent=""
+            @dragover.prevent=""
           ></div>
           <List
-            @ctxMenuAction="(action: string) => listCtxAction(action, list)"
+            :list="list"
+            :cards="cards[list.id]"
+            :ws="ws"
+            :is-dragging-card="isDraggingCard"
+            :dragging-card="draggingCard"
+            :labels="labels"
+            :assigned-labels="assignedLabels"
+            :assigning-sub-cards="assigningSubCards"
+            :assigning-to="assigningTo"
+            :all-cards="cards"
+            :all-lists="lists"
+            @ctx-menu-action="(action: string) => listCtxAction(action, list)"
             @dragstart="() => startDrag(list)"
             @drag-start="(card: Card) => startDragCard(card)"
             @drop="(index: number) => dropCard(list, index)"
@@ -363,52 +375,41 @@ function moveSubcards(card: Card) {
             @assign="(card: Card) => assignCard(card)"
             @start-assign="(card: Card) => startAssign(card)"
             @hover="(card: Card) => hoverCard(card)"
-            @hoverEnd="hoverEndCard"
-            :list="list"
-            :cards="cards[list.id]"
-            :ws="ws"
-            :is-dragging-card="isDraggingCard"
-            :draggingCard="draggingCard"
-            :labels="labels"
-            :assigned-labels="assignedLabels"
-            :assigningSubCards="assigningSubCards"
-            :assigningTo="assigningTo"
-            :all-cards="cards"
-            :all-lists="lists"
+            @hover-end="hoverEndCard"
           />
         </div>
       </div>
       <div
-        class="dragDropSpot last"
-        @drop="() => drop(lists.length)"
-        @dragenter.prevent=""
-        @dragover.prevent=""
         v-if="
           dragging &&
           draggingList &&
           Math.abs(lists.length - 1 - draggingList.position) > 0
         "
+        class="dragDropSpot last"
+        @drop="() => drop(lists.length)"
+        @dragenter.prevent=""
+        @dragover.prevent=""
       ></div>
       <form class="newList" @submit.prevent="createNewList">
-        <input type="text" v-model="newListName" maxlength="20" />
+        <input v-model="newListName" type="text" maxlength="20" />
         <button @click="createNewList"></button>
       </form>
     </div>
     <DecisionMenu
       v-if="deleteMenuVisible"
+      option-ok="Confirm"
+      text="Delete list?"
+      option-cancel="Cancel"
       @confirm="deleteList"
       @cancel="deleteMenuVisible = false"
-      optionOk="Confirm"
-      text="Delete list?"
-      optionCancel="Cancel"
     />
     <DecisionMenu
       v-if="moveQueue.length > 0"
+      option-ok="Confirm"
+      :text="'Move subcards of ' + moveQueue[0].title + '?'"
+      option-cancel="Cancel"
       @confirm="() => moveSubcards(moveQueue.shift())"
       @cancel="moveQueue.shift()"
-      optionOk="Confirm"
-      :text="'Move subcards of ' + moveQueue[0].title + '?'"
-      optionCancel="Cancel"
     />
   </div>
 </template>

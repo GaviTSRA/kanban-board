@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Label } from "~/types";
+
 const props = defineProps<{
   ws: WebSocket;
   labels: Label[];

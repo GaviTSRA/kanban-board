@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useConnection } from "@/stores";
+import type { Card, InfoItem, Label, List } from "~/types";
 const conn = useConnection();
 console.info(conn);
 
@@ -67,14 +68,13 @@ ws.onmessage = async (msg) => {
 
     case "card":
       found = false;
-      let checklists = data.checklists;
       if (data.checklists) {
         // checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
         // for (let checklist of checklists) {
         //     checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
         // }
       } else {
-        checklists = [];
+        data.checklists = [];
       }
       for (const [listId, listCards] of Object.entries(cards.value)) {
         for (let card of listCards) {
@@ -88,7 +88,7 @@ ws.onmessage = async (msg) => {
             card.position = data.position;
             card.description = data.description;
             card.listId = data.listId;
-            card.checklists = checklists;
+            card.checklists = data.checklists;
             card.cardId = data.cardId;
             found = true;
             break;
@@ -104,7 +104,7 @@ ws.onmessage = async (msg) => {
           boardId: data.boardId,
           listId: data.listId,
           cardId: data.cardId,
-          checklists: checklists,
+          checklists: data.checklists,
         });
       }
       for (const [listId, listCards] of Object.entries(cards.value)) {
@@ -115,7 +115,7 @@ ws.onmessage = async (msg) => {
           card.subcardCount = 0;
           card.subcardsDone = 0;
           card.subcards = 0;
-          for (const [listId2, listCards2] of Object.entries(cards.value)) {
+          for (const [, listCards2] of Object.entries(cards.value)) {
             for (let card2 of listCards2) {
               if (card.id == card2.cardId) {
                 card.subcards++;
@@ -210,14 +210,14 @@ ws.onmessage = async (msg) => {
 <template>
   <ThemeHandler />
   <Board
-    :isCombinedView="false"
+    :is-combined-view="false"
     :ws="ws"
     :wss="undefined"
     :board="board"
     :lists="lists"
     :cards="cards"
     :labels="labels"
-    :assignedLabels="assignedLabels"
-    :infoItems="infoItems"
+    :assigned-labels="assignedLabels"
+    :info-items="infoItems"
   />
 </template>

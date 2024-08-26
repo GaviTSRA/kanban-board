@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useConnection } from "@/stores";
+import type { InfoItem } from "~/types";
 const ws = useConnection();
 
 const props = defineProps<{
   items: InfoItem[];
-  boardId: string;
 }>();
 
 let title = ref("");
@@ -36,7 +36,7 @@ function save(title: string, content: string) {
 
 <template>
   <div class="infoMenu">
-    <div v-for="item in items">
+    <div v-for="item in props.items">
       <InfoItem
         :item="item"
         @edit="() => editItem(item)"
@@ -48,10 +48,10 @@ function save(title: string, content: string) {
     </div>
   </div>
   <InfoItemEditMenu
-    @cancel="editing = undefined"
+    v-if="editing != undefined"
     :title="title"
     :content="content"
-    v-if="editing != undefined"
+    @cancel="editing = undefined"
     @done="(title: string, content: string) => save(title, content)"
   />
 </template>

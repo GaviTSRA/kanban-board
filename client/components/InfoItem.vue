@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import markdownit from "markdown-it";
 import { useConnection } from "@/stores";
+import type { InfoItem } from "~/types";
 const ws = useConnection();
 
 const props = defineProps<{
@@ -46,7 +47,7 @@ watch(
 </script>
 
 <template>
-  <div class="item" v-if="!item.empty" @dblclick="$emit('edit')">
+  <div v-if="!item.empty" class="item" @dblclick="$emit('edit')">
     <div class="container">
       <h1>{{ item.title }}</h1>
       <hr />

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Card, Label, List } from "~/types";
+
 const props = defineProps<{
   card: Card;
   ws: WebSocket;
@@ -89,7 +91,6 @@ async function openMenu(event: { y: number; x: number; stopPropagation: any }) {
   left.value = event.x;
 
   menuVisible.value = true;
-  event.stopPropagation;
 }
 
 function isEnabled(label: Label) {
@@ -254,16 +255,20 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
 
 <template>
   <div
-    @contextmenu.prevent="openMenu"
-    draggable="true"
-    @dragstart.stop="$emit('dragStart', props.card)"
     v-if="
       (notHiddenByMasterCard &&
         (notHiddenByBoard || props.card.cardId == undefined)) ||
       forceShowAll
     "
+    draggable="true"
+    @contextmenu.prevent="openMenu"
+    @dragstart.stop="$emit('dragStart', props.card)"
   >
     <div
+      :class="{
+        cardDropSpot: dropSpotVisible && props.showDropSpot,
+        cardDropSpotSmall: true,
+      }"
       @dragenter.prevent="dropSpotVisible = true"
       @dragover.prevent="dropSpotVisible = true"
       @dragleave="dropSpotVisible = false"
@@ -273,10 +278,6 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
           dropSpotVisible = false;
         }
       "
-      :class="{
-        cardDropSpot: dropSpotVisible && props.showDropSpot,
-        cardDropSpotSmall: true,
-      }"
     ></div>
     <div
       :class="{
@@ -300,13 +301,13 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
       <div class="firstLine">
         <p class="title">{{ props.card.title }}</p>
         <p
+          v-if="props.card.subcardCount && props.card.subcardCount > 0"
           class="subcardCount"
           :class="{
             subcardCount: true,
             progress: true,
             complete: card.subcardCount == card.subcardsDone,
           }"
-          v-if="props.card.subcardCount && props.card.subcardCount > 0"
         >
           {{ card.subcardsDone }}/{{ card.subcardCount }}
         </p>
@@ -345,28 +346,28 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
       <p class="boardName">{{ props.boardName }}</p>
     </div>
     <CardMenu
+      v-if="cardMenuVisible"
       :labels="props.labels"
       :assigned-labels="props.assignedLabels"
       :card="card"
-      v-if="cardMenuVisible"
-      @close="cardMenuVisible = false"
       :ws="props.ws"
+      @close="cardMenuVisible = false"
     />
     <ContextMenu
-      :actions="actions"
-      @action-clicked="ctxMenuClicked"
-      :x="left"
-      :y="top"
       v-if="menuVisible"
       v-all-click-away="() => (menuVisible = false)"
+      :actions="actions"
+      :x="left"
+      :y="top"
+      @action-clicked="ctxMenuClicked"
     />
     <DecisionMenu
       v-if="deleteMenuVisible"
+      option-ok="Confirm"
+      text="Delete card?"
+      option-cancel="Cancel"
       @confirm="deleteCard"
       @cancel="deleteMenuVisible = false"
-      optionOk="Confirm"
-      text="Delete card?"
-      optionCancel="Cancel"
     />
   </div>
 </template>

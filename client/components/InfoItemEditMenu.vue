@@ -23,7 +23,7 @@ function cancel() {
 
 <template>
   <div class="darken"></div>
-  <div class="menu" v-click-away="cancel">
+  <div v-click-away="cancel" class="menu">
     <input v-model="title" class="title" />
     <textarea v-model="content" class="content" />
     <button class="done" @click="$emit('done', title, content)">Done</button>

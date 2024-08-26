@@ -13,7 +13,7 @@ function toggleCheckbox() {
 
 <template>
   <label class="switch">
-    <input type="checkbox" @click="toggleCheckbox" :checked="props.value" />
+    <input type="checkbox" :checked="props.value" @click="toggleCheckbox" />
     <div class="slider round"></div>
   </label>
 </template>

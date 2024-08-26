@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useConnection } from "@/stores";
+import type { Board } from "~/types";
 const ws = useConnection();
 
 const props = defineProps<{
@@ -18,19 +19,19 @@ const emit = defineEmits<{
     <EditableText
       :maxlength="20"
       :text="props.board.title"
-      @edit="ws.updateBoardTitle"
       class="title"
+      @edit="ws.updateBoardTitle"
     />
     <!-- TODO proper max length -->
     <EditableText
       :maxlength="125"
       :text="props.board.description"
       :textarea="true"
-      @edit="ws.updateBoardDescription"
       class="description"
+      @edit="ws.updateBoardDescription"
     />
-    <button @click="$emit('info')" class="info"></button>
-    <button @click="$emit('settings')" class="settings"></button>
+    <button class="info" @click="emit('info')"></button>
+    <button class="settings" @click="emit('settings')"></button>
   </div>
 </template>
 

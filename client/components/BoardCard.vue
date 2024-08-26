@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BoardCard } from "~/types";
+
 const props = defineProps<{
   board: BoardCard;
 }>();
@@ -96,7 +98,7 @@ function touchEnd() {
           <p>
             <span>{{ board.cards }}</span> Cards
           </p>
-          <div class="progress" v-if="board.tasks > 0">
+          <div v-if="board.tasks > 0" class="progress">
             <p>
               <span>{{ board.done }}</span
               >/<span>{{ board.tasks }}</span> Tasks done
@@ -109,20 +111,20 @@ function touchEnd() {
       </div>
     </NuxtLink>
     <ContextMenu
-      :actions="actions"
-      @action-clicked="ctxMenuClicked"
-      :x="left"
-      :y="top"
       v-if="menuVisible"
       v-all-click-away="() => (menuVisible = false)"
+      :actions="actions"
+      :x="left"
+      :y="top"
+      @action-clicked="ctxMenuClicked"
     />
     <DecisionMenu
       v-if="deleteMenuVisible"
+      option-ok="Confirm"
+      text="Delete board?"
+      option-cancel="Cancel"
       @confirm="deleteBoard"
       @cancel="deleteMenuVisible = false"
-      optionOk="Confirm"
-      text="Delete board?"
-      optionCancel="Cancel"
     />
   </div>
 </template>

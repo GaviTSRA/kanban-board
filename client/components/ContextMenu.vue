@@ -23,6 +23,7 @@ if (y == undefined) y = 0;
 let showSubmenu: Ref<{ [name: string]: boolean }> = ref({});
 let hoversOverSubmenu: Ref<{ [name: string]: boolean }> = ref({});
 
+console.info(actions);
 for (let action of actions) {
   showSubmenu.value[action.name] = false;
   hoversOverSubmenu.value[action.name] = false;
@@ -44,6 +45,7 @@ let submenuLeft = vw(40);
 if (document.documentElement.clientWidth > 1025) {
   submenuLeft = vw(10);
 }
+console.info(submenuLeft);
 
 function hideSubmenu(action: string) {
   setTimeout(() => {
@@ -86,7 +88,7 @@ function hideMenuFromSub(action: string) {
         }"
       >
         <p
-          @mouseover="showSubmenu[action.name] = true"
+          @mouseover="() => (showSubmenu[action.name] = true)"
           @mouseleave="() => hideSubmenu(action.name)"
         >
           {{ action.name }}

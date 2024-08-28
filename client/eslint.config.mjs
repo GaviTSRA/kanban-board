@@ -32,6 +32,7 @@ export default [
         useLocalStorage: "readonly",
         onMounted: "readonly",
         useHead: "readonly",
+        watch: "readonly",
       },
     },
     rules: {

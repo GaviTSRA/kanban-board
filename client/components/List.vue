@@ -49,7 +49,7 @@ let actions = [
 let top = ref(0);
 let left = ref(0);
 let menuVisible = ref(false);
-async function openMenu(event: { y: number; x: number }) {
+function openMenu(event: MouseEvent) {
   top.value = event.y;
   left.value = event.x;
 

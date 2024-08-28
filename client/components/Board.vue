@@ -78,6 +78,7 @@ function dropCard(list: List, index: number) {
     index -= 1;
   if (index < 0) index = 0;
   isDraggingCard.value = false;
+  ws.updateCardList(draggingCard?.id, list.id);
   ws.updateCardPosition(draggingCard?.id, index);
 
   if (draggingCard?.listId != list.id) {
@@ -264,6 +265,7 @@ function moveSubcards(card: Card) {
             @dragover.prevent=""
           ></div>
           <List
+            draggable="true"
             :list="list"
             :cards="cards[list.id]"
             :is-dragging-card="isDraggingCard"

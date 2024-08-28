@@ -83,6 +83,13 @@ export const useConnection = defineStore("connection", {
         description,
       });
     },
+    updateCardList(id: string, listId: string) {
+      this.send({
+        action: "updateCard",
+        id,
+        listId,
+      });
+    },
     updateCardPosition(id: string, position: number) {
       this.send({
         action: "updateCard",

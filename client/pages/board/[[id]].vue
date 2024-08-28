@@ -2,7 +2,6 @@
 import { useConnection } from "@/stores";
 import type { Card, InfoItem, Label, List } from "~/types";
 const conn = useConnection();
-console.info(conn);
 
 const route = useRoute();
 

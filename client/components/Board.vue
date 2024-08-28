@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { Board, Card, InfoItem, Label, List } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
 
 const props = defineProps<{
-  ws: WebSocket;
   board: Board;
   lists: List[];
   cards: { [listId: string]: Card[] };
@@ -12,24 +13,10 @@ const props = defineProps<{
   infoItems: InfoItem[];
 }>();
 
-function send(data: any) {
-  props.ws.send(data);
-}
-
 let newListName = ref("");
 function createNewList() {
   if (newListName.value == "") return;
-
-  send(
-    JSON.stringify({
-      action: "updateList",
-      new: true,
-      position: props.lists.length,
-      boardId: props.board.id,
-      title: newListName.value,
-    }),
-  );
-
+  ws.createList(props.board.id, newListName.value, props.lists.length);
   newListName.value = "";
 }
 
@@ -55,36 +42,15 @@ function drop(index: number) {
   if (draggingList.position < index) index -= 1;
   if (index < 0) index = 0;
   dragging.value = false;
-  send(
-    JSON.stringify({
-      action: "updateList",
-      id: draggingList?.id,
-      boardId: props.board.id,
-      position: index,
-    }),
-  );
+  ws.updateListPosition(draggingList?.id, index);
 
   for (let list of props.lists) {
     if (list.id == draggingList?.id) continue;
     if (list.position < draggingList.position && list.position >= index) {
-      send(
-        JSON.stringify({
-          action: "updateList",
-          boardId: props.board.id,
-          id: list.id,
-          position: (list.position += 1),
-        }),
-      );
+      ws.updateListPosition(list.id, (list.position += 1));
     }
     if (list.position > draggingList.position && list.position <= index) {
-      send(
-        JSON.stringify({
-          action: "updateList",
-          boardId: props.board.id,
-          id: list.id,
-          position: (list.position -= 1),
-        }),
-      );
+      ws.updateListPosition(list.id, (list.position -= 1));
     }
   }
 }
@@ -112,28 +78,13 @@ function dropCard(list: List, index: number) {
     index -= 1;
   if (index < 0) index = 0;
   isDraggingCard.value = false;
-  send(
-    JSON.stringify({
-      action: "updateCard",
-      id: draggingCard?.id,
-      listId: list.id,
-      boardId: draggingCard.boardId,
-      position: index,
-    }),
-  );
+  ws.updateCardPosition(draggingCard?.id, index);
 
   if (draggingCard?.listId != list.id) {
     for (let card of props.cards[draggingCard?.listId]) {
       if (card.id == draggingCard?.id) continue;
       if (card.position > draggingCard?.position) {
-        send(
-          JSON.stringify({
-            action: "updateCard",
-            boardId: draggingCard.boardId,
-            id: card.id,
-            position: (card.position -= 1),
-          }),
-        );
+        ws.updateCardPosition(card.id, card.position - 1);
       }
     }
   }
@@ -145,28 +96,14 @@ function dropCard(list: List, index: number) {
         card.position >= index) ||
       (list.id != draggingCard?.listId && card.position >= index)
     ) {
-      send(
-        JSON.stringify({
-          action: "updateCard",
-          boardId: draggingCard.boardId,
-          id: card.id,
-          position: (card.position += 1),
-        }),
-      );
+      ws.updateCardPosition(card.id, card.position + 1);
     }
     if (
       list.id == draggingCard?.listId &&
       card.position > draggingCard?.position &&
       card.position <= index
     ) {
-      send(
-        JSON.stringify({
-          action: "updateCard",
-          boardId: draggingCard.boardId,
-          id: card.id,
-          position: (card.position -= 1),
-        }),
-      );
+      ws.updateCardPosition(card.id, card.position - 1);
     }
   }
 
@@ -211,14 +148,9 @@ function listCtxAction(action: string, list: List) {
 
 function deleteList() {
   deleteMenuVisible.value = false;
-  send(
-    JSON.stringify({
-      action: "updateList",
-      boardId: props.board.id,
-      id: listToDelete.id,
-      delete: true,
-    }),
-  );
+  if (listToDelete) {
+    ws.deleteList(listToDelete.id);
+  }
 }
 
 let settingsOpened = ref(false);
@@ -227,14 +159,7 @@ let infoMenuOpened = ref(false);
 function deleteCard(index: number, id: string) {
   for (let card of props.cards[id]) {
     if (card.position > index) {
-      send(
-        JSON.stringify({
-          action: "updateCard",
-          boardId: card.boardId,
-          id: card.id,
-          position: (card.position -= 1),
-        }),
-      );
+      ws.updateCardPosition(card.id, card.position - 1);
     }
   }
 }
@@ -270,14 +195,7 @@ function assignCard(card: Card) {
   }
 
   if (card.boardId != assigningTo.value?.boardId) return;
-  send(
-    JSON.stringify({
-      action: "updateCard",
-      boardId: card.boardId,
-      cardId: assigningTo.value?.id,
-      id: card.id,
-    }),
-  );
+  ws.assignCard(card.id, assigningTo.value?.id);
 }
 function startAssign(card: Card) {
   assigningTo.value = card;
@@ -321,18 +239,8 @@ function moveSubcards(card: Card) {
         settingsOpened = false;
       "
     />
-    <InfoMenu
-      v-if="infoMenuOpened"
-      :ws="ws"
-      :items="infoItems"
-      :board-id="board.id"
-    />
-    <Settings
-      v-if="settingsOpened"
-      :ws="ws"
-      :labels="labels"
-      :board-id="board.id"
-    />
+    <InfoMenu v-if="infoMenuOpened" :items="infoItems" :board-id="board.id" />
+    <Settings v-if="settingsOpened" :labels="labels" :board-id="board.id" />
     <button
       v-if="assigningSubCards"
       class="stopAssigning"
@@ -358,7 +266,6 @@ function moveSubcards(card: Card) {
           <List
             :list="list"
             :cards="cards[list.id]"
-            :ws="ws"
             :is-dragging-card="isDraggingCard"
             :dragging-card="draggingCard"
             :labels="labels"
@@ -390,7 +297,7 @@ function moveSubcards(card: Card) {
         @dragenter.prevent=""
         @dragover.prevent=""
       ></div>
-      <form class="newList" @submit.prevent="createNewList">
+      <form class="newList" @submit.prevent="createNewList()">
         <input v-model="newListName" type="text" maxlength="20" />
         <button @click="createNewList"></button>
       </form>

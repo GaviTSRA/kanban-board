@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Card, Label } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
 
 const props = defineProps<{
   card: Card;
-  ws: WebSocket;
   labels: Label[];
   assignedLabels: { [labelId: string]: string }[];
 }>();
@@ -17,39 +18,6 @@ setTimeout(() => (canClose = true), 100);
 function close() {
   if (!canClose) return;
   emit("close");
-}
-
-function rename(txt: string) {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateCard",
-      id: props.card.id,
-      boardId: props.card.boardId,
-      title: txt,
-    }),
-  );
-}
-
-function editDesc(txt: string) {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateCard",
-      id: props.card.id,
-      boardId: props.card.boardId,
-      description: txt,
-    }),
-  );
-}
-
-function toggle(label: Label) {
-  props.ws.send(
-    JSON.stringify({
-      action: "toggleLabel",
-      boardId: props.card.boardId,
-      cardId: props.card.id,
-      labelId: label.id,
-    }),
-  );
 }
 
 function isEnabled(label: Label) {
@@ -71,14 +39,14 @@ function newChecklist() {
 }
 
 function send() {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateCard",
-      id: props.card.id,
-      boardId: props.card.boardId,
-      checklists: props.card.checklists,
-    }),
-  );
+  // props.ws.send(
+  //   JSON.stringify({
+  //     action: "updateCard",
+  //     id: props.card.id,
+  //     boardId: props.card.boardId,
+  //     checklists: props.card.checklists,
+  //   }),
+  // );
 }
 
 let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
@@ -93,17 +61,20 @@ let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
         :maxlength="20"
         :text="props.card.title"
         class="title"
-        @edit="(txt: string) => rename(txt)"
+        @edit="(txt: string) => ws.updateCardTitle(props.card.id, txt)"
       />
       <EditableText
         :maxlength="125"
         :textarea="true"
         :text="props.card.description"
         class="description"
-        @edit="(txt: string) => editDesc(txt)"
+        @edit="(txt: string) => ws.updateCardDescription(props.card.id, txt)"
       />
       <div class="labels">
-        <div v-for="label in props.labels" @click="() => toggle(label)">
+        <div
+          v-for="label in props.labels"
+          @click="() => ws.toggleLabel(label.id, props.card.id)"
+        >
           <p
             :class="{ label: true, disabled: !isEnabled(label) }"
             :style="{ color: label.textColor, 'background-color': label.color }"

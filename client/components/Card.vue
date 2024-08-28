@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Card, Label, List } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
 
 const props = defineProps<{
   card: Card;
-  ws: WebSocket;
   showDropSpot: boolean;
   labels: Label[];
   assignedLabels: { [labelId: string]: string }[];
@@ -110,14 +111,7 @@ function ctxMenuClicked(action: string) {
       })[0].boardId != props.card.boardId
     )
       return;
-    props.ws.send(
-      JSON.stringify({
-        action: "toggleLabel",
-        boardId: props.card.boardId,
-        cardId: props.card.id,
-        labelId: label,
-      }),
-    );
+    ws.toggleLabel(label, props.card.id);
   }
 
   if (action == "delete") {
@@ -129,26 +123,12 @@ function ctxMenuClicked(action: string) {
   }
 
   if (action == "unasign") {
-    props.ws.send(
-      JSON.stringify({
-        action: "updateCard",
-        boardId: props.card.boardId,
-        id: props.card.id,
-        cardId: null,
-      }),
-    );
+    ws.assignCard(props.card.id, null);
   }
 }
 
 function deleteCard() {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateCard",
-      boardId: props.card.boardId,
-      id: props.card.id,
-      delete: true,
-    }),
-  );
+  ws.deleteCard(props.card.id);
   deleteMenuVisible.value = false;
   emit("delete");
 }
@@ -350,7 +330,6 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
       :labels="props.labels"
       :assigned-labels="props.assignedLabels"
       :card="card"
-      :ws="props.ws"
       @close="cardMenuVisible = false"
     />
     <ContextMenu

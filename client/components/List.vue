@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { Card, Label, List } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
 
 const props = defineProps<{
   list: List;
-  ws: WebSocket;
   cards: Card[];
   draggingCard: Card;
   isDraggingCard: boolean;
@@ -27,14 +28,7 @@ const emit = defineEmits<{
 
 function editName(txt: string) {
   if (txt == "") return;
-  props.ws.send(
-    JSON.stringify({
-      action: "updateList",
-      id: props.list.id,
-      boardId: props.list.boardId,
-      title: txt,
-    }),
-  );
+  ws.updateListTitle(props.list.id, txt);
 }
 
 let actions = [
@@ -70,16 +64,7 @@ function ctxMenuClicked(action: string) {
 let newCardName = ref("");
 function createCard() {
   if (newCardName.value == "") return;
-  props.ws.send(
-    JSON.stringify({
-      action: "updateCard",
-      new: true,
-      title: newCardName.value,
-      boardId: props.list.boardId,
-      listId: props.list.id,
-      position: props.cards.length,
-    }),
-  );
+  ws.createCard(props.list.id, newCardName.value, props.cards.length);
   newCardName.value = "";
 }
 </script>
@@ -104,7 +89,6 @@ function createCard() {
     <div class="cards">
       <div v-for="(card, index) in props.cards" :key="card.id">
         <Card
-          :ws="props.ws"
           :card="card"
           :labels="props.labels"
           :assigned-labels="props.assignedLabels"

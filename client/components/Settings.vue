@@ -1,21 +1,12 @@
 <script setup lang="ts">
 import type { Label } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
 
 const props = defineProps<{
-  ws: WebSocket;
   labels: Label[];
   boardId: string;
 }>();
-
-function newLabel() {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateLabel",
-      new: true,
-      boardId: props.boardId,
-    }),
-  );
-}
 
 let showSubCards = useLocalStorage("showSubCards", true);
 let forceShowAllCards = useLocalStorage("showAllCards", false);
@@ -62,9 +53,9 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
     <hr />
     <div class="labels">
       <div v-for="label in props.labels" :key="label.id">
-        <LabelSetting :label="label" :ws="props.ws" />
+        <LabelSetting :label="label" />
       </div>
-      <div class="newLabelItem" @click="newLabel">
+      <div class="newLabelItem" @click="ws.createLabel(props.boardId)">
         <div></div>
       </div>
     </div>

@@ -2,6 +2,9 @@
 import "@melloware/coloris/dist/coloris.css";
 import Coloris from "@melloware/coloris";
 import type { Label } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
+
 Coloris.init();
 Coloris({
   el: "#coloris",
@@ -11,31 +14,15 @@ Coloris({
 
 const props = defineProps<{
   label: Label;
-  ws: WebSocket;
 }>();
 
 let name = ref(props.label.title);
 function save() {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateLabel",
-      boardId: props.label.boardId,
-      id: props.label.id,
-      color: props.label.color,
-      textColor: props.label.textColor,
-      title: name.value,
-    }),
-  );
-}
-
-function deleteLabel() {
-  props.ws.send(
-    JSON.stringify({
-      action: "updateLabel",
-      delete: true,
-      boardId: props.label.boardId,
-      id: props.label.id,
-    }),
+  ws.updateLabel(
+    props.label.id,
+    name.value,
+    props.label.textColor,
+    props.label.color,
   );
 }
 </script>
@@ -71,7 +58,7 @@ function deleteLabel() {
         data-coloris
         class="labelColor"
       />
-      <button class="deleteBtn" @click.prevent="deleteLabel">
+      <button class="deleteBtn" @click.prevent="ws.deleteLabel(props.label.id)">
         <img src="/trash-2.svg" />
       </button>
     </form>

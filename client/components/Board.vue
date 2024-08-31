@@ -299,9 +299,18 @@ function moveSubcards(card: Card) {
         @dragenter.prevent=""
         @dragover.prevent=""
       ></div>
-      <form class="newList" @submit.prevent="createNewList()">
-        <input v-model="newListName" type="text" maxlength="20" />
-        <button @click="createNewList"></button>
+      <form
+        class="flex w-80 h-fit p-2 rounded-xl mt-2 ml-4 newList"
+        @submit.prevent="createNewList()"
+      >
+        <input
+          v-model="newListName"
+          placeholder="Add a list..."
+          type="text"
+          maxlength="20"
+          class="w-full p-2"
+        />
+        <button class="w-1/12 scale-125 mr-2" @click="createNewList"></button>
       </form>
     </div>
     <DecisionMenu
@@ -353,34 +362,14 @@ function moveSubcards(card: Card) {
 
 .newList {
   background-color: var(--color-list-background);
-  width: 15rem;
-  min-width: 15rem;
-  height: fit-content;
-  display: flex;
-  flex-direction: row;
-  margin-top: 10px;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  align-items: center;
-  border-radius: 10px;
-  padding: 0.5rem;
-}
-
-.newList input {
-  height: 2rem;
-  width: 90%;
 }
 
 .newList button {
-  transform: scale(1.35);
-  width: 15%;
   background-color: var(--color-card-new-btn);
-  padding: 0.7rem;
   margin-top: 1px;
   margin-left: 15px;
-  background-color: black;
   mask: url(/plus-circle.svg) no-repeat center;
-  transition: 0.4s;
+  transition: 0.3s;
 }
 
 .newList button:hover {

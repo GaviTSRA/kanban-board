@@ -10,7 +10,6 @@ const props = defineProps<{
   assignedLabels: { [labelId: string]: string }[];
   assigningSubCards: boolean;
   assigningTo: Card;
-  boardName: string;
   allLists: List[];
   allCards: { [listId: string]: Card[] };
 }>();
@@ -165,7 +164,7 @@ function shadeColor(color: string) {
   // G = parseInt(G * (100 + percent) / 100);
   // B = parseInt(B * (100 + percent) / 100);
 
-  const COLOR_MAX = 180;
+  const COLOR_MAX = 150;
   R = R < COLOR_MAX ? R : COLOR_MAX;
   G = G < COLOR_MAX ? G : COLOR_MAX;
   B = B < COLOR_MAX ? B : COLOR_MAX;
@@ -260,8 +259,8 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
       "
     ></div>
     <div
+      class="py-2 px-4 rounded-xl container"
       :class="{
-        container: true,
         // assigningTo: props.assigningTo ? props.assigningTo.cardId == props.card.id : false,
         // isAssigned: props.assigningTo != undefined ? props.assigningTo.id == props.card.cardId : false,
         assigned: props.card.cardId != undefined,
@@ -278,11 +277,11 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
       @mouseenter="$emit('hover')"
       @mouseleave="$emit('hoverEnd')"
     >
-      <div class="firstLine">
-        <p class="title">{{ props.card.title }}</p>
+      <div class="firstLine flex items-center">
+        <p class="text-lg">{{ props.card.title }}</p>
         <p
           v-if="props.card.subcardCount && props.card.subcardCount > 0"
-          class="subcardCount"
+          class="ml-auto"
           :class="{
             subcardCount: true,
             progress: true,
@@ -292,14 +291,17 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
           {{ card.subcardsDone }}/{{ card.subcardCount }}
         </p>
       </div>
-      <p v-if="props.card.description != undefined" class="description">
+      <p
+        v-if="props.card.description != undefined"
+        class="text-sm leading-tight mt-1 description"
+      >
         {{ getDescription() }}
       </p>
-      <div class="labels">
+      <div class="flex flex-wrap gap-1 mt-1">
         <div v-for="label in labels">
           <p
             v-if="isEnabled(label)"
-            class="label"
+            class="rounded-lg px-2"
             :style="{ color: label.textColor, 'background-color': label.color }"
           >
             {{ label.title }}
@@ -323,7 +325,6 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
           {{ checklist.title }}
         </div>
       </div>
-      <p class="boardName">{{ props.boardName }}</p>
     </div>
     <CardMenu
       v-if="cardMenuVisible"
@@ -353,21 +354,9 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
 
 <style scoped>
 .assigned {
-  border-width: 5px;
+  border-width: 0;
+  border-top-width: 5px;
   border-style: solid;
-}
-.boardName {
-  font-size: 1rem;
-  margin-left: 10px;
-}
-.subcardCount {
-  margin: auto;
-  margin-right: 10px;
-  font-size: 1.2rem;
-}
-.firstLine {
-  display: flex;
-  flex-direction: row;
 }
 .progress {
   display: inline-block;
@@ -381,28 +370,6 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
 .complete {
   background-color: var(--color-card-small-checklist-complete);
 }
-.checklist {
-  font-size: 1rem;
-}
-.checklists {
-  height: fit-content;
-  padding: 10px;
-}
-.label {
-  font-size: 1rem;
-  width: fit-content;
-  padding: 0 0.5rem;
-  border-radius: 10px;
-  margin: 3px;
-  height: fit-content;
-}
-
-.labels {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  text-shadow: none;
-}
 
 .cardDropSpotSmall {
   width: 100%;
@@ -413,21 +380,6 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
 }
 .container {
   background-color: var(--color-card-primary);
-  border-radius: 10px;
-  margin: 0 10px;
-  text-align: left;
-  filter: drop-shadow(-2px 2px 1px black);
-}
-.title {
-  margin-left: 10px;
-  color: var(--color-card-title);
-}
-.description {
-  overflow-wrap: break-word;
-  color: var(--color-card-description);
-  font-size: 1rem;
-  line-height: 15px;
-  padding: 10px;
 }
 .assigningTo {
   background-color: var(--color-card-assinging-to);
@@ -437,6 +389,5 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
 }
 .hasAssigned {
   background-color: var(--id-color);
-  text-shadow: black 1px 1px;
 }
 </style>

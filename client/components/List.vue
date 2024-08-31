@@ -70,12 +70,11 @@ function createCard() {
 </script>
 
 <template>
-  <div class="list" @contextmenu.prevent="openMenu">
+  <div class="mt-2 p-3 rounded-xl w-80 list" @contextmenu.prevent="openMenu">
     <EditableText
-      :center="true"
       :maxlength="20"
       :text="props.list.title"
-      class="title"
+      class="h-8 text-2xl ml-1"
       @edit="(txt: string) => editName(txt)"
     />
     <ContextMenu
@@ -112,65 +111,40 @@ function createCard() {
         />
       </div>
       <div
+        v-if="
+          props.isDraggingCard && props.draggingCard.listId === props.list.id
+        "
         class="cardDropSpot"
         @dragenter.prevent=""
         @dragover.prevent=""
         @drop="$emit('drop', props.cards.length)"
       ></div>
     </div>
-    <div class="newCardContainer">
-      <form class="newCard" @submit.prevent="createCard">
-        <input v-model="newCardName" type="text" maxlength="255" />
-        <button @click="createCard"></button>
+    <div class="mt-4 newCard">
+      <form class="flex" @submit.prevent="createCard">
+        <input
+          v-model="newCardName"
+          class="mr-2.5 w-full p-1"
+          type="text"
+          maxlength="255"
+          placeholder="Add a card..."
+        />
+        <button class="w-1/12" @click="createCard"></button>
       </form>
     </div>
   </div>
 </template>
 
 <style scoped>
-.newCardContainer {
-  box-shadow: 0px -4px 10px var(--color-shadow);
-  position: relative;
-  z-index: 5;
-  padding: 0.5rem;
-  min-height: 1.5rem;
-  border-color: var(--color-list-outline);
-  border-width: 0;
-  border-top-width: 4px;
-  border-style: solid;
-}
-.title {
-  position: relative;
-  height: 3rem;
-  border-style: solid;
-  border-color: var(--color-list-outline);
-  border-width: 0;
-  border-bottom-width: 4px;
-  filter: drop-shadow(0px 4px 3px var(--color-shadow));
-  z-index: 5;
-}
 .cardDropSpot {
   height: 2rem;
   width: 100%;
 }
-.newCard {
-  filter: none;
-  display: flex;
-}
-.newCard input {
-  width: 85%;
-  margin-right: 10px;
-}
 
 .newCard button {
-  transform: scale(1.35);
-  width: 15%;
   background-color: var(--color-card-new-btn);
-  padding: 0.7rem;
-  margin-top: 1px;
-  background-color: black;
   mask: url(/plus-circle.svg) no-repeat center;
-  transition: 0.4s;
+  transition: 0.3s;
 }
 
 .newCard button:hover {
@@ -181,57 +155,22 @@ function createCard() {
   background-color: var(--color-card-new-btn-active);
 }
 
-.title :deep(.editable) {
-  width: 50vw;
-  height: 2rem;
-  color: var(--color-list-title);
-}
-
-input {
-  width: 50dvw;
-  height: 2rem;
-  color: var(--color-list-title);
-}
-
 .list {
-  margin-left: 1rem;
-  margin-top: 10px;
   background-color: var(--color-list-background);
-  width: 20rem;
-  text-align: center;
-  font-size: 1.5rem;
-  border-radius: 10px;
 }
 
 .cards {
-  height: fit-content;
-  max-height: 55vh;
-  overflow: scroll;
+  max-height: 75vh;
+  overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-list-scrollbar) var(--color-list-background);
-  overflow-x: hidden;
 }
 
 ::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
   background: var(--color-list-background);
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-list-scrollbar);
-  -webkit-border-radius: 10px;
-}
-
-@media (min-width: 1025px) {
-  :deep(.editable textarea, .editable input) {
-    width: 9vw;
-  }
-}
-
-@media (min-height: 800px) {
-  .cards {
-    max-height: 75vh;
-  }
 }
 </style>

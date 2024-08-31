@@ -1,0 +1,429 @@
+{
+  "id": "517aa913-0f5b-4972-bd53-819c20e5f17d",
+  "prevId": "946dd157-30db-46df-8a78-3efcc9969b02",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.assignedLabel": {
+      "name": "assignedLabel",
+      "schema": "",
+      "columns": {
+        "cardId": {
+          "name": "cardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "labelId": {
+          "name": "labelId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "assignedLabel_cardId_card_id_fk": {
+          "name": "assignedLabel_cardId_card_id_fk",
+          "tableFrom": "assignedLabel",
+          "tableTo": "card",
+          "columnsFrom": [
+            "cardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "assignedLabel_labelId_labels_id_fk": {
+          "name": "assignedLabel_labelId_labels_id_fk",
+          "tableFrom": "assignedLabel",
+          "tableTo": "labels",
+          "columnsFrom": [
+            "labelId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.board": {
+      "name": "board",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.card": {
+      "name": "card",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "listId": {
+          "name": "listId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cardId": {
+          "name": "cardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "card_listId_list_id_fk": {
+          "name": "card_listId_list_id_fk",
+          "tableFrom": "card",
+          "tableTo": "list",
+          "columnsFrom": [
+            "listId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "card_cardId_card_id_fk": {
+          "name": "card_cardId_card_id_fk",
+          "tableFrom": "card",
+          "tableTo": "card",
+          "columnsFrom": [
+            "cardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.checklist": {
+      "name": "checklist",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "cardId": {
+          "name": "cardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checklist_cardId_card_id_fk": {
+          "name": "checklist_cardId_card_id_fk",
+          "tableFrom": "checklist",
+          "tableTo": "card",
+          "columnsFrom": [
+            "cardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.checklistItem": {
+      "name": "checklistItem",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "checklistId": {
+          "name": "checklistId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checked": {
+          "name": "checked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "checklistItem_checklistId_checklist_id_fk": {
+          "name": "checklistItem_checklistId_checklist_id_fk",
+          "tableFrom": "checklistItem",
+          "tableTo": "checklist",
+          "columnsFrom": [
+            "checklistId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.infoItem": {
+      "name": "infoItem",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "boardId": {
+          "name": "boardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "images": {
+          "name": "images",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "infoItem_boardId_board_id_fk": {
+          "name": "infoItem_boardId_board_id_fk",
+          "tableFrom": "infoItem",
+          "tableTo": "board",
+          "columnsFrom": [
+            "boardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.labels": {
+      "name": "labels",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "boardId": {
+          "name": "boardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'New Label'"
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(9)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'#000000'"
+        },
+        "textColor": {
+          "name": "textColor",
+          "type": "varchar(9)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'#FFFFFF'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "labels_boardId_board_id_fk": {
+          "name": "labels_boardId_board_id_fk",
+          "tableFrom": "labels",
+          "tableTo": "board",
+          "columnsFrom": [
+            "boardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.list": {
+      "name": "list",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "boardId": {
+          "name": "boardId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "list_boardId_board_id_fk": {
+          "name": "list_boardId_board_id_fk",
+          "tableFrom": "list",
+          "tableTo": "board",
+          "columnsFrom": [
+            "boardId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

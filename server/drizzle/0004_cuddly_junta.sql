@@ -1,0 +1,1 @@
+ALTER TABLE "checklistItem" ADD COLUMN "position" integer NOT NULL;

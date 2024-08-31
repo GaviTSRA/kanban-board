@@ -312,13 +312,13 @@ let colorAllSame = useLocalStorage("colorAllSame", false);
             :class="{
               progress: true,
               complete:
-                checklist.ChecklistItems != undefined &&
-                checklist.ChecklistItems.filter((item) => item.checked)
-                  .length == checklist.ChecklistItems.length,
+                checklist.checklistItems &&
+                checklist.checklistItems.filter((item) => item.checked)
+                  .length == checklist.checklistItems.length,
             }"
             >{{
-              checklist.ChecklistItems?.filter((item) => item.checked).length
-            }}/{{ checklist.ChecklistItems?.length }}</span
+              checklist.checklistItems?.filter((item) => item.checked).length
+            }}/{{ checklist.checklistItems?.length }}</span
           >
           {{ checklist.title }}
         </div>

@@ -112,6 +112,67 @@ export const useConnection = defineStore("connection", {
       });
     },
 
+    createChecklist(cardId: string, title: string) {
+      this.send({
+        action: "updateChecklist",
+        new: true,
+        cardId,
+        title,
+      });
+    },
+    updateChecklistTitle(id: string, title: string) {
+      this.send({
+        action: "updateChecklist",
+        id,
+        title,
+      });
+    },
+    deleteChecklist(id: string) {
+      this.send({
+        action: "updateChecklist",
+        delete: true,
+        id,
+      });
+    },
+
+    createChecklistItem(checklistId: string, title: string, position: number) {
+      this.send({
+        action: "updateChecklistItem",
+        new: true,
+        checklistId,
+        title,
+        position,
+      });
+    },
+    updateChecklistItemTitle(id: string, title: string) {
+      this.send({
+        action: "updateChecklistItem",
+        id,
+        title,
+      });
+    },
+    updateChecklistItemPosition(id: string, position: number) {
+      this.send({
+        action: "updateChecklistItem",
+        id,
+        position,
+      });
+    },
+    updateChecklistItemChecked(id: string, checked: boolean) {
+      this.send({
+        action: "updateChecklistItem",
+        id,
+        checked,
+      });
+    },
+    deleteChecklistItem(id: string) {
+      this.send({
+        action: "updateChecklistItem",
+        delete: true,
+        id,
+      });
+    },
+
     createLabel(boardId: string) {
       this.send({
         action: "updateLabel",

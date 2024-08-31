@@ -1,48 +1,31 @@
 <script setup lang="ts">
+import type { ChecklistItem } from "~/types";
+import { useConnection } from "@/stores";
+const ws = useConnection();
+
 const props = defineProps<{
   item: ChecklistItem;
-}>();
-const emit = defineEmits<{
-  send: [];
-  newItem: [];
 }>();
 
 async function rename(txt: string) {
   if (txt == "") {
-    deleteItem();
+    ws.deleteChecklistItem(props.item.id);
     return;
   }
-  let createNew;
-  if (props.item.title == "") {
-    createNew = true;
-  }
-  props.item.title = txt;
-  emit("send");
-  if (createNew) {
-    setTimeout(() => {
-      emit("newItem");
-    }, 100);
-  }
-}
-
-function deleteItem() {
-  props.item.delete = true;
-  emit("send");
-}
-
-function check() {
-  emit("send");
+  ws.updateChecklistItemTitle(props.item.id, txt);
 }
 </script>
 
 <template>
   <div class="item">
     <input
-      @change="check"
-      :value="props.item.checked"
-      v-model="props.item.checked"
       class="checkbox"
       type="checkbox"
+      :checked="props.item.checked"
+      @input="
+        (value) =>
+          ws.updateChecklistItemChecked(props.item.id, value.target.checked)
+      "
     />
     <EditableText
       :maxlength="20"
@@ -51,7 +34,10 @@ function check() {
       :text="props.item.title"
       @edit="(txt: string) => rename(txt)"
     />
-    <button class="deleteBtn" @click="deleteItem">
+    <button
+      class="deleteBtn"
+      @click="() => ws.deleteChecklistItem(props.item.id)"
+    >
       <img src="/trash-2.svg" />
     </button>
   </div>

@@ -28,25 +28,7 @@ function isEnabled(label: Label) {
 }
 
 function newChecklist() {
-  if (
-    !props.card.checklists ||
-    props.card.checklists.length == 0 ||
-    props.card.checklists[props.card.checklists.length - 1].title != ""
-  ) {
-    props.card.checklists.push({ new: true });
-    send();
-  }
-}
-
-function send() {
-  // props.ws.send(
-  //   JSON.stringify({
-  //     action: "updateCard",
-  //     id: props.card.id,
-  //     boardId: props.card.boardId,
-  //     checklists: props.card.checklists,
-  //   }),
-  // );
+  ws.createChecklist(props.card.id, "New Checklist");
 }
 
 let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
@@ -95,17 +77,9 @@ let showSubCards = useLocalStorage("showSubCards-" + props.card.id, true);
       </div>
       <div class="checklistSection">
         <div v-for="checklist in props.card.checklists" class="checklists">
-          <Checklist :checklist="checklist" @send="send" />
+          <Checklist :checklist="checklist" />
         </div>
-        <button
-          v-if="
-            !props.card.checklists ||
-            props.card.checklists.length == 0 ||
-            props.card.checklists[props.card.checklists.length - 1].title != ''
-          "
-          class="newChecklistBtn"
-          @click="newChecklist"
-        ></button>
+        <button class="newChecklistBtn" @click="newChecklist"></button>
       </div>
     </div>
   </div>

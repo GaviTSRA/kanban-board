@@ -1,67 +1,43 @@
 <script setup lang="ts">
+import { useConnection } from "@/stores";
+import type { Checklist } from "~/types";
+const ws = useConnection();
+
 const props = defineProps<{
   checklist: Checklist;
 }>();
-const emit = defineEmits<{
-  send: [];
-}>();
-
-function updateTitle(txt: string) {
-  if (txt == "") {
-    deleteList();
-    return;
-  }
-  if (props.checklist.title == "") {
-    setTimeout(() => {
-      newItem();
-    }, 100);
-  }
-  props.checklist.title = txt;
-  emit("send");
-}
 
 function newItem() {
-  props.checklist.ChecklistItems.push({
-    new: true,
-    title: "",
-  });
-}
-
-function deleteList() {
-  props.checklist.delete = true;
-  emit("send");
-}
-
-function send(item) {
-  if (!item.new && (item.title == undefined || item.title == "")) return;
-  props.checklist.ChecklistItems = props.checklist.ChecklistItems.filter(
-    (el: { new: any; delete: any }) => {
-      return !(el.new && el.delete);
-    },
+  ws.createChecklistItem(
+    props.checklist.id,
+    "New checklist item",
+    props.checklist.checklistItems.length,
   );
-  emit("send");
 }
 </script>
 
 <template>
   <div class="checklist">
     <div class="titleContainer">
-      <button class="delete" @click="deleteList"></button>
+      <button
+        class="delete"
+        @click="ws.deleteChecklist(props.checklist.id)"
+      ></button>
       <EditableText
         :maxlength="20"
         :focus="props.checklist.title == ''"
         class="title"
         :text="props.checklist.title"
-        @edit="(txt: any) => updateTitle(txt)"
+        @edit="(txt: any) => ws.updateChecklistTitle(props.checklist.id, txt)"
       />
     </div>
-    <div v-for="item in props.checklist.ChecklistItems">
-      <ChecklistItem @newItem="newItem" @send="() => send(item)" :item="item" />
+    <div v-for="item in props.checklist.checklistItems">
+      <ChecklistItem :item="item" />
     </div>
     <button
+      v-if="props.checklist.title"
       class="newItemBtn"
       @click="newItem"
-      v-if="props.checklist.title"
     ></button>
   </div>
 </template>

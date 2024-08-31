@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useConnection } from "@/stores";
-import type { Card, InfoItem, Label, List } from "~/types";
+import type { Card, ChecklistItem, InfoItem, Label, List } from "~/types";
 const conn = useConnection();
 
 const route = useRoute();
@@ -68,10 +68,14 @@ ws.onmessage = async (msg) => {
     case "card":
       found = false;
       if (data.checklists) {
-        // checklists.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-        // for (let checklist of checklists) {
-        //     checklist.ChecklistItems.sort((a, b) => new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1)
-        // }
+        // data.checklists.sort((a, b) =>
+        //   new Date(a.createdAt) < new Date(b.createdAt) ? -1 : 1,
+        // );
+        for (let checklist of data.checklists) {
+          checklist.checklistItems.sort((a: ChecklistItem, b: ChecklistItem) =>
+            a.position < b.position ? -1 : 1,
+          );
+        }
       } else {
         data.checklists = [];
       }
@@ -119,7 +123,7 @@ ws.onmessage = async (msg) => {
               if (card.id == card2.cardId) {
                 card.subcards++;
                 for (let checklist of card2.checklists) {
-                  for (let item of checklist.ChecklistItems) {
+                  for (let item of checklist.checklistItems) {
                     card.subcardCount++;
                     if (item.checked) card.subcardsDone++;
                   }

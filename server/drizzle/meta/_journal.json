@@ -29,6 +29,13 @@
       "when": 1723909136054,
       "tag": "0003_simple_mauler",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1725131660644,
+      "tag": "0004_cuddly_junta",
+      "breakpoints": true
     }
   ]
 }

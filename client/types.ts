@@ -32,17 +32,22 @@ export type Card = {
   subcardCount?: number;
   subcardsDone?: number;
   subcards?: number;
-  checklists: {
-    title: string;
-    id: string;
-    CardId: string;
-    ChecklistItems: {
-      title: string;
-      id: string;
-      checked: boolean;
-      ChecklistId: string;
-    }[];
-  }[];
+  checklists: Checklist[];
+};
+
+export type Checklist = {
+  id: string;
+  cardId: string;
+  title: string;
+  checklistItems: ChecklistItem[];
+};
+
+export type ChecklistItem = {
+  id: string;
+  checklistId: string;
+  title: string;
+  checked: boolean;
+  position: number;
 };
 
 export type Label = {

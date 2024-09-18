@@ -33,8 +33,10 @@
   "dependencies": {
     "@melloware/coloris": "^0.22.0",
     "@nuxt/content": "^2.9.0",
+    "drizzle-orm": "^0.29.5",
     "markdown-it": "^14.0.0",
     "pinia": "^2.2.2",
+    "postgres": "^3.4.4",
     "primevue": "^3.44.0",
     "typescript-eslint": "^8.2.0",
     "vue-window-size": "^2.0.0",

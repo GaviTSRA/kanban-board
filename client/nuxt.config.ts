@@ -2,14 +2,18 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ["@/assets/main.css"],
+
   routeRules: {
     "/board/**": { ssr: false },
   },
+
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
     },
   },
+
   modules: ["@vueuse/nuxt", "nuxt-primevue", "@pinia/nuxt"],
+  compatibilityDate: "2024-09-18",
 });

@@ -44,7 +44,7 @@ async function openMenu(event: PointerEvent) {
 
 async function deleteBoard() {
   deleteMenuVisible.value = false;
-  await useFetch("http://localhost:3001", {
+  await useFetch("/api/boards", {
     method: "DELETE",
     body: JSON.stringify({
       id: props.board.id,

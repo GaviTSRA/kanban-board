@@ -4,12 +4,12 @@ let creatingNewBoard = ref(false);
 let title = ref("");
 let description = ref("");
 
-const { data } = await useFetch("http://localhost:3001");
+const { data } = await useFetch("/api/boards");
 const boards = JSON.parse(data.value as string);
 
 async function createBoard() {
   let res = (
-    await useFetch<{ id: string }>("http://localhost:3001", {
+    await useFetch<{ id: string }>("/api/boards", {
       method: "POST",
       body: JSON.stringify({
         title: title.value,

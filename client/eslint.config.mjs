@@ -33,6 +33,7 @@ export default [
         onMounted: "readonly",
         useHead: "readonly",
         watch: "readonly",
+        defineEventHandler: "readonly",
       },
     },
     rules: {

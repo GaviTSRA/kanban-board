@@ -141,7 +141,7 @@ app.ws("/board/:boardId", async (ws, req) => {
 
   ws.on("message", async (msg) => {
     const data = JSON.parse(msg.toString());
-    console.log(data.action);
+    console.log(data);
 
     switch (data.action) {
       case "updateBoard":
@@ -369,7 +369,13 @@ app.ws("/board/:boardId", async (ws, req) => {
           });
           return;
         } else {
-          item = (await db.update(schema.infoItem).set(data).returning())[0];
+          item = (
+            await db
+              .update(schema.infoItem)
+              .set(data)
+              .where(eq(schema.infoItem.id, data.id))
+              .returning()
+          )[0];
         }
         await sendInfoItem(boardId, item);
         break;

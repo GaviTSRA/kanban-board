@@ -19,7 +19,7 @@ const emit = defineEmits<{
     <EditableText
       :maxlength="20"
       :text="props.board.title"
-      class="title"
+      class="w-fit h-fit my-auto px-4 py-2 rounded text-xl title"
       @edit="ws.updateBoardTitle"
     />
     <!-- TODO proper max length -->
@@ -30,26 +30,21 @@ const emit = defineEmits<{
       class="description"
       @edit="ws.updateBoardDescription"
     />
-    <button class="info" @click="emit('info')"></button>
-    <button class="settings" @click="emit('settings')"></button>
+    <button class="my-auto ml-auto h-8 w-8 info" @click="emit('info')"></button>
+    <button
+      class="h-8 w-8 my-auto mx-4 settings"
+      @click="emit('settings')"
+    ></button>
   </div>
 </template>
 
 <style scoped>
 .settings {
-  margin: auto 0;
-  margin-right: 1rem;
-  height: 2rem;
-  width: 2rem;
   background-color: var(--color-header-settings-btn);
   mask: url(/settings.svg) no-repeat center;
   transition: 0.6s;
 }
 .info {
-  margin: auto;
-  margin-right: 1rem;
-  height: 2rem;
-  width: 2rem;
   background-color: var(--color-header-settings-btn);
   mask: url(/info.svg) no-repeat center;
   transition: 0.6s;
@@ -89,16 +84,7 @@ const emit = defineEmits<{
 
 .title {
   background-color: var(--color-header-title-background);
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 1.5rem;
-  margin: auto 10px;
   color: var(--color-header-title);
-  height: fit-content;
-}
-
-:deep(input) {
-  padding: 0.5rem 1rem;
 }
 
 .description {
@@ -109,14 +95,6 @@ const emit = defineEmits<{
   min-height: 1rem;
   visibility: hidden;
   color: var(--color-header-desc);
-}
-
-.description :deep(textarea) {
-  width: 25vw;
-  height: 100%;
-  resize: none;
-  color: var(--color-header-desc);
-  font-size: 1rem;
 }
 
 @media (min-width: 600px) {

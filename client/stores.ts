@@ -205,12 +205,13 @@ export const useConnection = defineStore("connection", {
       });
     },
 
-    createInfoItem(title: string, content: string) {
+    createInfoItem(boardId: string, title: string, content: string) {
       this.send({
         action: "updateInfoItem",
         new: true,
         title,
         content,
+        boardId,
       });
     },
     updateInfoItem(id: string, title: string, content: string) {

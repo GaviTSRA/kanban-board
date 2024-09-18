@@ -23,9 +23,9 @@ function uploadedImage(event) {
 }
 
 function handleFile(event) {
-  if (props.item.images == undefined) props.item.images = [];
-  props.item.images.push(event.target.result);
-  ws.updateInfoItemImages(props.item.id, props.item.images);
+  let images = props.item.images ?? [];
+  images.push(event.target.result);
+  ws.updateInfoItemImages(props.item.id, images);
 }
 
 function image() {

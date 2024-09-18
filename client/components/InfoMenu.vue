@@ -5,13 +5,16 @@ const ws = useConnection();
 
 const props = defineProps<{
   items: InfoItem[];
+  boardId: string;
 }>();
 
 let title = ref("");
 let content = ref("");
 let editing: Ref<InfoItem | undefined> = ref(undefined);
+let creatingItem = ref(false);
 
 function newItem() {
+  creatingItem.value = true;
   editing.value = undefined;
   title.value = "";
   content.value = "";
@@ -25,8 +28,9 @@ function editItem(item: InfoItem) {
 
 function save(title: string, content: string) {
   let item = editing.value;
+  creatingItem.value = false;
   if (editing.value === undefined) {
-    ws.createInfoItem(title, content);
+    ws.createInfoItem(props.boardId, title, content);
   } else if (item) {
     ws.updateInfoItem(item.id, title, content);
   }
@@ -48,7 +52,7 @@ function save(title: string, content: string) {
     </div>
   </div>
   <InfoItemEditMenu
-    v-if="editing != undefined"
+    v-if="editing != undefined || creatingItem"
     :title="title"
     :content="content"
     @cancel="editing = undefined"

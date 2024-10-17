@@ -16,7 +16,7 @@ let labels: Ref<Label[]> = ref([]);
 let assignedLabels: Ref<{ [labelId: string]: string }[]> = ref([]);
 let infoItems: Ref<InfoItem[]> = ref([]);
 
-let ws = new WebSocket("ws://localhost:3001/board/" + route.params.id);
+let ws = new WebSocket("ws://localhost:3000/api/" + route.params.id);
 conn.init(ws);
 
 ws.onclose = () => {

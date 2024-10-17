@@ -15,6 +15,7 @@
     "@nuxt/devtools": "latest",
     "@pinia/nuxt": "^0.5.4",
     "@types/markdown-it": "^14.1.2",
+    "@types/ws": "^8.5.12",
     "@vueuse/core": "^10.7.0",
     "@vueuse/nuxt": "^10.7.0",
     "autoprefixer": "^10.4.20",

@@ -115,7 +115,10 @@ export default function App() {
             ]
             return (
               <ContextMenu actions={actions}>
-                <div className="flex flex-col w-[20vw] h-[40vh] bg-card hover:bg-card-hover p-4 rounded">
+                <div
+                  className="flex flex-col w-[20vw] h-[40vh] bg-card hover:bg-card-hover p-4 rounded"
+                  onClick={() => navigate("/board/" + board.id)}
+                >
                   <p className="font-bold">{board.title}</p>
                   <p>{board.description}</p>
                   <div className="mt-auto">
@@ -138,26 +141,26 @@ export default function App() {
       {creatingNewBoard && (
         <div className="fixed top-0 w-screen h-screen flex bg-black/75" onClick={() => setCreatingNewBoard(false)}>
           <div className="bg-list p-4 m-auto rounded flex flex-col w-1/4" onClick={(e) => e.stopPropagation()}>
-            <p className="text-2xl mb-4">Create New Board</p>
+            <p className="text-2xl mb-4 text-center">Create New Board</p>
             <div className="mb-4">
               <p className="text-secondary-text">Title</p>
               <input
                 className="rounded bg-card outline-none px-2 py-1 w-full"
-                onChange={setTitle}
+                onChange={event => setTitle(event.target.value)}
               />
             </div>
             <div className="mb-4 h-full">
               <p className="text-secondary-text">Description</p>
               <textarea
                 className="rounded bg-card outline-none px-2 py-1 w-full h-40 resize-none"
-                onChange={setDescription}
+                onChange={event => setDescription(event.target.value)}
               />
             </div>
             <button
               className="px-4 py-2 mt-auto bg-success rounded outline-none"
               onClick={() => {
                 createBoard.mutate(null, {
-                  onSuccess: result => navigate("/board/" + result)
+                  onSuccess: result => result.json().then(result => navigate("/board/" + result["id"]))
                 })
               }}
             >Create</button>

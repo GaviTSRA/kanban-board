@@ -73,6 +73,7 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
+  console.info(req.body)
   if (!req.body.title) {
     res.sendStatus(400);
     return;

@@ -4,16 +4,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "background-primary": "#1E1E2E",
-        "background-secondary": "#28293D",
-        "header-bar": "#2C2C44",
-        "card-background": "#3C3F58",
+        "background": "#1E1E2E",
+        "list": "#28293D",
+        "header": "#2C2C44",
+        "card": "#3C3F58",
         "card-hover": "#4E527D",
         "primary-text": "#FFFFFF",
         "secondary-text": "#B0B0C0",
-        "accent-primary": "#FF6666",
-        "accent-secondary": "#77DD77",
-        "border-color": "#444466",
+        "danger": "#FF4D4D",
+        "success": "#28a745",
+        "border": "#444466",
+        'context-menu': '#2B2B3A',
+        "context-menu-border": "#1F1F28",
+        "button": "#2D2D3A",
+        "button-hover": "#3A3A50"
       },
     },
   },

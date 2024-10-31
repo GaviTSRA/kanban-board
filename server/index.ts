@@ -73,7 +73,7 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-  console.info(req.body)
+  console.info(req.body);
   if (!req.body.title) {
     res.sendStatus(400);
     return;
@@ -118,10 +118,12 @@ function send(boardId: string, data: any) {
 
 app.ws("/board/:boardId", async (ws, req) => {
   const boardId = req.params.boardId;
+  console.info("New connection to", boardId);
   let board = await db.query.board.findFirst({
     where: (board, { eq }) => eq(board.id, boardId),
   });
   if (board == null) {
+    console.info("invalid board");
     ws.close();
     return;
   }
@@ -137,6 +139,7 @@ app.ws("/board/:boardId", async (ws, req) => {
   await sendCards(boardId);
 
   ws.on("close", () => {
+    console.info("Connection to", boardId, "closed");
     clients[boardId].splice(clients[boardId].indexOf(ws), 1);
   });
 
